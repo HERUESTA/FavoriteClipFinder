@@ -99,3 +99,9 @@ SEO対策
 
 	•	キーワードリサーチ: 適切なキーワードを選定し、コンテンツに組み込む
 	•	メタタグの最適化: タイトルタグ、メタディスクリプションを適切に設定
+
+
+ER図
+https://dbdiagram.io/d
+[![Image from Gyazo](https://i.gyazo.com/824008f934896812f54187b24e04963c.png)](https://gyazo.com/824008f934896812f54187b24e04963c)
+
