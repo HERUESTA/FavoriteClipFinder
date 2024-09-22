@@ -102,6 +102,6 @@ SEO対策
 
 
 ER図
-https://dbdiagram.io/d
-[![Image from Gyazo](https://i.gyazo.com/824008f934896812f54187b24e04963c.png)](https://gyazo.com/824008f934896812f54187b24e04963c)
+https://dbdiagram.io/d/66efc1bca0828f8aa6a1c1b1
+![alt text](image.png)
 
