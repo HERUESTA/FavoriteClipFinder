@@ -105,3 +105,9 @@ ER図
 https://dbdiagram.io/d
 [![Image from Gyazo](https://i.gyazo.com/824008f934896812f54187b24e04963c.png)](https://gyazo.com/824008f934896812f54187b24e04963c)
 
+画面遷移図
+https://www.figma.com/design/67JYaEjmlwB54qoGAC3Ksk/TwitchClipFinder?m=auto&t=vHF8ddULfhxpdmza-6
+![alt text](image.png)
+
+
+
