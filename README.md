@@ -107,7 +107,7 @@ https://dbdiagram.io/d
 
 画面遷移図
 https://www.figma.com/design/67JYaEjmlwB54qoGAC3Ksk/TwitchClipFinder?m=auto&t=vHF8ddULfhxpdmza-6
-![alt text](image.png)
+![alt text](image-1.png)
 
 
 
