@@ -1,0 +1,10 @@
+<%= form_with(model: task, local: true, class: "space-y-4") do |form| %>
+  <div>
+    <%= form.label :name, class: "label" %>
+    <%= form.text_field :name, class: "input input-bordered w-full" %>
+  </div>
+
+  <div>
+    <%= form.submit class: "btn btn-primary" %>
+  </div>
+<% end %>
