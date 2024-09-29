@@ -9,7 +9,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[7.2]
       t.string :uid, null: false, default: ""
       t.string :user_name
       t.string :profile_image_url
-      
+
       # t.string :email,              null: false, default: ""
       # t.string :encrypted_password, null: false, default: ""
 
