@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  # ログイン・ログアウト用route
+  devise_for :users
+
+
+
   # CI/CD用route
   get "up" => "rails/health#show", as: :rails_health_check
 
