@@ -2,6 +2,9 @@ Rails.application.routes.draw do
   # ログイン・ログアウト用route
   devise_for :users
 
+  # root_path
+  root "users#index"
+
 
 
   # CI/CD用route

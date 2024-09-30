@@ -18,14 +18,68 @@
   </head>
 
   <body class="bg-gray-100 flex flex-col min-h-screen">
-  <header class="bg-blue-600 text-white p-4">
-    <div class="container mx-auto">
-      <h1 class="text-2xl font-bold">TODOアプリ</h1>
+  <!-- ナビゲーションヘッダー -->
+  <header class="navbar bg-gray-800 text-white px-4 py-2 flex justify-between items-center">
+    <!-- ロゴとリンク -->
+    <div class="flex items-center space-x-4">
+      <!-- ロゴ -->
+      <div class="text-purple-500">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l5-5m0 0l-5-5m5 5H6" />
+        </svg>
+      </div>
+      <!-- 利用規約、使い方 -->
+      <a href="#" class="text-white hover:text-purple-500">利用規約</a>
+      <a href="#" class="text-white hover:text-purple-500">使い方</a>
+    </div>
+
+    <!-- 検索バーとログイン -->
+    <div class="flex items-center space-x-12">
+      <!-- ゲーム名検索 -->
+      <div class="flex items-center gap-2">
+        <input type="text" placeholder="ゲーム検索" class="input input-bordered w-100 text-white bg-gray-700 border-gray-600">
+        <button class="btn btn-square btn-ghost text-white">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            class="h-4 w-4 opacity-70">
+            <path
+              fill-rule="evenodd"
+              d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+              clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- 配信者ID検索 -->
+      <div class="flex items-center gap-2">
+        <input type="text" placeholder="配信者ID検索" class="input input-bordered w-100 text-gray-400 bg-gray-700 border-gray-600">
+        <button class="btn btn-square btn-ghost text-white">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            class="h-4 w-4 opacity-70">
+            <path
+              fill-rule="evenodd"
+              d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+              clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- ログインボタン -->
+      <button class="btn btn-secondary">ログイン</button>
     </div>
   </header>
+
+  <!-- メインコンテンツ -->
   <main class="container mx-auto mt-8 flex-grow">
     <%= yield %>
   </main>
+
+  <!-- フッター -->
   <footer class="bg-gray-800 text-white text-center p-4 mt-8">
     <p>&copy; 2024 TODOアプリ. All Rights Reserved.</p>
   </footer>
