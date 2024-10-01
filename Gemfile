@@ -37,7 +37,7 @@ gem "bootsnap", require: false
 gem "devise"
 
 # Twitch認証
-gem 'omniauth-twitch' , '~> 1.0'
+gem "omniauth-twitch", "~> 1.0"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -49,8 +49,8 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 
-  # 環境変数を使用するため
-gem 'dotenv-rails'
+# 環境変数を使用するため
+gem "dotenv-rails"
 end
 
 group :development do

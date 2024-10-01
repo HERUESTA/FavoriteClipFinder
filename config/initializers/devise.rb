@@ -1,6 +1,5 @@
 
 Devise.setup do |config|
-
   config.mailer_sender = "please-change-me-at-config-initializers-devise@example.com"
 
   require "devise/orm/active_record"
@@ -27,5 +26,5 @@ Devise.setup do |config|
   config.responder.redirect_status = :see_other
 
   # Twitch認証
-  config.omniauth :twitch, ENV['TWITCH_CLIENT_ID'], ENV['TWITCH_CLIENT_SECRET'], scope: 'user:read:email user:read:follows'
+  config.omniauth :twitch, ENV["TWITCH_CLIENT_ID"], ENV["TWITCH_CLIENT_SECRET"], scope: "user:read:email user:read:follows"
 end
