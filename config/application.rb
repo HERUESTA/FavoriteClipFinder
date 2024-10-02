@@ -2,7 +2,7 @@ require_relative "boot"
 
 require "rails/all"
 
-config.session_store :cookie_strore, key: 'TwitchClipFinder'
+config.session_store :cookie_strore, key: "TwitchClipFinder"
 Bundler.require(*Rails.groups)
 
 module Myapp
