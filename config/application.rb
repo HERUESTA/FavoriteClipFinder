@@ -9,7 +9,9 @@ module TwichClipFinder
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.2
 
-    config.session_store :cookie_store, key: "_twitch_clip_finder_session"
+    # Cookie設定
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore
 
     config.autoload_lib(ignore: %w[assets tasks])
   end

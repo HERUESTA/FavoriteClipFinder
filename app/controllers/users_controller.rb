@@ -1,3 +1,4 @@
+# app/controller/users_controller.rb
 class UsersController < ApplicationController
   # TOPページに遷移
   def index
