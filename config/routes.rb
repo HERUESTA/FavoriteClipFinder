@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  # ログイン・ログアウト用route
-  devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
+    # Devise のルート
+    devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
 
   # root_path
   root "users#index"
