@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.2.1"
+gem "rails", "~> 7.2"
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
 # Use postgresql as the database for Active Record
@@ -33,11 +33,12 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
-# login logout
-gem "devise"
-
-# Twitch認証
-gem "omniauth-twitch", "~> 1.0"
+gem "devise", "~> 4.9"
+gem "omniauth", "~> 2.1"
+gem "omniauth-oauth2", "~> 1.7"
+gem "omniauth-twitch", "~> 1.2"
+gem "omniauth-rails_csrf_protection"
+gem "rack-cors", require: "rack/cors"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -49,8 +50,8 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 
-# 環境変数を使用するため
-gem "dotenv-rails"
+  # 環境変数を使用するため
+  gem "dotenv-rails"
 end
 
 group :development do

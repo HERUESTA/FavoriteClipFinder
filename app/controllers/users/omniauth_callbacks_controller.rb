@@ -1,10 +1,16 @@
+# app/users/omniauth_callbacks_controller.rb
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
-  # CSRFトークンの検証をスキップ（必要に応じて）
   skip_before_action :verify_authenticity_token, only: [ :twitch ]
 
   def twitch
     # OmniAuthから認証情報を取得
+    # ログ出力
+    Rails.logger.debug "Session ID before callback: #{session.id}"
+    Rails.logger.debug "Session ID: #{session.id}"
+    Rails.logger.debug "@userの前通ったよ！"
+
     @user = User.from_omniauth(request.env["omniauth.auth"])
+    Rails.logger.debug "通ったよ！"
 
     if @user.persisted?
       sign_in_and_redirect @user, event: :authentication
@@ -16,6 +22,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def failure
+    Rails.logger.debug "OmniAuth State: #{request.params['state']}"
+    Rails.logger.debug "Session ID in failure action: #{session.id}"
     redirect_to root_path
   end
 end

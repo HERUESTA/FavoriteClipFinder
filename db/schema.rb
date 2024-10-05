@@ -24,4 +24,5 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_02_125021) do
     t.string "provider"
     t.index ["uid"], name: "index_users_on_uid", unique: true
   end
+
 end

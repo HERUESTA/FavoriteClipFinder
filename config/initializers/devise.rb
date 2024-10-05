@@ -25,9 +25,9 @@ Devise.setup do |config|
   config.responder.error_status = :unprocessable_entity
   config.responder.redirect_status = :see_other
 
-  # Twitch認証
+  # OmniAuth設定
   config.omniauth :twitch, ENV["TWITCH_CLIENT_ID"], ENV["TWITCH_CLIENT_SECRET"], scope: "user:read:email user:read:follows"
 
   # OmniAuthでGETとPOSTリクエストを許可
-  OmniAuth.config.allowed_request_methods = [ :get, :post ]
+  OmniAuth.config.allowed_request_methods = [ :post ]
 end
