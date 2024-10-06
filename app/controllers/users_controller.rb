@@ -2,8 +2,8 @@ class UsersController < ApplicationController
   # TOPページに遷移
   def index
     if current_user.present?
-      # トークンが期限切れの場合はリフレッシュ
-      if current_user.token_expires_at < Time.now
+      # トークンの有効期限が存在し、かつ期限切れの場合にリフレッシュ
+      if current_user.token_expires_at.present? && current_user.token_expires_at < Time.now
         refresh_access_token(current_user)
       end
 
@@ -79,9 +79,8 @@ class UsersController < ApplicationController
 
   # ユーザー情報を取得するメソッド
   def fetch_users_info(access_token, user_ids)
-    # Twitch APIドキュメントに基づき、'id' または 'login' のどちらかを使用
     response = Faraday.get("https://api.twitch.tv/helix/users") do |req|
-      req.params["id"] = user_ids  # 正しく渡すため、カンマ区切りでなく配列として渡す
+      req.params["id"] = user_ids
       req.headers["Authorization"] = "Bearer #{access_token}"
       req.headers["Client-ID"] = ENV["TWITCH_CLIENT_ID"]
     end
