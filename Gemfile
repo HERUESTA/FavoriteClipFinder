@@ -33,12 +33,14 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
+# Twitch関連
 gem "devise", "~> 4.9"
 gem "omniauth", "~> 2.1"
 gem "omniauth-oauth2", "~> 1.7"
 gem "omniauth-twitch", "~> 1.2"
 gem "omniauth-rails_csrf_protection"
 gem "rack-cors", require: "rack/cors"
+gem "faraday", "~> 2.0"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

@@ -28,6 +28,6 @@ Devise.setup do |config|
   # OmniAuth設定
   config.omniauth :twitch, ENV["TWITCH_CLIENT_ID"], ENV["TWITCH_CLIENT_SECRET"], scope: "user:read:email user:read:follows"
 
-  # OmniAuthでGETとPOSTリクエストを許可
+  # OmniAuthでPOSTリクエストを許可
   OmniAuth.config.allowed_request_methods = [ :post ]
 end

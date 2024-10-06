@@ -354,6 +354,7 @@ DEPENDENCIES
   debug
   devise (~> 4.9)
   dotenv-rails
+  faraday (~> 2.0)
   jbuilder
   jsbundling-rails
   omniauth (~> 2.1)
