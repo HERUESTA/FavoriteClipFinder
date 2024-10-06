@@ -32,18 +32,28 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:19.03.12
+        options: --privileged
+        ports:
+          - 127.0.0.1:5432:5432
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
+      - name: Set up Docker Compose
+        run: docker-compose up -d
 
-      - name: Lint code for consistent style
-        run: bin/rubocop -f github
+      - name: Lint code with Rubocop and auto-correct
+        run: docker-compose exec web bin/rubocop --auto-correct
+
+      - name: Shut down Docker Compose
+        run: docker-compose down
 
   test:
     runs-on: ubuntu-latest
