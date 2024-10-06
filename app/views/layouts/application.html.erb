@@ -89,6 +89,25 @@
 <% end %>
   </header>
 
+  <div class="container mx-auto mt-8">
+  <h1 class="text-2xl font-bold mb-4">フォローリスト</h1>
+  
+  <% if @followed_channels.present? %>
+  <ul class="space-y-4">
+    <% @followed_channels.each do |follow| %>
+      <li class="flex items-center space-x-4 bg-gray-800 p-4 rounded-lg">
+        <img src="<%= follow['profile_image_url'] %>" alt="<%= follow['broadcaster_name'] %>" class="w-12 h-12 rounded-full">
+        <div>
+          <p class="text-white font-semibold"><%= follow['broadcaster_name'] %></p>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p class="text-white">フォローリストがありません。</p>
+<% end %>
+</div>
+
   <!-- メインコンテンツ -->
   <main class="container mx-auto mt-8 flex-grow">
     <%= yield %>
