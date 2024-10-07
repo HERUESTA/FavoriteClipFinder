@@ -1,13 +1,8 @@
 class UsersController < ApplicationController
   # TOPページに遷移
   def index
+    # ログインしているかの判定
     if current_user.present?
-      # アクセストークンが存在しない場合は再認証を促す
-      if current_user.access_token.nil?
-        Rails.logger.debug "Access token is missing, redirecting to Twitch authentication."
-        redirect_to user_twitch_omniauth_authorize_path and return
-      end
-
       # token_expires_atがnilでないことを確認してから比較する
       Rails.logger.debug "Current User: #{current_user.inspect}"
 
