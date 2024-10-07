@@ -1,7 +1,6 @@
 class UsersController < ApplicationController
   # TOPページに遷移
   def index
-   
     if current_user.present?
       # token_expires_atがnilでないことを確認してから比較する
 
