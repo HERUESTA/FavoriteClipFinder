@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :recoverable, :rememberable,
-         :omniauthable, omniauth_providers: [ :twitch ]
+         :omniauthable, omniauth_providers: [:twitch]
 
   # uidを元にユーザーを検索または作成し、トークンがない場合や期限が切れている場合は更新
   def self.from_omniauth(auth)
@@ -10,23 +10,26 @@ class User < ApplicationRecord
       u.profile_image_url = auth.info.image
     end
 
-    # トークンがnilまたは期限が切れている場合に新しいトークンを取得して保存
-    if user.access_token.nil? || user.token_expires_at.nil? || user.token_expires_at < Time.now
+    # ユーザーが新規作成された場合、トークン情報を保存
+    if user.new_record? || user.access_token.nil? || user.token_expires_at.nil? || user.token_expires_at < Time.now
       Rails.logger.debug "トークンが無効または期限切れ、再取得を行います。"
       user.access_token = auth.credentials.token
       user.refresh_token = auth.credentials.refresh_token
       user.token_expires_at = Time.at(auth.credentials.expires_at) if auth.credentials.expires
+      user.save! # 新しいユーザーまたは更新された場合に保存
     else
       Rails.logger.debug "有効なアクセストークンが既に存在します。"
     end
 
-    user.save! if user.changed? # 更新があれば保存
     user
   end
 
   # アクセストークンを再取得するロジック
   def refresh_access_token
-    return if refresh_token.blank?
+    if refresh_token.blank?
+      Rails.logger.error "リフレッシュトークンが存在しません。"
+      return
+    end
 
     response = Faraday.post("https://id.twitch.tv/oauth2/token") do |req|
       req.body = {
