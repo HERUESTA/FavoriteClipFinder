@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
+  before_action :check_user_logged_in, only: [:index]
+
   # TOPページに遷移
   def index
-    # ログインしているかの判定
     if current_user.present?
       # アクセストークンがnilの場合、リフレッシュトークンを使用して新しいアクセストークンを取得する
       if current_user.access_token.nil?
@@ -28,6 +29,14 @@ class UsersController < ApplicationController
     else
       Rails.logger.debug "No user is logged in."
       @followed_channels = nil
+    end
+  end
+
+  # ユーザーがログインしているかを確認し、ログインしていない場合はroot_pathにリダイレクト
+  def check_user_logged_in
+    unless current_user
+      Rails.logger.debug "No user is logged in, redirecting to root_path."
+      redirect_to root_path, alert: "ログインが必要です。"
     end
   end
 
