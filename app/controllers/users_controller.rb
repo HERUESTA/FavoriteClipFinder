@@ -42,7 +42,7 @@ class UsersController < ApplicationController
     if response.success?
       token_data = JSON.parse(response.body)
       Rails.logger.debug "New access token: #{token_data["access_token"]}"
-      
+
       user.update(
         access_token: token_data["access_token"],
         refresh_token: token_data["refresh_token"],
@@ -71,7 +71,7 @@ class UsersController < ApplicationController
       if response.success?
         follows = JSON.parse(response.body)["data"]
         Rails.logger.debug "Followed channels raw data: #{follows.inspect}"
-        
+
         user_ids = follows.map { |follow| follow["broadcaster_id"] }
         Rails.logger.debug "Extracted broadcaster IDs: #{user_ids.inspect}"
 
@@ -97,7 +97,7 @@ class UsersController < ApplicationController
   # ユーザー情報を取得するメソッド
   def fetch_users_info(access_token, user_ids)
     Rails.logger.debug "Fetching user info for IDs: #{user_ids.inspect}"
-    
+
     response = Faraday.get("https://api.twitch.tv/helix/users") do |req|
       req.params["id"] = user_ids
       req.headers["Authorization"] = "Bearer #{access_token}"
