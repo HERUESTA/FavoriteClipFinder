@@ -3,23 +3,32 @@ class UsersController < ApplicationController
   def index
     if current_user.present?
       # token_expires_atがnilでないことを確認してから比較する
+      Rails.logger.debug "Current User: #{current_user.inspect}"
 
       if current_user.token_expires_at.present? && current_user.token_expires_at < Time.now
+        Rails.logger.debug "Access token expired, attempting to refresh..."
         refresh_access_token(current_user)
+      else
+        Rails.logger.debug "Access token is still valid."
       end
 
       user_id = current_user.id
 
+      Rails.logger.debug "Fetching followed channels for user ID: #{user_id}"
       Rails.logger.debug "Current access token: #{current_user.access_token}"
+
       @followed_channels = fetch_followed_channels(user_id)
       Rails.logger.debug "Followed channels fetched successfully: #{@followed_channels.inspect}"
     else
+      Rails.logger.debug "No user is logged in."
       @followed_channels = nil
     end
   end
 
   # アクセストークンをリフレッシュするメソッド
   def refresh_access_token(user)
+    Rails.logger.debug "Starting access token refresh for user: #{user.id}"
+
     response = Faraday.post("https://id.twitch.tv/oauth2/token") do |req|
       req.body = {
         client_id: ENV["TWITCH_CLIENT_ID"],
@@ -32,6 +41,8 @@ class UsersController < ApplicationController
 
     if response.success?
       token_data = JSON.parse(response.body)
+      Rails.logger.debug "New access token: #{token_data["access_token"]}"
+      
       user.update(
         access_token: token_data["access_token"],
         refresh_token: token_data["refresh_token"],
@@ -48,7 +59,7 @@ class UsersController < ApplicationController
   def fetch_followed_channels(user_id)
     client_id = ENV["TWITCH_CLIENT_ID"]
     access_token = current_user.access_token
-    Rails.logger.debug "Current access token: #{access_token}"
+    Rails.logger.debug "Current access token for fetching channels: #{access_token}"
 
     begin
       response = Faraday.get("https://api.twitch.tv/helix/channels/followed") do |req|
@@ -59,7 +70,10 @@ class UsersController < ApplicationController
 
       if response.success?
         follows = JSON.parse(response.body)["data"]
+        Rails.logger.debug "Followed channels raw data: #{follows.inspect}"
+        
         user_ids = follows.map { |follow| follow["broadcaster_id"] }
+        Rails.logger.debug "Extracted broadcaster IDs: #{user_ids.inspect}"
 
         users_info = fetch_users_info(access_token, user_ids)
         follows.map do |follow|
@@ -82,6 +96,8 @@ class UsersController < ApplicationController
 
   # ユーザー情報を取得するメソッド
   def fetch_users_info(access_token, user_ids)
+    Rails.logger.debug "Fetching user info for IDs: #{user_ids.inspect}"
+    
     response = Faraday.get("https://api.twitch.tv/helix/users") do |req|
       req.params["id"] = user_ids
       req.headers["Authorization"] = "Bearer #{access_token}"
@@ -89,7 +105,9 @@ class UsersController < ApplicationController
     end
 
     if response.success?
-      JSON.parse(response.body)["data"]
+      user_data = JSON.parse(response.body)["data"]
+      Rails.logger.debug "Fetched user data: #{user_data.inspect}"
+      user_data
     else
       Rails.logger.error "Failed to fetch users info: #{response.body}"
       []
