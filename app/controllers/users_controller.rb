@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   # TOPページに遷移
   def index
-    Rails.logger.debug "Current access token: #{current_user.access_token}"
+   
     if current_user.present?
       # token_expires_atがnilでないことを確認してから比較する
 
@@ -11,6 +11,7 @@ class UsersController < ApplicationController
 
       user_id = current_user.id
 
+      Rails.logger.debug "Current access token: #{current_user.access_token}"
       @followed_channels = fetch_followed_channels(user_id)
       Rails.logger.debug "Followed channels fetched successfully: #{@followed_channels.inspect}"
     else
