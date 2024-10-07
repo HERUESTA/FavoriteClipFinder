@@ -3,10 +3,11 @@ class UsersController < ApplicationController
   def index
     if current_user.present?
       # token_expires_atがnilでないことを確認してから比較する
-      Rails.logger.debug "Current access token: #{current_user.access_token}"
+      
       if current_user.token_expires_at.present? && current_user.token_expires_at < Time.now
         refresh_access_token(current_user)
       end
+      Rails.logger.debug "Current access token: #{current_user.access_token}" docker compose exec web bin/rubocop --auto-correct 
 
       user_id = current_user.id
       @followed_channels = fetch_followed_channels(user_id)
