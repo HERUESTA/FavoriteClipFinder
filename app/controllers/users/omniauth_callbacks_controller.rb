@@ -11,7 +11,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
     if @user.persisted?
       sign_in_and_redirect @user, event: :authentication
-      set_flash_message(:notice, :success, kind: "Twitch") if is_navigational_format?
     else
       session["devise.twitch_data"] = auth.except("extra")
       redirect_to root_path

@@ -14,11 +14,6 @@ class User < ApplicationRecord
       user.access_token = auth.credentials.token
       user.refresh_token = auth.credentials.refresh_token
       user.token_expires_at = Time.at(auth.credentials.expires_at) if auth.credentials.expires
-
-      # アクセストークンが取得できたかをデバッグログで確認
-      Rails.logger.debug "アクセストークン取得成功: #{user.access_token}"
-      Rails.logger.debug "リフレッシュトークン: #{user.refresh_token}"
-      Rails.logger.debug "トークンの有効期限: #{user.token_expires_at}"
     end
   end
 end
