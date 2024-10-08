@@ -42,8 +42,11 @@ class UsersController < ApplicationController
 
   # アクセストークンをリフレッシュするメソッド
   def refresh_access_token(user)
-    Rails.logger.debug "Starting access token refresh for user: #{user.id}"
-
+    if user.refresh_token.nil?
+      Rails.logger.error "Missing refresh token. Redirecting to login."
+      redirect_to root_path, alert: "セッションが切れました。再度ログインしてください。" and return
+    end
+  
     response = Faraday.post("https://id.twitch.tv/oauth2/token") do |req|
       req.body = {
         client_id: ENV["TWITCH_CLIENT_ID"],
@@ -53,11 +56,9 @@ class UsersController < ApplicationController
       }
       req.headers["Content-Type"] = "application/x-www-form-urlencoded"
     end
-
+  
     if response.success?
       token_data = JSON.parse(response.body)
-      Rails.logger.debug "New access token: #{token_data["access_token"]}"
-
       user.update(
         access_token: token_data["access_token"],
         refresh_token: token_data["refresh_token"],
@@ -66,7 +67,7 @@ class UsersController < ApplicationController
       Rails.logger.debug "Access token refreshed successfully!"
     else
       Rails.logger.error "Failed to refresh access token: #{response.body}"
-      redirect_to root_path, alert: "アクセストークンの更新に失敗しました。"
+      redirect_to root_path, alert: "アクセストークンの更新に失敗しました。" and return
     end
   end
 
