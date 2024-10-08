@@ -9,7 +9,6 @@ class UsersController < ApplicationController
 
       user_id = current_user.id
       @followed_channels = fetch_followed_channels(user_id)
-      Rails.logger.debug "Followed channels fetched successfully: #{@followed_channels.inspect}"
     else
       @followed_channels = nil
     end
@@ -34,9 +33,7 @@ class UsersController < ApplicationController
         refresh_token: token_data["refresh_token"],
         token_expires_at: Time.now + token_data["expires_in"].to_i.seconds
       )
-      Rails.logger.debug "Access token refreshed successfully!"
     else
-      Rails.logger.error "Failed to refresh access token: #{response.body}"
       redirect_to root_path, alert: "アクセストークンの更新に失敗しました。"
     end
   end
@@ -45,7 +42,6 @@ class UsersController < ApplicationController
   def fetch_followed_channels(user_id)
     client_id = ENV["TWITCH_CLIENT_ID"]
     access_token = current_user.access_token
-    Rails.logger.debug "Current access token: #{access_token}"
 
     begin
       response = Faraday.get("https://api.twitch.tv/helix/channels/followed") do |req|
@@ -67,12 +63,9 @@ class UsersController < ApplicationController
           }
         end
       else
-        Rails.logger.error "Failed to fetch follows: #{response.body}"
         []
       end
     rescue Faraday::ConnectionFailed => e
-      Rails.logger.error "Twitch APIへの接続に失敗しました: #{e.message}"
-      flash[:alert] = "Twitch APIへの接続に失敗しました。"
       []
     end
   end
@@ -89,7 +82,6 @@ class UsersController < ApplicationController
     if response.success?
       JSON.parse(response.body)["data"]
     else
-      Rails.logger.error "Failed to fetch users info: #{response.body}"
       []
     end
   end
