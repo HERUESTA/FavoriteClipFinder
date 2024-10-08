@@ -6,7 +6,7 @@ class UsersController < ApplicationController
       if current_user.token_expires_at.present? && current_user.token_expires_at < Time.now
         refresh_access_token(current_user)
       end
-  
+
       user_id = current_user.id
       @followed_channels = fetch_followed_channels(user_id)
       Rails.logger.debug "Followed channels fetched successfully: #{@followed_channels.inspect}"
