@@ -2,11 +2,11 @@ class UsersController < ApplicationController
   # TOPページに遷移
   def index
     if current_user.present?
-      # トークンが期限切れの場合はリフレッシュ
-      if current_user.token_expires_at < Time.now
+      # トークンの有効期限が存在し、期限が切れている場合はリフレッシュ
+      if current_user.token_expires_at.present? && current_user.token_expires_at < Time.now
         refresh_access_token(current_user)
       end
-
+  
       user_id = current_user.id
       @followed_channels = fetch_followed_channels(user_id)
       Rails.logger.debug "Followed channels fetched successfully: #{@followed_channels.inspect}"
