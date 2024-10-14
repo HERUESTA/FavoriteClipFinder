@@ -6,3 +6,6 @@ import { application } from "./application"
 
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
+
+import TwitchClipsLoaderController from "./twitch_clips_loader_controller"
+application.register("twitch-clips-loader", TwitchClipsLoaderController)
