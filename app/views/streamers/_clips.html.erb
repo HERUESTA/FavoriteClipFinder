@@ -1,0 +1,32 @@
+<%= turbo_frame_tag "clips" do %>
+  <% if clips.any? %>
+    <div data-controller="twitch-clips-loader">
+      <!-- ローディング中の表示 -->
+      <div data-twitch-clips-loader-target="loading">
+        <span class="loading loading-ring loading-lg"></span>
+        <p>ローディング中,,,,</p>
+      </div>
+
+      <!-- クリップコンテナ（最初は非表示） -->
+      <div data-twitch-clips-loader-target="container" id="clips-container" style="opacity: 0; transition: opacity 2s ease-in-out;">
+        <% clips.each do |clip| %>
+          <div class="clip-container">
+            <p>クリップタイトル: <%= clip['title'] %> - 配信者: <%= clip['broadcaster_name'] %></p>
+            <iframe
+              data-twitch-clips-loader-target="iframe"
+              class="twitch-clip"
+              src="https://clips.twitch.tv/embed?clip=<%= clip['id'] %>&parent=<%= ENV['TWITCH_PARENT_URL'] %>"  
+              height="300"
+              width="400"
+              frameborder="0"
+              scrolling="no"
+              allowfullscreen="true">
+            </iframe>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <p>クリップが見つかりませんでした。</p>
+  <% end %>
+<% end %>
