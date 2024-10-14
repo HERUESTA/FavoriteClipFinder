@@ -20,10 +20,10 @@ class StreamersController < ApplicationController
       else
         respond_to do |format|
           format.html do
-            render partial: "streamers/clips", locals: { clips: [], }
+            render partial: "streamers/clips", locals: { clips: [] }
           end
           format.turbo_stream do
-            render turbo_stream: turbo_stream.replace("main-content", partial: "streamers/clips", locals: { clips: []})
+            render turbo_stream: turbo_stream.replace("main-content", partial: "streamers/clips", locals: { clips: [] })
           end
         end
       end
