@@ -12,7 +12,7 @@
       <div data-twitch-clips-loader-target="container" id="clips-container" style="opacity: 0; transition: opacity 2s ease-in-out;">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <% clips.each do |clip| %>
-            <div class="clip-container p-4 relative rounded-lg border-b-4 border-gray-200"> <!-- ボーダーを追加 -->
+            <div class="clip-container p-4 relative rounded-lg border-b-4 border-gray-200 flex flex-col justify-between"> <!-- Flexboxを追加してコンテンツを上下で固定 -->
               <!-- 動画部分 -->
               <figure class="relative">
                 <iframe
@@ -57,24 +57,13 @@
                 </div>
               </div>
 
-              <!-- いいねボタンを動画の下に表示 -->
-              <div class="flex justify-end mt-2">
-                <button class="btn btn-primary bg-purple-600 hover:bg-purple-700 text-white border-none flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="w-5 h-5 mr-2"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path
-                      d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                    ></path>
+              <!-- 保存ボタン -->
+              <div class="flex justify-end mt-2"> <!-- ボタンを1つだけ横並びに表示 -->
+                <button class="btn btn-primary bg-purple-600 hover:bg-purple-700 text-white border-none flex items-center px-3 py-1 rounded transition-colors duration-200"> <!-- btn btn-primary クラスを追加 -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                   </svg>
-                  <span>いいね</span>
+                  <span>保存</span>
                 </button>
               </div>
             </div>
