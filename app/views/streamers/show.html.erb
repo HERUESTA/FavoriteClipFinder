@@ -1,5 +1,3 @@
-<!-- app/views/streamers/show.html.erb -->
-<div id="main-content">
-<%= render partial: "streamers/clips", locals: { clips: @clips, streamer_name: @streamer_info[:name], next_cursor: @next_cursor } %>
+  <!-- クリップのレンダリング -->
+  <%= render partial: "streamers/clips", locals: { clips: @clips, streamer_name: @streamer_info[:name], next_cursor: @next_cursor } %>
 </div>
-

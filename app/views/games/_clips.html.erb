@@ -1,0 +1,52 @@
+<%= turbo_frame_tag "clips" do %>
+  <% if clips.any? %>
+    <!-- ゲームアイコンと名前の表示 -->
+    <% if @game_info.present? %>
+      <div class="flex items-center mb-4">
+        <img
+          src="<%= @game_info[:box_art_url] %>"
+          alt="<%= @game_info[:name] %>"
+          class="w-16 h-16 object-cover rounded mr-4"
+        />
+        <h1 class="text-2xl font-bold text-gray-800">
+          <%= @game_info[:name] %>
+        </h1>
+      </div>
+    <% end %>
+
+    <!-- クリップ一覧 -->
+    <div id="clips-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% clips.each do |clip| %>
+        <div class="relative">
+          <!-- 各クリップをレンダリング -->
+          <%= render partial: "games/clip", locals: { clip: clip } %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- ページネーションリンク -->
+    <div class="pagination-links mt-6 flex justify-center" data-controller="pagination-scroll" data-pagination-scroll-target="pagination">
+      <%= paginate @clips %>
+    </div>
+  <% else %>
+    <!-- エラーメッセージ表示 -->
+    <div class="bg-gray-800 border-l-4 border-red-500 p-4 my-4 rounded-r-md shadow-md">
+      <div class="flex items-start">
+        <!-- アイコン -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-500 mr-3 flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01m-6.938-4a9.003 9.003 0 1113.856 0A9.003 9.003 0 015.062 12z" />
+        </svg>
+        <div class="flex-grow">
+          <p class="font-semibold text-red-400">エラーが発生しました</p>
+          <div class="mt-3">
+            <p class="text-sm text-gray-400">以下をお試しください：</p>
+            <ul class="list-disc list-inside text-sm text-gray-400 mt-1 space-y-1">
+              <li>ゲームIDを確認する</li>
+              <li>別のゲームIDを試す</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>

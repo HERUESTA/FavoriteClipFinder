@@ -1,0 +1,4 @@
+<!-- app/views/games/show.html.erb -->
+<div id="main-content">   
+<%= render partial: "games/clips", locals: { clips: @clips, game_name: @game_info[:name], next_cursor: @next_cursor } %>
+</div>

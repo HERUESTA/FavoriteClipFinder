@@ -5,11 +5,11 @@ Rails.application.routes.draw do
   # root_path
   root "users#index"
 
-  # 静的なルートを優先
-  get "streamers/show", to: "streamers#show", as: "streamer_show"
+  # 配信者ID検索用ルート
+  get "streamers/show", to: "streamers#show"
 
-  # 動的なルートは下に定義
-  get "streamers/:name", to: "streamers#show", as: "streamer"
+  # ゲームID検索用ルート
+  get "games/show", to: "games#show"
 
 
   # CI/CD用route
