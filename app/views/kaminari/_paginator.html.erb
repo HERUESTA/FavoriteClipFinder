@@ -1,0 +1,14 @@
+<div class="join text-xs mt-8 mx-auto flex justify-center">
+  <%= paginator.render do %>
+    <nav class="pagination" role="navigation" aria-label="pager">
+
+      <% each_page do |page| %>
+        <%# 表示すべきページ番号の場合true %>
+        <% if page.display_tag? %>
+          <%# page_tagメソッドでそのページへのリンクを生成 %>
+          <%= page_tag page %>
+        <% end %>
+      <% end %>
+    </nav>
+  <% end %>
+</div>

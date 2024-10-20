@@ -1,85 +1,29 @@
 <%= turbo_frame_tag "clips" do %>
-
   <% if clips.any? %>
-    <div data-controller="twitch-clips-loader" class="w-full">
-      <!-- ローディング中の表示 -->
-      <div data-twitch-clips-loader-target="loading" class="flex justify-center items-center">
-        <span class="loading loading-ring loading-lg"></span>
-        <p class="ml-4">ローディング中...</p>
-      </div>
 
-      <!-- クリップコンテナ（最初は非表示） -->
-      <div data-twitch-clips-loader-target="container" id="clips-container" style="opacity: 0; transition: opacity 2s ease-in-out;">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <% clips.each do |clip| %>
-            <div class="clip-container p-4 relative rounded-lg border-b-4 border-gray-200 flex flex-col justify-between"> <!-- Flexboxを追加してコンテンツを上下で固定 -->
-              <!-- 動画部分 -->
-              <figure class="relative">
-                <iframe
-                  data-twitch-clips-loader-target="iframe"
-                  src="https://clips.twitch.tv/embed?clip=<%= clip['id'] %>&parent=<%= ENV['TWITCH_PARENT_URL'] %>"
-                  scrolling="no"
-                  allowfullscreen="true"
-                  class="w-full h-auto"
-                  style="max-width: 100%; height: 300px;"
-                ></iframe>
-              </figure>
-
-              <!-- タイトルや配信者名、ゲーム名を配信者アイコンの横に表示 -->
-              <div class="py-2 flex items-start">
-                <!-- 配信者アイコン -->
-                <img
-                  src="<%= clip['broadcaster_profile_image'] %>"
-                  alt="<%= clip['broadcaster_name'] %>"
-                  class="w-10 h-10 rounded-full object-cover mr-4"
-                />
-
-                <div class="pl-4">
-                  <!-- クリップタイトル -->
-                  <h2 class="text-lg font-bold mb-1">
-                    <%= clip['title'] %>
-                  </h2>
-
-                  <!-- 配信者名 -->
-                  <p class="text-sm text-gray-600 mb-1">
-                    <%= clip['broadcaster_name'] %>
-                  </p>
-
-                  <!-- ゲーム名 -->
-                  <p class="text-sm text-gray-500">
-                    <%= clip['game_name'] %>
-                  </p>
-
-                  <!-- クリップ作成者名 -->
-                  <p class="text-sm text-gray-600">
-                    作成者: <%= clip['creator_name'] %>
-                  </p>
-                </div>
-              </div>
-
-              <!-- 保存ボタン -->
-              <div class="flex justify-end mt-2"> <!-- ボタンを1つだけ横並びに表示 -->
-                <button class="btn btn-primary bg-purple-600 hover:bg-purple-700 text-white border-none flex items-center px-3 py-1 rounded transition-colors duration-200"> <!-- btn btn-primary クラスを追加 -->
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                  </svg>
-                  <span>保存</span>
-                </button>
-              </div>
-            </div>
-          <% end %>
+    <!-- クリップ一覧 -->
+    <div id="clips-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% clips.each do |clip| %>
+        <div class="relative">
+          <!-- 各クリップをレンダリング -->
+          <%= render partial: "streamers/clip", locals: { clip: clip } %>
         </div>
-      </div>
+      <% end %>
     </div>
+
+    <!-- ページネーションリンク -->
+    <div class="pagination-links mt-6 flex justify-center" data-controller="pagination-scroll" data-pagination-scroll-target="pagination">
+      <%= paginate @clips %>
+    </div>
+
   <% else %>
-    <!-- クリップが存在しない場合に表示するエラーメッセージ -->
+    <!-- エラーメッセージ表示 -->
     <div class="bg-gray-800 border-l-4 border-red-500 p-4 my-4 rounded-r-md shadow-md">
       <div class="flex items-start">
         <!-- アイコン -->
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-500 mr-3 flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01m-6.938-4a9.003 9.003 0 1113.856 0A9.003 9.003 0 015.062 12z" />
         </svg>
-        
         <div class="flex-grow">
           <p class="font-semibold text-red-400">エラーが発生しました</p>
           <div class="mt-3">
@@ -93,5 +37,4 @@
       </div>
     </div>
   <% end %>
-
 <% end %>

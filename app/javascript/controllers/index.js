@@ -4,8 +4,11 @@
 
 import { application } from "./application"
 
+import ClipLoaderController from "./clip_loader_controller"
+application.register("clip-loader", ClipLoaderController)
+
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
 
-import TwitchClipsLoaderController from "./twitch_clips_loader_controller"
-application.register("twitch-clips-loader", TwitchClipsLoaderController)
+import PaginationScrollController from "./pagination_scroll_controller"
+application.register("pagination-scroll", PaginationScrollController)
