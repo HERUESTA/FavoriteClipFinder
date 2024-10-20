@@ -7,6 +7,9 @@ import { application } from "./application"
 import ClipLoaderController from "./clip_loader_controller"
 application.register("clip-loader", ClipLoaderController)
 
+import GameSearchController from "./game_search_controller"
+application.register("game-search", GameSearchController)
+
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
 

@@ -1,7 +1,7 @@
 class StreamersController < ApplicationController
   # 配信者のクリップを表示するアクション
   def show
-    streamer_name = params[:name] # params[:name]を使用
+    streamer_name = params[:name]
 
     # params[:name]が数値かどうかを判定し、数値ならそのままIDとして使用
     if numeric?(streamer_name)
@@ -15,18 +15,15 @@ class StreamersController < ApplicationController
       clips, pagination = fetch_clips(@streamer_info[:id], cursor)
 
       if clips.any?
-        @next_cursor = pagination["cursor"] # 次のページのカーソル
+        @next_cursor = pagination["cursor"]
 
         # @clips に対して配列ベースのページネーションを設定
-        @clips = Kaminari.paginate_array(clips).page(params[:page]).per(12) # 1ページに12個のクリップを表示
+        @clips = Kaminari.paginate_array(clips).page(params[:page]).per(12)
         @total_pages = @clips.total_pages
 
-        # @next_cursor の内容をログに出力して確認
-        Rails.logger.debug "Next Cursor: #{@next_cursor.inspect}"
-
         respond_to do |format|
-          format.html # HTMLリクエストの場合、ビューを通常通りレンダリング
-          format.turbo_stream do # Turbo Streamリクエストの場合、部分的に更新
+          format.html
+          format.turbo_stream do
             render turbo_stream: turbo_stream.append("clips", partial: "streamers/clips", locals: { clips: @clips, next_cursor: @next_cursor })
           end
         end
