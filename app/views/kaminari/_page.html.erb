@@ -1,0 +1,9 @@
+<div class="join">
+    <%= link_to page, url,
+      class: "join-item btn btn-secondly #{'bg-purple-600 text-white' if page.current?} #{'bg-white text-black' unless page.current?} border-0",
+      type: "radio",
+      name: "options",
+      remote: true,
+      rel: page.rel,
+      checked: ('checked' if page.current?) %>
+</div>

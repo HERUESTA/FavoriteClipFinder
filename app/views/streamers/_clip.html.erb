@@ -1,0 +1,43 @@
+<!-- 単一のクリップカード -->
+<div class="clip-container p-4 relative rounded-lg border-b-4 border-gray-200 flex flex-col justify-between">
+  <!-- 動画部分 -->
+  <figure class="relative">
+  <iframe
+    src="https://clips.twitch.tv/embed?clip=<%= clip['id'] %>&parent=<%= ENV['TWITCH_PARENT_URL'] %>"
+    scrolling="no"
+    allowfullscreen="true"
+    class="w-full h-auto"
+    style="max-width: 100%; height: 300px;"
+  ></iframe>
+</figure>
+
+<div class="pl-4 w-full max-w-full">
+  <!-- クリップタイトル -->
+  <h2 class="text-lg font-bold mb-1 truncate">
+    <%= clip['title'] %>
+  </h2>
+  <!-- 配信者名 -->
+  <p class="text-sm text-gray-600 mb-1">
+    <%= clip['broadcaster_name'] %>
+  </p>
+  <!-- ゲーム名 -->
+  <p class="text-sm text-gray-500">
+    <%= clip['game_name'] %>
+  </p>
+  <!-- クリップ作成者名 -->
+  <p class="text-sm text-gray-600">
+    作成者: <%= clip['creator_name'] %>
+  </p>
+</div>
+
+
+  <!-- 保存ボタン -->
+  <div class="flex justify-end mt-2">
+    <button class="btn btn-primary bg-purple-600 hover:bg-purple-700 text-white border-none flex items-center px-3 py-1 rounded transition-colors duration-200">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+      </svg>
+      <span>保存</span>
+    </button>
+  </div>
+</div>

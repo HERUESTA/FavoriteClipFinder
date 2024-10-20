@@ -80,7 +80,7 @@ GEM
     bindex (0.8.1)
     bootsnap (1.18.4)
       msgpack (~> 1.2)
-    brakeman (6.2.1)
+    brakeman (6.2.2)
       racc
     builder (3.3.0)
     capybara (3.40.0)
@@ -136,6 +136,18 @@ GEM
     json (2.7.2)
     jwt (2.9.3)
       base64
+    kaminari (1.2.2)
+      activesupport (>= 4.1.0)
+      kaminari-actionview (= 1.2.2)
+      kaminari-activerecord (= 1.2.2)
+      kaminari-core (= 1.2.2)
+    kaminari-actionview (1.2.2)
+      actionview
+      kaminari-core (= 1.2.2)
+    kaminari-activerecord (1.2.2)
+      activerecord
+      kaminari-core (= 1.2.2)
+    kaminari-core (1.2.2)
     language_server-protocol (3.17.0.3)
     logger (1.6.1)
     loofah (2.22.0)
@@ -357,6 +369,7 @@ DEPENDENCIES
   faraday (~> 2.0)
   jbuilder
   jsbundling-rails
+  kaminari
   omniauth (~> 2.1)
   omniauth-oauth2 (~> 1.7)
   omniauth-rails_csrf_protection

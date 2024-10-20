@@ -5,10 +5,12 @@ Rails.application.routes.draw do
   # root_path
   root "users#index"
 
-   # 'name' をクエリパラメータとして受け取るルートを追加
-   get "streamers/show", to: "streamers#show"
-   # APIでストリーマーのデータを取得するためのルート
-   get "streamers/:name", to: "streamers#show"
+  # 静的なルートを優先
+  get "streamers/show", to: "streamers#show", as: "streamer_show"
+
+  # 動的なルートは下に定義
+  get "streamers/:name", to: "streamers#show", as: "streamer"
+
 
   # CI/CD用route
   get "up" => "rails/health#show", as: :rails_health_check
