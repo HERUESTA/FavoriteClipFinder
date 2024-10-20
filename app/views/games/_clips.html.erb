@@ -3,16 +3,21 @@
     <!-- ゲームアイコンと名前の表示 -->
     <% if @game_info.present? %>
       <div class="flex items-center mb-4">
+        <!-- ゲームアイコン -->
         <img
           src="<%= @game_info[:box_art_url] %>"
           alt="<%= @game_info[:name] %>"
-          class="w-16 h-16 object-cover rounded mr-4"
+          class="w-52 h-64 object-cover rounded mr-12"
         />
-        <h1 class="text-2xl font-bold text-gray-800">
+        <!-- ゲーム名 -->
+        <h1 class="text-[50px] font-extrabold text-gray-800" style="margin-top: -20px;"> <!-- ゲーム名を上に移動 -->
           <%= @game_info[:name] %>
         </h1>
       </div>
     <% end %>
+
+
+
 
     <!-- クリップ一覧 -->
     <div id="clips-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -28,6 +33,7 @@
     <div class="pagination-links mt-6 flex justify-center" data-controller="pagination-scroll" data-pagination-scroll-target="pagination">
       <%= paginate @clips %>
     </div>
+
   <% else %>
     <!-- エラーメッセージ表示 -->
     <div class="bg-gray-800 border-l-4 border-red-500 p-4 my-4 rounded-r-md shadow-md">

@@ -11,34 +11,33 @@
     ></iframe>
   </figure>
 
-  <!-- クリップ情報 -->
   <div class="pl-4 w-full max-w-full">
-    <div class="flex items-start">
-      <!-- 配信者アイコン -->
-      <img
-        src="<%= clip['broadcaster_profile_image'] %>"
-        alt="<%= clip['broadcaster_name'] %>"
-        class="w-10 h-10 rounded-full object-cover mr-4"
-        loading="lazy"
-      />
-      <div>
-        <!-- クリップタイトル -->
-        <h2 class="text-lg font-bold mb-1 truncate">
-          <%= clip['title'] %>
-        </h2>
-        <!-- 配信者名 -->
-        <p class="text-sm text-gray-600 mb-1">
-          <%= clip['broadcaster_name'] %>
-        </p>
-        <!-- ゲーム名 -->
-        <p class="text-sm text-gray-500">
-          <%= clip['game_name'] %>
-        </p>
-        <!-- クリップ作成者名 -->
-        <p class="text-sm text-gray-600">
-          作成者: <%= clip['creator_name'] %>
-        </p>
-      </div>
+  <!-- クリップタイトル -->
+  <h2 class="text-lg font-bold mb-1">
+    <%= clip['title'] %>
+  </h2>
+
+  <div class="flex items-start">
+    <!-- 配信者アイコン -->
+    <img
+      src="<%= clip['broadcaster_profile_image'] %>"
+      alt="<%= clip['broadcaster_name'] %>"
+      class="w-10 h-10 rounded-full object-cover mr-4"
+      loading="lazy"
+    />
+    <div>
+      <!-- 配信者名 -->
+      <p class="text-sm text-gray-600 mb-1">
+        <%= clip['broadcaster_name'] %>
+      </p>
+      <!-- ゲーム名 -->
+      <p class="text-sm text-gray-500">
+        <%= clip['game_name'] %>
+      </p>
+      <!-- クリップ作成者名 -->
+      <p class="text-sm text-gray-600">
+        作成者: <%= clip['creator_name'] %>
+      </p>
     </div>
   </div>
 
@@ -51,4 +50,5 @@
       <span>保存</span>
     </button>
   </div>
+</div>
 </div>

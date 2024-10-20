@@ -17,9 +17,8 @@ class GamesController < ApplicationController
     if game_id
       # ゲームIDからボックスアートURLを取得
       box_art_url = fetch_game_box_art(game_id)
-      @game_info = { id: game_id, box_art_url: box_art_url }
-
-      Rails.logger.info "Game Info: #{@game_info.inspect}"
+      # ゲームIDと元のゲーム名の両方を保持
+      @game_info = { id: game_id, name: game_name, box_art_url: box_art_url }
 
       cursor = params[:cursor] # ページネーション用のカーソル
       clips, pagination = fetch_clips(@game_info[:id], cursor)
@@ -94,9 +93,14 @@ class GamesController < ApplicationController
     end
   end
 
-  # ゲームIDでクリップを取得するメソッド（ページネーション対応）
-  def fetch_clips(game_id, cursor = nil)
-    access_token = ENV["TWITCH_ACCESS_TOKEN"]
+# ゲームIDでクリップを取得するメソッド（ページネーション対応）
+def fetch_clips(game_id, cursor = nil)
+  access_token = ENV["TWITCH_ACCESS_TOKEN"]
+  all_clips = []
+  pagination = {}
+
+  # リクエストを複数回実行し、60個以上のクリップが取得できるまで繰り返す
+  while all_clips.size < 50
     params = {
       game_id: game_id,
       first: 80, # 一度に取得するクリップ数
@@ -104,7 +108,7 @@ class GamesController < ApplicationController
     }.compact
 
     response = send_twitch_request("clips", params, access_token)
-    return [ [], {} ] unless response.success?
+    return [ all_clips, pagination ] unless response.success?
 
     data = JSON.parse(response.body)
     clips = data["data"]
@@ -125,8 +129,18 @@ class GamesController < ApplicationController
       clip["broadcaster_profile_image"] = broadcaster_info[clip["broadcaster_id"]][:profile_image_url]
     end
 
-    [ clips, pagination ]
+    # 取得したクリップを all_clips に追加
+    all_clips.concat(clips)
+
+    # 次のページが無ければループを終了
+    break if pagination["cursor"].nil?
+
+    cursor = pagination["cursor"]
   end
+
+  [ all_clips, pagination ]
+end
+
 
   # 複数の配信者IDから名前とアイコンを取得するメソッド
   def fetch_broadcaster_info(broadcaster_ids)
@@ -135,22 +149,30 @@ class GamesController < ApplicationController
     access_token = ENV["TWITCH_ACCESS_TOKEN"]
     broadcaster_info = {}
 
-    # Twitch APIは一度に最大100件のIDを受け取れる
     broadcaster_ids.each_slice(100) do |ids|
-      response = send_twitch_request("users", { id: ids }, access_token)
-      next unless response.success?
-
-      data = JSON.parse(response.body)
-      data["data"].each do |broadcaster|
-        broadcaster_info[broadcaster["id"]] = {
-          name: broadcaster["display_name"],
-          profile_image_url: broadcaster["profile_image_url"]
-        }
+      cache_key = "broadcaster_info_#{ids.join('_')}"
+      fetched_info = Rails.cache.fetch(cache_key, expires_in: 12.hours) do
+        response = send_twitch_request("users", { id: ids }, access_token)
+        if response.success?
+          data = JSON.parse(response.body)
+          info = {}
+          data["data"].each do |broadcaster|
+            info[broadcaster["id"]] = {
+              name: broadcaster["display_name"],
+              profile_image_url: broadcaster["profile_image_url"]
+            }
+          end
+          info
+        else
+          {}
+        end
       end
+      broadcaster_info.merge!(fetched_info)
     end
 
     broadcaster_info
   end
+
 
   # APIリクエストを送信する汎用メソッド
   def send_twitch_request(endpoint, params, access_token)

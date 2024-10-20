@@ -1,33 +1,33 @@
+// app/javascript/controllers/game_search_controller.js
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["input"]
-
-  connect() {
-    this.modal = document.getElementById("alert-modal"); // モーダルを取得
-    this.closeButton = document.getElementById("close-modal"); // モーダルの閉じるボタンを取得
-
-    // モーダルの閉じるボタンにクリックイベントを追加
-    this.closeButton.addEventListener("click", () => {
-      this.closeModal();
-    });
-  }
+  static targets = ["input", "clearButton"]
 
   submit(event) {
-    // 入力が空かどうかをチェック
-    if (this.inputTarget.value.trim() === "") {
-      event.preventDefault(); // フォーム送信を防止
-      this.showModal(); // モーダルを表示
+    const searchQuery = this.inputTarget.value.trim();
+    
+    if (searchQuery === "") {
+      // 入力が空の場合は、フォームの送信をキャンセル
+      event.preventDefault();
+      console.log("検索クエリが空のため、検索をキャンセルしました");
     }
   }
 
-  showModal() {
-    // モーダルを表示するためのクラスを追加
-    this.modal.classList.add("modal-open");
-  }
+  // 入力があったときにクリアボタンを表示する
+  connect() {
+    this.inputTarget.addEventListener("input", () => {
+      if (this.inputTarget.value.trim() === "") {
+        this.clearButtonTarget.classList.add("hidden");
+      } else {
+        this.clearButtonTarget.classList.remove("hidden");
+      }
+    });
 
-  closeModal() {
-    // モーダルを閉じるためのクラスを削除
-    this.modal.classList.remove("modal-open");
+    // クリアボタンを押したときに検索ボックスをクリア
+    this.clearButtonTarget.addEventListener("click", () => {
+      this.inputTarget.value = "";
+      this.clearButtonTarget.classList.add("hidden");
+    });
   }
 }
