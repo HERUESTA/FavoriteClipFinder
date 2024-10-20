@@ -83,7 +83,7 @@ class StreamersController < ApplicationController
     }.compact
 
     response = send_twitch_request("clips", params, access_token)
-    return [[], {}] unless response.success?
+    return [ [], {} ] unless response.success?
 
     data = JSON.parse(response.body)
     clips = data["data"]
@@ -103,7 +103,7 @@ class StreamersController < ApplicationController
       clip["broadcaster_profile_image"] = @streamer_info[:profile_image_url]
     end
 
-    [clips, pagination]
+    [ clips, pagination ]
   end
 
   # 複数のゲームIDからゲーム名を取得するメソッド

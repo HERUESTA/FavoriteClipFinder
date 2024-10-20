@@ -10,7 +10,7 @@ Rails.application.routes.draw do
 
   # 動的なルートは下に定義
   get "streamers/:name", to: "streamers#show", as: "streamer"
-  
+
 
   # CI/CD用route
   get "up" => "rails/health#show", as: :rails_health_check
