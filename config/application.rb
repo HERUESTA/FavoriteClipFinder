@@ -16,6 +16,9 @@ module TwichClipFinder
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore
 
+    # Active JobのキューアダプターをSidekiqに設定
+    config.active_job.queue_adapter = :sidekiq
+
     config.autoload_lib(ignore: %w[assets tasks])
   end
 end
