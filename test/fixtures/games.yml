@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  box_art_url: MyString
+
+two:
+  name: MyString
+  box_art_url: MyString

@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  clip_id: MyString
+  streamer: one
+  game: one
+  language: MyString
+  title: MyString
+  clip_created_at: 2024-10-27 16:31:25
+  thumbnail_url: MyString
+  duration: 1
+  view_count: 1
+
+two:
+  clip_id: MyString
+  streamer: two
+  game: two
+  language: MyString
+  title: MyString
+  clip_created_at: 2024-10-27 16:31:25
+  thumbnail_url: MyString
+  duration: 1
+  view_count: 1

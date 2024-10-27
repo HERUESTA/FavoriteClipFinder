@@ -1,4 +1,14 @@
 class User < ApplicationRecord
+  # アソシエーション
+  has_many :playlists, foreign_key: "user_uid", primary_key: "uid", dependent: :destroy
+  has_many :favorite_clips, foreign_key: "user_uid", primary_key: "uid", dependent: :destroy
+  has_many :favorited_clips, through: :favorite_clips, source: :clip
+
+  # バリデーション
+  validates :email, presence: true, uniqueness: true
+  validates :encrypted_password, presence: true
+
+
   devise :database_authenticatable, :registerable, :recoverable, :rememberable,
          :omniauthable, omniauth_providers: [ :twitch ]
 
