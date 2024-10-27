@@ -1,0 +1,13 @@
+# config/sidekiq.yml
+
+:concurrency: 5
+
+:queues:
+  - default
+  - critical
+
+:schedule:
+  fetch_twitch_clips:
+    cron: "0 * * * *"   # 毎時0分に実行
+    class: FetchTwitchClipsJob
+    queue: default
