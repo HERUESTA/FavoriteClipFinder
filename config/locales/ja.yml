@@ -1,5 +1,14 @@
 ja:
-  views:
-    pagination:
-      previous: "前へ"
-      next: "次へ"
+  activerecord:
+    errors:
+      models:
+        clip:
+          attributes:
+            streamer:
+              required: "ストリーマーは必須です。"
+            game:
+              required: "ゲームは必須です。"
+          required: "クリップは %{attribute} が必要です。"
+      messages:
+        required: "を入力してください。"
+
