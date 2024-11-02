@@ -1,8 +1,8 @@
-class Streamer < ApplicationRecord
-  # アソシエーション
-  has_many :clips, foreign_key: "streamer_id", dependent: :destroy
+# app/models/streamer.rb
 
-  # バリデーション
-  validates :login, presence: true, uniqueness: true
-  validates :display_name, presence: true
+class Streamer < ApplicationRecord
+  has_many :clips, foreign_key: :streamer_id, primary_key: :streamer_id
+
+  validates :streamer_id, presence: true, uniqueness: true, format: { with: /\A\d+\z/, message: "must be numerical" }
+  validates :streamer_name, presence: true
 end

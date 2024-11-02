@@ -1,10 +1,4 @@
-# config/sidekiq.yml
-
-:concurrency: 5
-
-:queues:
-  - default
-  - critical
+# config/sidekiq_schedule.yml
 
 scheduler:
   schedule:

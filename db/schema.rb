@@ -10,13 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_27_082428) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_02_092748) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "clips", force: :cascade do |t|
     t.string "clip_id", null: false
-    t.bigint "streamer_id", null: false
+    t.string "streamer_id", null: false
     t.bigint "game_id", null: false
     t.string "title"
     t.datetime "clip_created_at", precision: nil
@@ -25,6 +25,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_27_082428) do
     t.integer "view_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "language"
     t.index ["clip_created_at"], name: "index_clips_on_clip_created_at"
     t.index ["clip_id"], name: "index_clips_on_clip_id", unique: true
     t.index ["game_id", "clip_created_at"], name: "index_clips_on_game_id_and_clip_created_at"
@@ -37,6 +38,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_27_082428) do
     t.string "box_art_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "game_id"
+    t.index ["game_id"], name: "index_games_on_game_id", unique: true
     t.index ["name"], name: "index_games_on_name", unique: true
   end
 
@@ -68,5 +71,4 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_27_082428) do
   end
 
   add_foreign_key "clips", "games"
-  add_foreign_key "clips", "streamers"
 end
