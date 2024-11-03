@@ -1,4 +1,5 @@
-<!-- app/views/games/show.html.erb -->
-<div id="main-content">   
-<%= render partial: "games/clips", locals: { clips: @clips, game_name: @game_info[:name], next_cursor: @next_cursor } %>
-</div>
+<!-- app/views/streamers/show.html.erb -->
+
+<h1><%= @streamer_info[:name] %> のクリップ一覧</h1>
+
+<%= render partial: "streamers/clips", locals: { clips: @clips, streamer_info: @streamer_info, next_cursor: @next_cursor } %>

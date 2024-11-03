@@ -1,8 +1,8 @@
-# app/models/streamer.rb
-
 class Streamer < ApplicationRecord
-  has_many :clips, foreign_key: :streamer_id, primary_key: :streamer_id
+  has_many :clips, dependent: :destroy
 
-  validates :streamer_id, presence: true, uniqueness: true, format: { with: /\A\d+\z/, message: "must be numerical" }
-  validates :streamer_name, presence: true
+  validates :streamer_id, presence: true, uniqueness: true
+  validates :streamer_name, presence: true, uniqueness: true
+  validates :display_name, presence: true, uniqueness: true
+  validates :profile_image_url, presence: true
 end

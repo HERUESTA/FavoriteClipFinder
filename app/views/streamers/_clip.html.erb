@@ -1,9 +1,11 @@
+<!-- app/views/streamers/_clip.html.erb -->
+
 <!-- 単一のクリップカード -->
 <div class="clip-container p-4 relative rounded-lg border-b-4 border-gray-200 flex flex-col justify-between">
   <!-- 動画部分 -->
   <figure class="relative">
     <iframe
-      src="https://clips.twitch.tv/embed?clip=<%= clip['id'] %>&parent=<%= ENV['TWITCH_PARENT_URL'] %>"
+      src="https://clips.twitch.tv/embed?clip=<%= clip.clip_id %>&parent=<%= ENV['TWITCH_PARENT_URL'] %>"
       scrolling="no"
       allowfullscreen="true"
       class="w-full h-auto"
@@ -14,29 +16,29 @@
   <div class="pl-4 w-full max-w-full">
     <!-- クリップタイトル -->
     <h2 class="text-lg font-bold mb-1">
-      <%= clip['title'] %>
+      <%= clip.title %>
     </h2>
 
     <div class="flex items-start">
       <!-- 配信者アイコン -->
       <img
-        src="<%= clip['broadcaster_profile_image'] %>"
-        alt="<%= clip['broadcaster_name'] %>"
+        src="<%= clip.streamer.profile_image_url %>"
+        alt="<%= clip.streamer.streamer_name %>"
         class="w-10 h-10 rounded-full object-cover mr-4"
         loading="lazy"
       />
       <div>
         <!-- 配信者名 -->
         <p class="text-sm text-gray-600 mb-1">
-          <%= clip['broadcaster_name'] %>
+          <%= clip.streamer.streamer_name %>
         </p>
         <!-- ゲーム名 -->
         <p class="text-sm text-gray-500">
-          <%= clip['game_name'] %>
+          <%= clip.game.name %>
         </p>
         <!-- クリップ作成者名 -->
         <p class="text-sm text-gray-600">
-          作成者: <%= clip['creator_name'] %>
+          作成者: <%= clip.creator_name %>
         </p>
       </div>
     </div>
