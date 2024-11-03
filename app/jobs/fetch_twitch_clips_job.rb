@@ -8,6 +8,32 @@ class FetchTwitchClipsJob < ApplicationJob
     twitch_client = TwitchClient.new
 
     streamer_twitch_ids.each do |streamer_twitch_id|
+      # 1. 配信者の詳細情報を取得して更新（profile_image_url など）
+      streamer_info = twitch_client.fetch_streamer_info(streamer_twitch_id)
+
+      if streamer_info
+        streamer = Streamer.find_by(streamer_id: streamer_twitch_id)
+        if streamer
+          updated = streamer.update(
+            profile_image_url: streamer_info["profile_image_url"],
+            # display_name を必要に応じて更新
+            display_name: streamer_info["display_name"] || streamer.display_name
+          )
+          unless updated
+            Rails.logger.error "Failed to update Streamer #{streamer_twitch_id}: #{streamer.errors.full_messages.join(', ')}"
+          else
+            Rails.logger.debug "Successfully updated Streamer #{streamer_twitch_id} with profile_image_url."
+          end
+        else
+          Rails.logger.error "Streamer with streamer_id #{streamer_twitch_id} not found."
+          next
+        end
+      else
+        Rails.logger.error "Failed to fetch streamer info for #{streamer_twitch_id}."
+        next
+      end
+
+      # 2. クリップを取得
       clips = twitch_client.fetch_clips(streamer_twitch_id, max_results: 100)
 
       Rails.logger.debug "Streamer Twitch ID: #{streamer_twitch_id}"
@@ -57,8 +83,19 @@ class FetchTwitchClipsJob < ApplicationJob
             clip_created_at: clip_data["created_at"],
             thumbnail_url: clip_data["thumbnail_url"],
             duration: clip_data["duration"],
-            view_count: clip_data["view_count"]
+            view_count: clip_data["view_count"],
+            creator_name: clip_data["creator_name"] || "Unknown" # creator_name を設定
           }
+
+          # クリップ作成者名が clip_data に含まれていない場合、追加で取得
+          if clip_data["creator_name"].blank? && clip_data["creator_id"].present?
+            creator_info = twitch_client.fetch_user_info(clip_data["creator_id"])
+            if creator_info && creator_info["display_name"].present?
+              clip.creator_name = creator_info["display_name"]
+            else
+              clip.creator_name = "Unknown"
+            end
+          end
 
           # Clip を保存
           unless clip.save

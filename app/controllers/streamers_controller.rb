@@ -6,7 +6,7 @@ class StreamersController < ApplicationController
     Rails.logger.debug "検索対象の配信者名: #{search_name}"
 
     # 配信者を検索（streamer_name または display_name）
-    @streamer = Streamer.where('LOWER(streamer_name) = ? OR LOWER(display_name) = ?', search_name.downcase, search_name.downcase).first
+    @streamer = Streamer.where("LOWER(streamer_name) = ? OR LOWER(display_name) = ?", search_name.downcase, search_name.downcase).first
     Rails.logger.debug "@streamer: #{@streamer.inspect}"
 
     if @streamer
