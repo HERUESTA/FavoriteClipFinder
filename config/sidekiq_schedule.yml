@@ -1,5 +1,3 @@
-# config/sidekiq_schedule.yml
-
 :concurrency: 5
 
 :queues:
@@ -9,11 +7,11 @@
 scheduler:
   schedule:
     fetch_twitch_clips_job:
-      cron: "0 * * * *"   # 毎時0分に実行
+      cron: "0 */12 * * *"   # 12時間ごとに実行
       class: FetchTwitchClipsJob
       queue: default
 
     update_streamers_job:
-      cron: "0 * * * *"   # 毎時0分に実行
+      cron: "0 */12 * * *"   # 12時間ごとに実行
       class: UpdateStreamersJob
       queue: default
