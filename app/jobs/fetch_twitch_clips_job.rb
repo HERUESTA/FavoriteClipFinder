@@ -33,7 +33,7 @@ class FetchTwitchClipsJob < ApplicationJob
       end
 
       # クリップを取得
-      clips = twitch_client.fetch_clips(streamer_twitch_id, max_results: 100)
+      clips = twitch_client.fetch_clips(streamer_twitch_id, max_results: 50)
 
       Rails.logger.debug "Streamer Twitch ID: #{streamer_twitch_id}"
       Rails.logger.debug "Number of clips fetched: #{clips.size}"
