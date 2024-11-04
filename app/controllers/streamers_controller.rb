@@ -10,8 +10,13 @@ class StreamersController < ApplicationController
     Rails.logger.debug "@streamer: #{@streamer.inspect}"
 
     if @streamer
-      # ページネーションを適用（1ページあたり20件）
-      @clips = @streamer.clips.order(clip_created_at: :desc).page(params[:page]).per(20)
+      # ページネーションを適用（1ページあたり15件）
+      @clips = @streamer.clips
+                   .select(:id, :clip_id, :title, :language, :clip_created_at, :thumbnail_url, :duration, :view_count, :creator_name, :game_id, :streamer_id)
+                   .includes(:streamer, :game) # includesを追加
+                   .order(clip_created_at: :desc)
+                   .page(params[:page])
+                   .per(15)
       Rails.logger.debug "@clips: #{@clips.inspect}"
 
       # 配信者情報をハッシュとして設定

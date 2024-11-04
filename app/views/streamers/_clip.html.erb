@@ -23,14 +23,14 @@
       <!-- 配信者アイコン -->
       <img
         src="<%= clip.streamer.profile_image_url %>"
-        alt="<%= clip.streamer.streamer_name %>"
+        alt="<%= clip.streamer.display_name %>"
         class="w-10 h-10 rounded-full object-cover mr-4"
         loading="lazy"
       />
       <div>
         <!-- 配信者名 -->
         <p class="text-sm text-gray-600 mb-1">
-          <%= clip.streamer.streamer_name %>
+          <%= clip.streamer.display_name %>
         </p>
         <!-- ゲーム名 -->
         <p class="text-sm text-gray-500">

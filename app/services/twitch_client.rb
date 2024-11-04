@@ -15,6 +15,7 @@ class TwitchClient
         client_secret: @client_secret,
         grant_type: "client_credentials"
       }
+      req.headers["Content-Type"] = "application/x-www-form-urlencoded"
     end
 
     if response.status == 200
@@ -47,7 +48,7 @@ class TwitchClient
           "duration" => clip["duration"],
           "view_count" => clip["view_count"],
           "creator_id" => clip["creator_id"],
-          "creator_name" => clip["creator_name"] # もし存在する場合
+          "creator_name" => clip["creator_name"]
         }
       end
     else

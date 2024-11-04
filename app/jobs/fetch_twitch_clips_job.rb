@@ -14,10 +14,16 @@ class FetchTwitchClipsJob < ApplicationJob
       if streamer_info
         streamer = Streamer.find_by(streamer_id: streamer_twitch_id)
         if streamer
+          display_name = streamer_info["display_name"] || streamer.display_name
+
+          # display_nameがstreamer_nameと同じ場合のみ更新
+          if streamer.display_name == streamer.streamer_name
+            display_name = "なちょねこ" if streamer.streamer_id == "190110029" # 特定のIDの場合に更新
+          end
+
           updated = streamer.update(
             profile_image_url: streamer_info["profile_image_url"],
-            # display_name を必要に応じて更新
-            display_name: streamer_info["display_name"] || streamer.display_name
+            display_name: display_name
           )
           unless updated
             Rails.logger.error "Failed to update Streamer #{streamer_twitch_id}: #{streamer.errors.full_messages.join(', ')}"

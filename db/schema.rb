@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_03_085653) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_04_050910) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -51,6 +51,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_03_085653) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "display_name"
+    t.index "lower((display_name)::text)", name: "index_streamers_on_lower_display_name"
     t.index ["streamer_id"], name: "index_streamers_on_streamer_id", unique: true
     t.index ["streamer_name"], name: "index_streamers_on_streamer_name"
   end
