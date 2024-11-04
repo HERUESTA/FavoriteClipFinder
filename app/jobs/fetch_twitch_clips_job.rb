@@ -24,7 +24,7 @@ class FetchTwitchClipsJob < ApplicationJob
       Rails.logger.error("Failed to update Streamer #{streamer_twitch_id}: #{streamer.errors.full_messages.join(', ')}") unless updated
 
       # クリップを取得
-      clips = twitch_client.fetch_clips(streamer_twitch_id, max_results: 50)
+      clips = twitch_client.fetch_clips(streamer_twitch_id, max_results: 10)
       Rails.logger.debug "Number of clips fetched for streamer #{streamer_twitch_id}: #{clips.size}"
 
       clips.each do |clip_data|

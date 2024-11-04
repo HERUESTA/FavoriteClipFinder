@@ -8,7 +8,7 @@ class UpdateStreamersJob < ApplicationJob
 
     # 配信者が20人貯まるまでループ
     loop do
-      streamers, cursor = twitch_client.fetch_popular_japanese_streamers(limit: 20, cursor: cursor) # ここも20に変更
+      streamers, cursor = twitch_client.fetch_popular_japanese_streamers(limit: 5, cursor: cursor) # ここも5に変更
       break if streamers.blank?
 
       streamers.each do |streamer_data|
