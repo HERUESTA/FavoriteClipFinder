@@ -1,5 +1,3 @@
-# app/jobs/fetch_twitch_clips_job.rb
-
 class FetchTwitchClipsJob < ApplicationJob
   queue_as :default
 
@@ -8,27 +6,20 @@ class FetchTwitchClipsJob < ApplicationJob
     twitch_client = TwitchClient.new
 
     streamer_twitch_ids.each do |streamer_twitch_id|
-      # 1. 配信者の詳細情報を取得して更新（profile_image_url など）
+      # 1. 配信者の詳細情報を取得して更新（profile_image_url や display_name など）
       streamer_info = twitch_client.fetch_streamer_info(streamer_twitch_id)
 
       if streamer_info
         streamer = Streamer.find_by(streamer_id: streamer_twitch_id)
         if streamer
-          display_name = streamer_info["display_name"] || streamer.display_name
-
-          # display_nameがstreamer_nameと同じ場合のみ更新
-          if streamer.display_name == streamer.streamer_name
-            display_name = "なちょねこ" if streamer.streamer_id == "190110029" # 特定のIDの場合に更新
-          end
-
           updated = streamer.update(
             profile_image_url: streamer_info["profile_image_url"],
-            display_name: display_name
+            display_name: streamer_info["display_name"] || streamer.display_name
           )
           unless updated
             Rails.logger.error "Failed to update Streamer #{streamer_twitch_id}: #{streamer.errors.full_messages.join(', ')}"
           else
-            Rails.logger.debug "Successfully updated Streamer #{streamer_twitch_id} with profile_image_url."
+            Rails.logger.debug "Successfully updated Streamer #{streamer_twitch_id} with profile_image_url and display_name."
           end
         else
           Rails.logger.error "Streamer with streamer_id #{streamer_twitch_id} not found."
@@ -40,7 +31,7 @@ class FetchTwitchClipsJob < ApplicationJob
       end
 
       # 2. クリップを取得
-      clips = twitch_client.fetch_clips(streamer_twitch_id, max_results: 100)
+      clips = twitch_client.fetch_clips(streamer_id, max_results: 100)
 
       Rails.logger.debug "Streamer Twitch ID: #{streamer_twitch_id}"
       Rails.logger.debug "Number of clips fetched: #{clips.size}"
@@ -53,7 +44,7 @@ class FetchTwitchClipsJob < ApplicationJob
 
         if clip_data.is_a?(Hash)
           # Streamer レコードを取得
-          streamer = Streamer.find_by(streamer_id: streamer_twitch_id)
+          streamer = Streamer.find_by(streamer_id: streamer_id)
           unless streamer
             Rails.logger.error "Streamer with streamer_id #{streamer_twitch_id} not found."
             next
@@ -69,7 +60,7 @@ class FetchTwitchClipsJob < ApplicationJob
               game = Game.create(
                 game_id: game_data["id"],
                 name: game_data["name"],
-                box_art_url: game_data["box_art_url"] # box_art_url を追加
+                box_art_url: game_data["box_art_url"]
               )
               Rails.logger.debug "Created Game: #{game.inspect}"
             else
@@ -82,15 +73,15 @@ class FetchTwitchClipsJob < ApplicationJob
 
           # Clip の属性を設定
           clip.attributes = {
-            streamer_id: streamer.id,       # 正しい Streamer の主キーを設定
-            game_id: game&.id,               # Game が存在する場合のみ設定
+            streamer_id: streamer.id,
+            game_id: game&.id,
             title: clip_data["title"],
-            language: clip_data["language"], # language を設定
+            language: clip_data["language"],
             clip_created_at: clip_data["created_at"],
             thumbnail_url: clip_data["thumbnail_url"],
             duration: clip_data["duration"],
             view_count: clip_data["view_count"],
-            creator_name: clip_data["creator_name"] || "Unknown" # creator_name を設定
+            creator_name: clip_data["creator_name"] || "Unknown"
           }
 
           # クリップ作成者名が clip_data に含まれていない場合、追加で取得
