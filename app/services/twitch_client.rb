@@ -1,4 +1,4 @@
-# app/services/twitch_client.rb
+# /myapp/app/services/twitch_client.rb
 
 class TwitchClient
   def initialize
@@ -7,7 +7,7 @@ class TwitchClient
     @access_token = fetch_access_token
   end
 
-  # アクセストークンを取得するメソッド
+  # アクセストークンを取得
   def fetch_access_token
     response = Faraday.post("https://id.twitch.tv/oauth2/token") do |req|
       req.body = {
@@ -16,31 +16,33 @@ class TwitchClient
         grant_type: "client_credentials"
       }
     end
-    JSON.parse(response.body)["access_token"] if response.status == 200
+
+    if response.status == 200
+      JSON.parse(response.body)["access_token"]
+    else
+      Rails.logger.error "Failed to fetch Twitch access token: #{response.body}"
+      nil
+    end
   end
 
-  # 日本の人気配信者を取得するメソッド
-  def fetch_popular_japanese_streamers(limit: 300)
-    streamer_data = []
-    cursor = nil
-
-    while streamer_data.size < limit
-      response = Faraday.get("https://api.twitch.tv/helix/streams") do |req|
-        req.params["first"] = 100
-        req.params["language"] = "ja"
-        req.params["after"] = cursor if cursor
-        req.headers["Client-ID"] = @client_id
-        req.headers["Authorization"] = "Bearer #{@access_token}"
-      end
-
-      data = JSON.parse(response.body)["data"]
-      break if data.empty?
-
-      streamer_data.concat(data)
-      cursor = JSON.parse(response.body)["pagination"]["cursor"]
-      break if streamer_data.size >= limit
+  # 日本の人気配信者を取得
+  def fetch_popular_japanese_streamers(limit: 100, cursor: nil)
+    response = Faraday.get("https://api.twitch.tv/helix/streams") do |req|
+      req.params["first"] = limit
+      req.params["language"] = "ja"
+      req.params["after"] = cursor if cursor.present?
+      req.headers["Client-ID"] = @client_id
+      req.headers["Authorization"] = "Bearer #{@access_token}"
     end
 
-    streamer_data.take(limit)  # 指定した数だけ返す
+    if response.status == 200
+      data = JSON.parse(response.body)
+      streamers = data["data"]
+      next_cursor = data.dig("pagination", "cursor")
+      [streamers, next_cursor]
+    else
+      Rails.logger.error "Failed to fetch popular Japanese streamers: #{response.body}"
+      [[], nil]
+    end
   end
 end

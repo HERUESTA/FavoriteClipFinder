@@ -1,4 +1,4 @@
-# app/jobs/update_streamers_job.rb
+# /myapp/app/jobs/update_streamers_job.rb
 
 class UpdateStreamersJob < ApplicationJob
   queue_as :default
@@ -6,10 +6,11 @@ class UpdateStreamersJob < ApplicationJob
   def perform
     twitch_client = TwitchClient.new
     saved_streamers_count = 0
+    cursor = nil
 
-    # 配信者が300人貯まるまでループ
+    # 配信者が100人貯まるまでループ
     loop do
-      streamers = twitch_client.fetch_popular_japanese_streamers(limit: 100)
+      streamers, cursor = twitch_client.fetch_popular_japanese_streamers(limit: 100, cursor: cursor)
       break if streamers.blank?
 
       streamers.each do |streamer_data|
@@ -34,9 +35,9 @@ class UpdateStreamersJob < ApplicationJob
           Rails.logger.error "Failed to save/update Streamer #{streamer.streamer_id}: #{streamer.errors.full_messages.join(', ')}"
         end
 
-        break if saved_streamers_count >= 300
+        break if saved_streamers_count >= 100
       end
-      break if saved_streamers_count >= 300
+      break if saved_streamers_count >= 100 || cursor.nil? # 100人達成、もしくはページネーションが終了した場合はループを抜ける
     end
   rescue StandardError => e
     Rails.logger.error "UpdateStreamersJob Error: #{e.message}"
