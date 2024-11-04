@@ -1,5 +1,3 @@
-# /myapp/app/services/twitch_client.rb
-
 class TwitchClient
   def initialize
     @client_id = ENV["TWITCH_CLIENT_ID"]
@@ -25,8 +23,24 @@ class TwitchClient
     end
   end
 
+  # ストリーマーの詳細情報を取得
+  def fetch_streamer_info(streamer_id)
+    response = Faraday.get("https://api.twitch.tv/helix/users") do |req|
+      req.params["id"] = streamer_id
+      req.headers["Client-ID"] = @client_id
+      req.headers["Authorization"] = "Bearer #{@access_token}"
+    end
+
+    if response.status == 200
+      JSON.parse(response.body)["data"].first
+    else
+      Rails.logger.error "Failed to fetch streamer info for #{streamer_id}: #{response.body}"
+      nil
+    end
+  end
+
   # 日本の人気配信者を取得
-  def fetch_popular_japanese_streamers(limit: 100, cursor: nil)
+  def fetch_popular_japanese_streamers(limit: 20, cursor: nil)
     response = Faraday.get("https://api.twitch.tv/helix/streams") do |req|
       req.params["first"] = limit
       req.params["language"] = "ja"
