@@ -31,6 +31,9 @@ gem "sidekiq"
 # Sidekiq Schedulerをジョブのスケジューリングに使用
 gem "sidekiq-scheduler"
 
+# Sidekiq を定期実行する
+gem "sidekiq-cron", "~> 1.0"
+
 # Twitch関連
 gem "devise", "~> 4.9"
 gem "omniauth", "~> 2.1"
