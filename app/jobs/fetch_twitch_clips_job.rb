@@ -1,3 +1,5 @@
+# app/jobs/fetch_twitch_clips_job.rb
+
 class FetchTwitchClipsJob < ApplicationJob
   queue_as :default
 
@@ -6,7 +8,7 @@ class FetchTwitchClipsJob < ApplicationJob
     twitch_client = TwitchClient.new
 
     streamer_twitch_ids.each do |streamer_twitch_id|
-      # 1. 配信者の詳細情報を取得して更新（profile_image_url や display_name など）
+      # 配信者の詳細情報を取得して更新
       streamer_info = twitch_client.fetch_streamer_info(streamer_twitch_id)
 
       if streamer_info
@@ -30,8 +32,8 @@ class FetchTwitchClipsJob < ApplicationJob
         next
       end
 
-      # 2. クリップを取得
-      clips = twitch_client.fetch_clips(streamer_id, max_results: 100)
+      # クリップを取得
+      clips = twitch_client.fetch_clips(streamer_twitch_id, max_results: 100)
 
       Rails.logger.debug "Streamer Twitch ID: #{streamer_twitch_id}"
       Rails.logger.debug "Number of clips fetched: #{clips.size}"
@@ -44,7 +46,7 @@ class FetchTwitchClipsJob < ApplicationJob
 
         if clip_data.is_a?(Hash)
           # Streamer レコードを取得
-          streamer = Streamer.find_by(streamer_id: streamer_id)
+          streamer = Streamer.find_by(streamer_id: streamer_twitch_id)
           unless streamer
             Rails.logger.error "Streamer with streamer_id #{streamer_twitch_id} not found."
             next

@@ -7,6 +7,11 @@
 scheduler:
   schedule:
     fetch_twitch_clips_job:
-      cron: "0 */5 * * *"   # 毎日5時間ごとに実行
+      cron: "0 * * * *"   # 毎日5時間ごとに実行
       class: FetchTwitchClipsJob
+      queue: default
+
+    update_streamers_job:
+      cron: "0 * * * *"   # 毎時0分に実行
+      class: UpdateStreamersJob
       queue: default
