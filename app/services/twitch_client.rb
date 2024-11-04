@@ -39,6 +39,23 @@ class TwitchClient
     end
   end
 
+  # 配信者のクリップを取得
+  def fetch_clips(streamer_id, max_results: 50)
+    response = Faraday.get("https://api.twitch.tv/helix/clips") do |req|
+      req.params["broadcaster_id"] = streamer_id
+      req.params["first"] = max_results
+      req.headers["Client-ID"] = @client_id
+      req.headers["Authorization"] = "Bearer #{@access_token}"
+    end
+
+    if response.status == 200
+      JSON.parse(response.body)["data"]
+    else
+      Rails.logger.error "Failed to fetch clips for streamer #{streamer_id}: #{response.body}"
+      []
+    end
+  end
+
   # 日本の人気配信者を取得
   def fetch_popular_japanese_streamers(limit: 20, cursor: nil)
     response = Faraday.get("https://api.twitch.tv/helix/streams") do |req|
@@ -57,6 +74,22 @@ class TwitchClient
     else
       Rails.logger.error "Failed to fetch popular Japanese streamers: #{response.body}"
       [[], nil]
+    end
+  end
+
+  # ユーザー情報を取得
+  def fetch_user_info(user_id)
+    response = Faraday.get("https://api.twitch.tv/helix/users") do |req|
+      req.params["id"] = user_id
+      req.headers["Client-ID"] = @client_id
+      req.headers["Authorization"] = "Bearer #{@access_token}"
+    end
+
+    if response.status == 200
+      JSON.parse(response.body)["data"].first
+    else
+      Rails.logger.error "Failed to fetch user info for #{user_id}: #{response.body}"
+      nil
     end
   end
 end
