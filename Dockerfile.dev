@@ -1,6 +1,15 @@
+# ベースイメージを設定します（Rubyのバージョンを確認）
 FROM ruby:3.2.3
+
+# 必要な環境変数を設定
 ENV LANG C.UTF-8
 ENV TZ Asia/Tokyo
+ENV RUBY_YJIT_ENABLE=1
+
+# Jemallocをインストールし、利用するように設定
+RUN apt-get update -qq && apt-get install -y \
+    libjemalloc-dev \
+    && echo "/usr/lib/x86_64-linux-gnu/libjemalloc.so.2" > /etc/ld.so.preload
 
 # 必要なパッケージのインストール
 RUN apt-get update -qq \
@@ -27,3 +36,6 @@ RUN bundle install
 
 # JavaScript パッケージのインストール
 RUN yarn install
+
+# デフォルトのコマンド（開発用にRailsサーバを起動）
+CMD ["bash", "-c", "bundle exec rails s -b '0.0.0.0'"]

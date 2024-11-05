@@ -25,14 +25,11 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
-# Sidekiqをバックグラウンドジョブプロセッサとして使用
-gem "sidekiq"
+# Solid_queue
+gem "solid_queue"
 
-# Sidekiq Schedulerをジョブのスケジューリングに使用
-gem "sidekiq-scheduler"
-
-# Sidekiq を定期実行する
-gem "sidekiq-cron", "~> 1.0"
+# whenever
+gem "whenever", require: false
 
 # Twitch関連
 gem "devise", "~> 4.9"
@@ -45,9 +42,6 @@ gem "faraday", "~> 2.0"
 
 # ページネーション
 gem "kaminari"
-
-gem "slack-notifier"
-
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

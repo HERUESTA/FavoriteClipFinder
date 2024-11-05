@@ -13,14 +13,18 @@ WORKDIR /rails
 
 # Install base packages
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libvips postgresql-client && \
+    apt-get install --no-install-recommends -y curl cron libjemalloc2 libvips postgresql-client && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Set production environment
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development"
+    BUNDLE_WITHOUT="development" \
+    RUBYOPT="--yjit" # Enable YJIT
+
+# Enable jemalloc for better memory management
+ENV LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libjemalloc.so.2"
 
 # Throw-away build stage to reduce size of final image
 FROM base AS build
@@ -58,9 +62,11 @@ RUN bundle exec bootsnap precompile app/ lib/
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
-
+# Remove node_modules to reduce image size
 RUN rm -rf node_modules
 
+# Run whenever to update cron jobs
+RUN bundle exec whenever --update-crontab
 
 # Final stage for app image
 FROM base
@@ -78,7 +84,8 @@ USER 1000:1000
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
+# Ensure cron starts in the background and the Rails server is launched
+CMD cron && ./bin/rails server -b 0.0.0.0
 
-# Start the server by default, this can be overwritten at runtime
+# Expose the Rails server port
 EXPOSE 3000
-CMD ["./bin/rails", "server"]

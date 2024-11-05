@@ -70,10 +70,10 @@ class TwitchClient
       data = JSON.parse(response.body)
       streamers = data["data"]
       next_cursor = data.dig("pagination", "cursor")
-      [streamers, next_cursor]
+      [ streamers, next_cursor ]
     else
       Rails.logger.error "Failed to fetch popular Japanese streamers: #{response.body}"
-      [[], nil]
+      [ [], nil ]
     end
   end
 
