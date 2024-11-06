@@ -17,7 +17,7 @@ ENV RAILS_ENV="production" \
     BUNDLE_WITHOUT="development:test" \
     RUBYOPT="--yjit" \
     RUBY_YJIT_ENABLE=1
-    
+
 # RubyとBundlerの更新
 RUN gem update --system --no-document && \
     gem install -N bundler
@@ -28,7 +28,7 @@ FROM base AS build
 # 必要なパッケージのインストール
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y \
-    curl cron libvips postgresql-client \
+    curl libvips postgresql-client \
     build-essential git libpq-dev node-gyp pkg-config python-is-python3 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
@@ -63,9 +63,6 @@ RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 # node_modulesを削除してイメージサイズを減少
 RUN rm -rf node_modules
 
-# cronジョブを更新
-RUN bundle exec whenever --update-crontab
-
 # 最終的なアプリイメージのステージ
 FROM base
 
@@ -82,8 +79,8 @@ USER 1000:1000
 # エントリーポイントでデータベースの準備を実行
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
-# cronをバックグラウンドで起動し、Railsサーバーを起動
-CMD cron && ./bin/rails server -b 0.0.0.0
+# Railsサーバーを起動
+CMD ./bin/rails server -b 0.0.0.0
 
 # Railsサーバーのポートを公開
 EXPOSE 3000
