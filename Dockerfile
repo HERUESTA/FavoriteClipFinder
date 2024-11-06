@@ -16,10 +16,8 @@ ENV RAILS_ENV="production" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development:test" \
     RUBYOPT="--yjit" \ 
-    RUBY_YJIT_ENABLE=1\
-    LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2\
-    MALLOC_CONF=dirty_decay_ms:1000,narenas:2,background_thread:true
-
+    RUBY_YJIT_ENABLE=1
+    
 # RubyとBundlerの更新
 RUN gem update --system --no-document && \
     gem install -N bundler
