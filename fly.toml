@@ -5,9 +5,17 @@
 
 app = 'twitchclipfinder'
 primary_region = 'nrt'
+console_command = '/rails/bin/rails console'
 
 [build]
   dockerfile = './Dockerfile'
+
+[[mounts]]
+  source = 'idea_space_trip_db'
+  destination = '/data'
+  auto_extend_size_threshold = 90
+  auto_extend_size_increment = "1GB"
+  auto_extend_size_limit = "3GB"
 
  [processes]
  app = "bin/rails server"
@@ -33,3 +41,6 @@ strategy = "immediate"
 
 [[vm]]
   size = 'shared-cpu-1x'
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1

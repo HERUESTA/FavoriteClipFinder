@@ -4,25 +4,23 @@ FROM ruby:3.2.3
 # 必要な環境変数を設定
 ENV LANG C.UTF-8
 ENV TZ Asia/Tokyo
-ENV RUBY_YJIT_ENABLE=1
 
-# Jemallocをインストールし、利用するように設定
-RUN apt-get update -qq && apt-get install -y \
-    libjemalloc-dev \
-    && echo "/usr/lib/x86_64-linux-gnu/libjemalloc.so.2" > /etc/ld.so.preload
+# 必要なパッケージ（JemallocやNode.js, Yarnなど）のインストール
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y \
+    libjemalloc2 curl postgresql-client openssl ca-certificates \
+    build-essential libpq-dev nodejs yarn vim && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# 必要なパッケージのインストール
-RUN apt-get update -qq \
-    && apt-get install -y ca-certificates curl gnupg \
-    && mkdir -p /etc/apt/keyrings \
-    && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
-    && NODE_MAJOR=20 \
-    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
-    && curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /etc/apt/keyrings/yarn.gpg \
-    && echo "deb [signed-by=/etc/apt/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-
-# 必要なパッケージと Node.js, Yarn のインストール
-RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs yarn vim
+# Node.jsとYarnのリポジトリの追加
+RUN mkdir -p /etc/apt/keyrings && \
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
+    NODE_MAJOR=20 && \
+    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && \
+    curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /etc/apt/keyrings/yarn.gpg && \
+    echo "deb [signed-by=/etc/apt/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+    apt-get update -qq && apt-get install -y nodejs yarn && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # TailwindCSSとesbuildのインストール
 RUN npm install -g tailwindcss esbuild
@@ -31,11 +29,16 @@ RUN npm install -g tailwindcss esbuild
 RUN mkdir /myapp
 WORKDIR /myapp
 RUN gem install bundler
-COPY . /myapp
+
+# アプリケーションの依存関係（GemfileとJavaScriptパッケージ）のインストール
+COPY Gemfile Gemfile.lock ./
 RUN bundle install
 
-# JavaScript パッケージのインストール
+COPY package.json yarn.lock ./
 RUN yarn install
+
+# アプリケーションコードをコピー
+COPY . /myapp
 
 # デフォルトのコマンド（開発用にRailsサーバを起動）
 CMD ["bash", "-c", "bundle exec rails s -b '0.0.0.0'"]
