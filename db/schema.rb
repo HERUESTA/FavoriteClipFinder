@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_06_133735) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_06_144010) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -42,21 +42,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_06_133735) do
     t.string "game_id"
     t.index ["game_id"], name: "index_games_on_game_id", unique: true
     t.index ["name"], name: "index_games_on_name", unique: true
-  end
-
-  create_table "solid_queue_jobs", force: :cascade do |t|
-    t.string "queue_name", null: false
-    t.string "job_class", null: false
-    t.datetime "scheduled_at"
-    t.datetime "locked_at"
-    t.datetime "completed_at"
-    t.integer "retry_count", default: 0
-    t.string "error_message"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["completed_at"], name: "index_solid_queue_jobs_on_completed_at"
-    t.index ["locked_at"], name: "index_solid_queue_jobs_on_locked_at"
-    t.index ["queue_name"], name: "index_solid_queue_jobs_on_queue_name"
   end
 
   create_table "streamers", force: :cascade do |t|
