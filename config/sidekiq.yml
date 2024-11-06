@@ -1,4 +1,7 @@
 # config/sidekiq_schedule.yml
+:queues:
+  - [default, 5]     # default キューは同時に5つのジョブを処理
+  - [critical, 2]    # critical キューは同時に2つのジョブを処理
 
 scheduler:
   schedule:

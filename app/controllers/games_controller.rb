@@ -149,7 +149,7 @@ end
     access_token = ENV["TWITCH_ACCESS_TOKEN"]
     broadcaster_info = {}
 
-    broadcaster_ids.each_slice(100) do |ids|
+    broadcaster_ids.each_slice(5) do |ids|
       cache_key = "broadcaster_info_#{ids.join('_')}"
       fetched_info = Rails.cache.fetch(cache_key, expires_in: 12.hours) do
         response = send_twitch_request("users", { id: ids }, access_token)

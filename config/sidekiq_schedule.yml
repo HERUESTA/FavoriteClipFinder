@@ -6,3 +6,8 @@ scheduler:
       cron: "0 0,12 * * *"   # 毎日0時と12時に実行
       class: FetchTwitchClipsJob
       queue: default
+
+    fetch_japanese_streamers_job:
+      cron: "0 0,12 * * *"   # 毎日0時と12時に実行
+      class: FetchJapaneseStreamersJob
+      queue: default
