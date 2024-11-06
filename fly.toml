@@ -10,13 +10,6 @@ console_command = '/rails/bin/rails console'
 [build]
   dockerfile = './Dockerfile'
 
-[[mounts]]
-  source = "twitch_clip_finder" 
-  destination = "/data"  
-  auto_extend_size_threshold = 90
-  auto_extend_size_increment = "1GB"
-  auto_extend_size_limit = "3GB"
-
  [processes]
  app = "bin/rails server"
  worker = "bundle exec sidekiq"
