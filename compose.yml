@@ -23,6 +23,16 @@ services:
     restart: always
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}"]
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   web:
     build:
@@ -37,37 +47,40 @@ services:
       - node_modules:/myapp/node_modules
     environment:
       TZ: Asia/Tokyo
-      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@db:5432/twitch_clip_finder
-      REDIS_URL: redis://redis:6379/0
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      SIDEKIQ_USERNAME: ${SIDEKIQ_USERNAME}
+      SIDEKIQ_PASSWORD: ${SIDEKIQ_PASSWORD}
     ports:
       - "3000:3000"
     depends_on:
       db:
         condition: service_healthy
       redis:
-        condition: service_started
+        condition: service_healthy
 
   worker:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    command: bash -c "bundle exec sidekiq"
+    command: bundle exec sidekiq -C config/sidekiq.yml
     volumes:
       - .:/myapp
       - bundle_data:/usr/local/bundle:cached
     environment:
       TZ: Asia/Tokyo
-      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@db:5432/twitch_clip_finder
-      REDIS_URL: redis://redis:6379/0
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      SIDEKIQ_USERNAME: ${SIDEKIQ_USERNAME}
+      SIDEKIQ_PASSWORD: ${SIDEKIQ_PASSWORD}
     depends_on:
       db:
         condition: service_healthy
       redis:
-        condition: service_started
+        condition: service_healthy
 
 volumes:
   bundle_data:
   postgresql_data:
   node_modules:
+  redis_data:
