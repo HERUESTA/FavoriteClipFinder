@@ -18,6 +18,12 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7
+    restart: always
+    ports:
+      - "6379:6379"
+
   web:
     build:
       context: .
@@ -32,28 +38,34 @@ services:
     environment:
       TZ: Asia/Tokyo
       DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@db:5432/twitch_clip_finder
+      REDIS_URL: redis://redis:6379/0
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
     ports:
       - "3000:3000"
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_started
 
   worker:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    command: bundle exec solid_queue
+    command: bash -c "bundle exec sidekiq"
     volumes:
       - .:/myapp
       - bundle_data:/usr/local/bundle:cached
     environment:
       TZ: Asia/Tokyo
       DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@db:5432/twitch_clip_finder
+      REDIS_URL: redis://redis:6379/0
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_started
 
 volumes:
   bundle_data:

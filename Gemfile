@@ -25,11 +25,11 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
-# Solid_queue
-gem "solid_queue"
+# Sidekiqをバックグラウンドジョブプロセッサとして使用
+gem "sidekiq"
 
-# whenever
-gem "whenever", require: false
+# Sidekiq Schedulerをジョブのスケジューリングに使用
+gem "sidekiq-scheduler"
 
 # Twitch関連
 gem "devise", "~> 4.9"

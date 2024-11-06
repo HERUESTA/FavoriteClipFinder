@@ -1,0 +1,8 @@
+# config/sidekiq_schedule.yml
+
+scheduler:
+  schedule:
+    fetch_twitch_clips_job:
+      cron: "0 0,12 * * *"   # 毎日0時と12時に実行
+      class: FetchTwitchClipsJob
+      queue: default

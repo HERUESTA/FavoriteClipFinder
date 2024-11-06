@@ -12,7 +12,7 @@ console_command = '/rails/bin/rails console'
 
  [processes]
  app = "bin/rails server"
- worker = "bundle exec solid_queue"
+ worker = "bundle exec sidekiq"
 
  [deploy]
 strategy = "immediate"
