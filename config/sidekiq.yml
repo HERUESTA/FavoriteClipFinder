@@ -1,14 +1,5 @@
-# config/sidekiq.yml
-
-:concurrency: 5
-
+# config/sidekiq_schedule.yml
 :queues:
-  - default
-  - critical
+  - [default, 5]     # default キューは同時に5つのジョブを処理
+  - [critical, 2]    # critical キューは同時に2つのジョブを処理
 
-scheduler:
-  schedule:
-    fetch_twitch_clips_job:
-      cron: "0 0,12 * * *"   # 毎日0時と12時に実行
-      class: FetchTwitchClipsJob
-      queue: default

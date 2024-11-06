@@ -85,6 +85,9 @@ GEM
     brakeman (6.2.2)
       racc
     builder (3.3.0)
+    bullet (7.2.0)
+      activesupport (>= 3.0.0)
+      uniform_notifier (~> 1.11)
     capybara (3.40.0)
       addressable
       matrix
@@ -321,7 +324,7 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
-    sidekiq (7.3.4)
+    sidekiq (7.3.5)
       connection_pool (>= 2.3.0)
       logger
       rack (>= 2.2.4)
@@ -330,7 +333,6 @@ GEM
       rufus-scheduler (~> 3.2)
       sidekiq (>= 6, < 8)
       tilt (>= 1.4.0, < 3)
-    slack-notifier (2.4.0)
     snaky_hash (2.0.1)
       hashie
       version_gem (~> 1.1, >= 1.1.1)
@@ -353,6 +355,7 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.6.0)
+    uniform_notifier (1.16.0)
     uri (0.13.1)
     useragent (0.16.10)
     version_gem (1.1.4)
@@ -382,6 +385,7 @@ PLATFORMS
 DEPENDENCIES
   bootsnap
   brakeman
+  bullet
   capybara
   cssbundling-rails
   debug
@@ -403,7 +407,6 @@ DEPENDENCIES
   selenium-webdriver
   sidekiq
   sidekiq-scheduler
-  slack-notifier
   sprockets-rails
   stimulus-rails
   turbo-rails
