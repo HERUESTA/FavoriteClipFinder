@@ -16,9 +16,6 @@ module TwichClipFinder
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore
 
-    # Active JobのキューアダプターをSidekiqに設定
-    config.active_job.queue_adapter = :sidekiq
-
     # Active JobのキューアダプターをSolid_queueに設定
     config.active_job.queue_adapter = :solid_queue
 

@@ -15,7 +15,7 @@ ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development:test" \
-    RUBYOPT="--yjit" \ 
+    RUBYOPT="--yjit" \
     RUBY_YJIT_ENABLE=1
     
 # RubyとBundlerの更新
