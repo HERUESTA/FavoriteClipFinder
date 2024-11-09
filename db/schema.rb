@@ -10,14 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_06_144010) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_08_105146) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "clips", force: :cascade do |t|
     t.string "clip_id", null: false
     t.string "streamer_id", null: false
-    t.bigint "game_id", null: false
+    t.string "game_id", null: false
     t.string "title"
     t.datetime "clip_created_at", precision: nil
     t.string "thumbnail_url"
@@ -73,5 +73,5 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_06_144010) do
     t.index ["uid"], name: "index_users_on_uid", unique: true
   end
 
-  add_foreign_key "clips", "games"
+  add_foreign_key "clips", "games", primary_key: "game_id"
 end

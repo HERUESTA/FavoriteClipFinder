@@ -1,7 +1,7 @@
-# app/services/twitch_client.rb
-
 require "faraday"
 require "json"
+require "net/http"
+require "uri"
 
 class TwitchClient
   BASE_URL = "https://api.twitch.tv/helix"
@@ -36,8 +36,8 @@ class TwitchClient
     end
   end
 
-  # 日本の配信者を取得するメソッド
-  def fetch_japanese_streamers(max_results: 5)
+  # 登録者数12000以上の日本配信者を取得
+  def fetch_japanese_streamers(max_results: 50)
     streamers = []
     pagination = nil
 
@@ -46,7 +46,7 @@ class TwitchClient
       break if remaining <= 0
 
       params = {
-        first: [ remaining, 5 ].min,  # 最大5件ずつ取得
+        first: [ remaining, 100 ].min,  # 最大100件ずつ取得
         language: "ja"
       }
       params[:after] = pagination if pagination
@@ -55,10 +55,6 @@ class TwitchClient
         req.headers["Client-ID"] = @client_id
         req.headers["Authorization"] = "Bearer #{@access_token}"
       end
-
-      Rails.logger.debug "Received response status: #{response.status}"
-      Rails.logger.debug "Received response body: #{response.body}"
-      Rails.logger.debug "Pagination cursor: #{pagination}"
 
       if response.success?
         data = response.body["data"]
@@ -78,6 +74,28 @@ class TwitchClient
     []
   end
 
+  # フォロワー数を取得するメソッド
+  def fetch_follower_count(broadcaster_id)
+    response = @connection.get("channels/followers") do |req|
+      req.params["broadcaster_id"] = broadcaster_id
+      req.headers["Client-ID"] = @client_id
+      req.headers["Authorization"] = "Bearer #{@access_token}"
+    end
+
+    if response.success?
+      total_followers = response.body["total"]
+      Rails.logger.debug "Total followers for broadcaster ID #{broadcaster_id}: #{total_followers}"
+      total_followers
+    else
+      Rails.logger.error "Failed to fetch follower count for broadcaster ID #{broadcaster_id}: #{response.body['message']}"
+      nil
+    end
+  rescue StandardError => e
+    Rails.logger.error "Error fetching follower count: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    nil
+  end
+
   # ストリーマーのクリップを取得するメソッド
   # broadcaster_id: ストリーマーのTwitch ID（文字列）
   # max_results: 取得するクリップの最大数（デフォルトは20）
@@ -91,7 +109,7 @@ class TwitchClient
 
       params = {
         broadcaster_id: broadcaster_id,
-        first: [ remaining, 5 ].min # 最大5件まで一度に取得可能
+        first: [ remaining, 40 ].min
       }
       params[:after] = pagination if pagination
 
@@ -141,6 +159,26 @@ class TwitchClient
     end
   rescue StandardError => e
     Rails.logger.error "TwitchClient fetch_game Error: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    nil
+  end
+
+  # ユーザープロフィールを取得するメソッド
+  def fetch_user_profile(user_id)
+    response = @connection.get("users") do |req|
+      req.params["id"] = user_id
+      req.headers["Client-ID"] = @client_id
+      req.headers["Authorization"] = "Bearer #{@access_token}"
+    end
+
+    if response.success? && response.body["data"].is_a?(Array) && !response.body["data"].empty?
+      response.body["data"].first
+    else
+      Rails.logger.error "Failed to fetch user profile for user ID #{user_id}: #{response.body['message']}"
+      nil
+    end
+  rescue StandardError => e
+    Rails.logger.error "Error fetching user profile: #{e.message}"
     Rails.logger.error e.backtrace.join("\n")
     nil
   end

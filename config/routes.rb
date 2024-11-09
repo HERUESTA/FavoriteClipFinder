@@ -14,7 +14,6 @@ Rails.application.routes.draw do
   # ゲームID検索用ルート
   get "games/show", to: "games#show"
 
-
   # CI/CD用route
   get "up" => "rails/health#show", as: :rails_health_check
 
