@@ -1,15 +1,4 @@
 <%= turbo_frame_tag "clips" do %>
-<% if game_search && @games.any? %>
-  <% game = @games.first %>
-  <!-- 上部に大きくゲームアイコンを表示 -->
-  <div class="flex items-center mb-4">
-    <img src="<%= game.box_art_url.gsub("{width}x{height}", "300x300") %>" alt="<%= game.name %>" class="w-32 h-32 object-cover mr-4" />
-    <div>
-      <h2 class="text-4xl font-extrabold text-black"><%= game.name %></h2>
-    </div>
-  </div>
-<% end %>
-
   <% if clips.any? %>
     <!-- クリップ一覧 -->
     <div id="clips-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -22,7 +11,7 @@
     </div>
 
     <!-- ページネーションリンク -->
-    <div class="pagination-links mt-6 flex justify-center">
+    <div data-controller="scroll-to-top" class="pagination-links mt-6 flex justify-center">
       <%= paginate @clips %>
     </div>
   <% else %>

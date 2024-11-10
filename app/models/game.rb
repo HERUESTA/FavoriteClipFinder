@@ -9,10 +9,8 @@ class Game < ApplicationRecord
 
   # ransackで検索可能な属性を定義
   def self.ransackable_attributes(auth_object = nil)
-    ["name"] 
+    [ "name" ]
   end
 
-  # 
-
-
+  #
 end

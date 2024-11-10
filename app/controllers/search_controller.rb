@@ -5,8 +5,8 @@ class SearchController < ApplicationController
     seach_query = params[:q]
 
     # ゲームと配信者のクリップ検索を両方実行
-    @games = Game.ransack(name_cont: seach_query ).result(distinct: true)
-    @streamers = Streamer.ransack(streamer_name_or_display_name_cont: seach_query ).result(distinct: true)
+    @games = Game.ransack(name_cont: seach_query).result(distinct: true)
+    @streamers = Streamer.ransack(streamer_name_or_display_name_cont: seach_query).result(distinct: true)
 
     @clips = []
 

@@ -29,7 +29,7 @@ class FetchTwitchClipsJob < ApplicationJob
     Rails.logger.debug "保存しようとしているクリップのデータ: #{clip_data}"
     Rails.logger.debug "保存しようとしている配信者ID: #{streamer&.streamer_id}"
     Rails.logger.debug "保存しようとしているゲームID: #{clip_data['game_id']}"
-  
+
     game = Game.find_or_initialize_by(game_id: clip_data["game_id"])
     if game.new_record?
       # `client` インスタンスを使用して fetch_game メソッドを呼び出す
@@ -47,9 +47,9 @@ class FetchTwitchClipsJob < ApplicationJob
         return # ゲームが取得できなければクリップの保存を中止
       end
     end
-  
+
     Rails.logger.debug "使用するstreamer_id: #{streamer.streamer_id}, 使用するgame_id: #{game.game_id}"
-  
+
     clip = Clip.find_or_initialize_by(clip_id: clip_data["id"])
     clip.attributes = {
       clip_id: clip_data["id"],
@@ -63,7 +63,7 @@ class FetchTwitchClipsJob < ApplicationJob
       duration: clip_data["duration"].to_i,
       view_count: clip_data["view_count"].to_i
     }
-  
+
     if clip.save
       Rails.logger.debug "クリップが正常に保存されました: #{clip.inspect}"
     else
