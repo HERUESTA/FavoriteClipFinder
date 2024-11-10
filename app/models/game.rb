@@ -6,5 +6,13 @@ class Game < ApplicationRecord
   validates :game_id, presence: true, uniqueness: true
   validates :name, presence: true
   validates :box_art_url, presence: true
-  # 他の必要なバリデーションや関連付けを追加
+
+  # ransackで検索可能な属性を定義
+  def self.ransackable_attributes(auth_object = nil)
+    ["name"] 
+  end
+
+  # 
+
+
 end

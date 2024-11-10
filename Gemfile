@@ -31,6 +31,9 @@ gem "sidekiq"
 # Sidekiq Schedulerをジョブのスケジューリングに使用
 gem "sidekiq-scheduler"
 
+# 検索用
+gem "ransack"
+
 # Twitch関連
 gem "devise", "~> 4.9"
 gem "omniauth", "~> 2.1"
