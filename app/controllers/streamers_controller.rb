@@ -11,16 +11,26 @@ class StreamersController < ApplicationController
 
     if @streamer
       # ページネーションを適用（1ページあたり15件）
-      @clips = @streamer.clips
-                   .select(:id, :clip_id, :title, :language, :clip_created_at, :thumbnail_url, :duration, :view_count, :creator_name, :game_id, :streamer_id)
-                   .includes(:streamer, :game) # includesを追加
+      streamer_id = @streamer.streamer_id
+      Rails.logger.debug "使用しているstreamer_id: #{streamer_id}"
+
+      # Clipモデルから指定されたstreamer_idに紐づくクリップを取得し、関連するstreamer情報も取得
+      @clips = Clip.where(streamer_id: @streamer.streamer_id)
+                   .includes(:streamer, :game) # streamerとgameをプリロード
                    .order(clip_created_at: :desc)
                    .page(params[:page])
                    .per(15)
+
+      # プロフィール画像URLのプレースホルダを置き換える
+      @clips.each do |clip|
+        clip.streamer.profile_image_url = clip.streamer.profile_image_url.gsub("{width}x{height}", "100x100") if clip.streamer&.profile_image_url
+      end
+
+      Rails.logger.debug "@clips: #{@clips.map { |clip| { clip_id: clip.clip_id, streamer_image: clip.streamer.profile_image_url } }}"
       Rails.logger.debug "@clips: #{@clips.inspect}"
 
       # 配信者情報をハッシュとして設定
-      @streamer_info = { name: @streamer.streamer_name, display_name: @streamer.display_name }
+      @streamer_info = { name: @streamer.streamer_name, display_name: @streamer.display_name, profile_image_url: @streamer.profile_image_url }
       Rails.logger.debug "@streamer_info: #{@streamer_info.inspect}"
     else
       # 配信者が見つからなかった場合の処理

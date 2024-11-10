@@ -10,7 +10,7 @@ module TwichClipFinder
     config.load_defaults 7.2
 
     # Railsアプリケーションのデフォルトの言語設定を日本語に設定
-    config.i18n.default_locale = :ja
+    config.i18n.default_locale = :en
 
     # Cookie設定
     config.middleware.use ActionDispatch::Cookies

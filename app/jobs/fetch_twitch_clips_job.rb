@@ -1,43 +1,60 @@
-# app/jobs/fetch_twitch_clips_job.rb
-
 class FetchTwitchClipsJob < ApplicationJob
   queue_as :default
 
-  def perform(streamer_id = nil)
+  # クリップを保存するメソッド
+  def perform
     client = TwitchClient.new
-
-    if streamer_id
-      # 特定の配信者のクリップを取得
-      fetch_and_save_clips(client, streamer_id)
-    else
-      # streamer_id が指定されていない場合、過去7日以内に配信を行った配信者を対象にジョブをキューに追加
-      recent_streamers = Streamer.where("updated_at >= ?", 7.days.ago)
-
-      recent_streamers.find_each do |streamer|
-        FetchTwitchClipsJob.perform_later(streamer.streamer_id)
-      end
+    # すべてのストリーマーのstreamer_idを取得し、クリップを保存する処理を呼び出す
+    Streamer.order(:id).find_each do |streamer|
+      get_clips(client, streamer)
     end
   end
 
   private
 
-  def fetch_and_save_clips(client, streamer_id)
-    streamer = Streamer.find_by(streamer_id: streamer_id)
-    return unless streamer
+  # 取得した配信者のクリップをAPIを用いて取得し、保存する
+  def get_clips(client, streamer)
+    return unless streamer # ストリーマーが見つからなければ処理を終了
 
-    clips = client.fetch_clips(streamer_id, max_results: 10) # 件数を制限
+    # クリップを取得（最大20件）
+    clips = client.fetch_clips(streamer.streamer_id, max_results: 20)
+
+    # 各クリップをデータベースに保存
     clips.each do |clip_data|
-      save_clip(clip_data, streamer)
+      save_clip(client, clip_data, streamer)
     end
   end
 
-  def save_clip(clip_data, streamer)
-    clip = Clip.find_or_initialize_by(clip_id: clip_data["id"])
+  def save_clip(client, clip_data, streamer)
+    Rails.logger.debug "保存しようとしているクリップのデータ: #{clip_data}"
+    Rails.logger.debug "保存しようとしている配信者ID: #{streamer&.streamer_id}"
+    Rails.logger.debug "保存しようとしているゲームID: #{clip_data['game_id']}"
 
+    game = Game.find_or_initialize_by(game_id: clip_data["game_id"])
+    if game.new_record?
+      # `client` インスタンスを使用して fetch_game メソッドを呼び出す
+      game_data = client.fetch_game(clip_data["game_id"])
+      if game_data
+        game.attributes = {
+          game_id: game_data["id"],
+          name: game_data["name"],
+          box_art_url: game_data["box_art_url"]
+        }
+        game.save!
+        Rails.logger.debug "新しいゲームが保存されました: #{game.inspect}"
+      else
+        Rails.logger.error "Failed to fetch and save game with ID #{clip_data['game_id']}"
+        return # ゲームが取得できなければクリップの保存を中止
+      end
+    end
+
+    Rails.logger.debug "使用するstreamer_id: #{streamer.streamer_id}, 使用するgame_id: #{game.game_id}"
+
+    clip = Clip.find_or_initialize_by(clip_id: clip_data["id"])
     clip.attributes = {
       clip_id: clip_data["id"],
       streamer_id: streamer.streamer_id,
-      game_id: clip_data["game_id"] || 0,
+      game_id: game.game_id,
       title: clip_data["title"],
       language: clip_data["language"],
       creator_name: clip_data["creator_name"],
