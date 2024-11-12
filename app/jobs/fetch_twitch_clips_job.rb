@@ -23,64 +23,58 @@ class FetchTwitchClipsJob < ApplicationJob
     end
   end
 
-# クリップをデータベースに保存する
-def save_clip(client, clip_data, streamer)
-  Rails.logger.debug "保存しようとしているクリップのデータ: #{clip_data}"
-  Rails.logger.debug "保存しようとしている配信者ID: #{streamer&.streamer_id}"
-  Rails.logger.debug "保存しようとしているゲームID: #{clip_data['game_id']}"
-
-  # ゲームの存在確認と取得
-  game = Game.find_by(game_id: clip_data["game_id"])
-  unless game
-    # ゲームがデータベースに存在しない場合、fetch_gameを呼び出して取得
-    game_data = client.fetch_game(clip_data["game_id"])
-    if game_data
-      game = Game.create(
-        game_id: game_data["id"],
-        name: game_data["name"],
-        box_art_url: game_data["box_art_url"]
-      )
-      Rails.logger.debug "新しいゲームが保存されました: #{game.inspect}"
-    else
-      # ゲームデータの取得失敗時の処理
-      Rails.logger.error "Failed to fetch and save game with ID #{clip_data['game_id']}"
-      return # ゲームが取得できなければクリップの保存を中止
-    end
-  end
-
-  # Streamer の ID が存在するか再確認
-  if streamer.nil? || !streamer.persisted?
-    Rails.logger.error "Streamer not found or not saved in the database: #{streamer&.inspect}"
-    return # Streamer がデータベースに存在しない場合はクリップの保存を中止
-  end
-
-  # Clip の作成または更新
-  clip = Clip.find_or_initialize_by(clip_id: clip_data["id"])
-  clip.attributes = {
-    clip_id: clip_data["id"],
-    streamer_id: streamer.streamer_id,
-    game_id: game.game_id,
-    title: clip_data["title"],
-    language: clip_data["language"],
-    creator_name: clip_data["creator_name"],
-    clip_created_at: clip_data["created_at"],
-    thumbnail_url: clip_data["thumbnail_url"],
-    duration: clip_data["duration"].to_i,
-    view_count: clip_data["view_count"].to_i
-  }
-
-  # デバッグ情報を追加して Clip の状態を確認
-  Rails.logger.debug "Clip before save: #{clip.inspect}"
-  Rails.logger.debug "Clip streamer association: #{clip.streamer.inspect}"
-  Rails.logger.debug "Clip game association: #{clip.game.inspect}"
-
-  # Clip の保存処理
-  if clip.save
-    Rails.logger.debug "クリップが正常に保存されました: #{clip.inspect}"
+# ゲームの存在確認と取得
+game = Game.find_by(game_id: clip_data["game_id"])
+unless game
+  # ゲームがデータベースに存在しない場合、fetch_gameを呼び出して取得
+  game_data = client.fetch_game(clip_data["game_id"])
+  if game_data
+    game = Game.create(
+      game_id: game_data["id"],
+      name: game_data["name"],
+      box_art_url: game_data["box_art_url"]
+    )
+    Rails.logger.debug "新しいゲームが保存されました: #{game.inspect}"
   else
-    # 保存に失敗した場合のエラーログ
-    Rails.logger.error "Failed to save clip ID #{clip_data['id']}: #{clip.errors.full_messages.join(', ')}"
+    # ゲームデータの取得失敗時の処理
+    Rails.logger.error "Failed to fetch and save game with ID #{clip_data['game_id']}"
+    return # ゲームが取得できなければクリップの保存を中止
   end
+end
+
+# Streamer の ID が存在するか再確認
+if streamer.nil? || !streamer.persisted?
+  Rails.logger.error "Streamer not found or not saved in the database: #{streamer&.inspect}"
+  return # Streamer がデータベースに存在しない場合はクリップの保存を中止
+end
+
+# Clip の作成または更新
+clip = Clip.find_or_initialize_by(clip_id: clip_data["id"])
+clip.attributes = {
+  clip_id: clip_data["id"],
+  streamer_id: streamer.streamer_id,
+  game_id: game.game_id,
+  title: clip_data["title"],
+  language: clip_data["language"],
+  creator_name: clip_data["creator_name"],
+  clip_created_at: clip_data["created_at"],
+  thumbnail_url: clip_data["thumbnail_url"],
+  duration: clip_data["duration"].to_i,
+  view_count: clip_data["view_count"].to_i
+}
+
+# デバッグ情報を追加して Clip の状態を確認
+Rails.logger.debug "Clip before save: #{clip.inspect}"
+Rails.logger.debug "Clip streamer association: #{clip.streamer.inspect}"
+Rails.logger.debug "Clip game association: #{clip.game.inspect}"
+
+# Clip の保存処理
+if clip.save
+  Rails.logger.debug "クリップが正常に保存されました: #{clip.inspect}"
+else
+  # 保存に失敗した場合のエラーログ
+  Rails.logger.error "Failed to save clip ID #{clip_data['id']}: #{clip.errors.full_messages.join(', ')}"
+end
 
 # 例外発生時のエラーハンドリング
 rescue StandardError => e
