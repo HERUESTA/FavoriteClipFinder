@@ -10,12 +10,13 @@ console_command = '/rails/bin/rails console'
 [build]
   dockerfile = './Dockerfile'
 
- [processes]
- app = "bin/rails server"
- worker = "bundle exec sidekiq"
+[processes]
+  app = "bin/rails server"
+  worker = "bundle exec sidekiq"
 
- [deploy]
-strategy = "immediate"
+[deploy]
+  strategy = "immediate"
+  release_command = "bin/rails db:migrate"
 
 [http_service]
   internal_port = 3000
