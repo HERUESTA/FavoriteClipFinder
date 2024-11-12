@@ -14,7 +14,6 @@ class FetchTwitchClipsJob < ApplicationJob
 
   # 取得した配信者のクリップをAPIを用いて取得し、保存する
   def get_clips(client, streamer)
-    return unless streamer # ストリーマーが見つからなければ処理を終了
 
     # クリップを取得（最大20件）
     clips = client.fetch_clips(streamer.streamer_id, max_results: 20)
@@ -25,22 +24,23 @@ class FetchTwitchClipsJob < ApplicationJob
     end
   end
 
+  # クリップをデータベースに保存する
   def save_clip(client, clip_data, streamer)
     Rails.logger.debug "保存しようとしているクリップのデータ: #{clip_data}"
     Rails.logger.debug "保存しようとしている配信者ID: #{streamer&.streamer_id}"
     Rails.logger.debug "保存しようとしているゲームID: #{clip_data['game_id']}"
 
-    game = Game.find_or_initialize_by(game_id: clip_data["game_id"])
-    if game.new_record?
-      # `client` インスタンスを使用して fetch_game メソッドを呼び出す
+    game = Game.find_by(game_id: clip_data["game_id"])
+
+    unless game
+      # データベースに存在するゲームIDではない場合、fetch_gameを呼び出す
       game_data = client.fetch_game(clip_data["game_id"])
       if game_data
-        game.attributes = {
+        game = Game.create(
           game_id: game_data["id"],
           name: game_data["name"],
           box_art_url: game_data["box_art_url"]
-        }
-        game.save!
+        )
         Rails.logger.debug "新しいゲームが保存されました: #{game.inspect}"
       else
         Rails.logger.error "Failed to fetch and save game with ID #{clip_data['game_id']}"
