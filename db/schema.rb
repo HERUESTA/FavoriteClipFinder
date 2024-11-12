@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_08_105146) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_12_131216) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -74,4 +74,5 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_08_105146) do
   end
 
   add_foreign_key "clips", "games", primary_key: "game_id"
+  add_foreign_key "clips", "streamers", primary_key: "streamer_id"
 end
