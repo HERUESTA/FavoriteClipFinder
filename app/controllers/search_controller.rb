@@ -11,6 +11,7 @@ class SearchController < ApplicationController
     @clips = []
 
     # ゲームと配信者のクリップを取得
+    # テスト
     game_ids = @games.pluck(:game_id)
     streamer_ids = @streamers.pluck(:streamer_id)
 
