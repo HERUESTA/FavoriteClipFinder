@@ -8,7 +8,7 @@ class FetchJapaneseStreamersJob < ApplicationJob
     streamers.each do |data|
       # フォロワー数を取得
       follower_count = client.fetch_follower_count(data["user_id"])
-      next if follower_count.nil? || follower_count < 12_000  # 12,000人未満はスキップ
+      next if follower_count.nil? || follower_count < 40000  # 40,000人未満はスキップ
 
       save_streamer(data, client)
     end
