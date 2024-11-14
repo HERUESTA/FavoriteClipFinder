@@ -4,19 +4,14 @@ class User < ApplicationRecord
   has_many :favorite_clips, foreign_key: "user_uid", primary_key: "uid", dependent: :destroy
   has_many :favorited_clips, through: :favorite_clips, source: :clip
 
-  # バリデーション
-  validates :email, presence: true, uniqueness: true
-  validates :encrypted_password, presence: true
-
-
   devise :database_authenticatable, :registerable, :recoverable, :rememberable,
-         :omniauthable, omniauth_providers: [ :twitch ]
+         :omniauthable, omniauth_providers: [ :twitch ],
+         authentication_keys: [ :user_name ]
 
   # uidを元にユーザーを検索または作成し、トークンがない場合や期限が切れている場合は更新
   def self.from_omniauth(auth)
     user = where(provider: auth.provider, uid: auth.uid).first_or_initialize do |u|
       u.user_name = auth.info.name
-      u.email = auth.info.email if auth.info.email.present? # Twitchのemailがあれば保存
       u.profile_image_url = auth.info.image
     end
 
@@ -62,5 +57,14 @@ class User < ApplicationRecord
     else
       Rails.logger.error "アクセストークンの再取得に失敗しました: #{response.body}"
     end
+  end
+
+  # メール認証は使用しないため、falseにする
+  def email_required?
+    false
+  end
+
+  def email_changed?
+    false
   end
 end
