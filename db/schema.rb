@@ -34,7 +34,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_14_125309) do
     t.index ["streamer_id"], name: "index_clips_on_streamer_id"
   end
 
-  create_table "games", id: :serial, force: :cascade do |t|
+  create_table "games", force: :cascade do |t|
     t.string "name", null: false
     t.string "box_art_url"
     t.datetime "created_at", null: false

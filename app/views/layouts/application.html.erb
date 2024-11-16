@@ -19,37 +19,36 @@
 
 <body class="bg-gray-100 flex flex-col min-h-screen">
   <!-- ナビゲーションヘッダー -->
-  <header class="navbar bg-gray-800 text-white px-4 py-2 flex justify-between items-center fixed top-0 left-0 right-0 z-50">
+  <header class="navbar bg-[#f7f7f8] text-black px-4 py-2 flex justify-between items-center fixed top-0 left-0 right-0 z-50 shadow">
     <!-- ロゴとリンク -->
     <div class="flex items-center space-x-4">
       <!-- ロゴ -->
       <div class="text-purple-500">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l5-5m0 0l-5-5m5 5H6" />
-        </svg>
+        <%= image_tag "Icon.png", alt: "ロゴ", class: "h-8 w-8" %>
       </div>
-      <a href="#" class="text-white hover:text-purple-500">利用規約</a>
-      <a href="#" class="text-white hover:text-purple-500">使い方</a>
+      <a href="#" class="text-black hover:text-purple-500">利用規約</a>
+      <a href="#" class="text-black hover:text-purple-500">使い方</a>
     </div>
 
     <!-- 検索ボックス -->
-    <form action="/search" method="get" data-turbo-frame="clips">
-      <div class="flex items-center gap-2">
-        <input
-          type="text"
-          name="q"
-          placeholder="検索"
-          class="input input-bordered w-[300px] text-gray-900 bg-white border-gray-600"
-          autocomplete="on"
-          value="<%= params[:q] %>"
-        >
-        <button type="submit" class="btn btn-square bg-gray-500 text-black">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4">
-            <path fill-rule="evenodd" d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" clip-rule="evenodd" />
-          </svg>
-        </button>
-      </div>
-    </form>
+<form action="/search" method="get" data-turbo-frame="clips">
+  <div class="flex items-center gap-2">
+    <input
+      type="text"
+      name="q"
+      placeholder="検索"
+      class="input input-bordered w-[300px] text-gray-900 bg-white border-gray-600"
+      autocomplete="off"
+      value="<%= params[:q] %>"
+      style="background-color: white !important;"
+    >
+    <button type="submit">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4">
+        <path fill-rule="evenodd" d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" clip-rule="evenodd" />
+      </svg>
+    </button>
+  </div>
+</form>
 
     <!-- ログイン -->
     <% if user_signed_in? %>
@@ -75,29 +74,33 @@
   <!-- フォローリスト -->
   <div class="flex flex-1 min-h-screen pt-16">
     <!-- サイドバー -->
-    <aside class="w-64 bg-gray-900 p-4 fixed top-16 bottom-0 left-0 overflow-y-auto z-40">
-      <h2 class="text-xl font-bold text-white mb-6">フォローしているチャンネル</h2>
-      <% if current_user.present? %>
-        <% if @followed_channels.present? %>
-          <ul class="space-y-4">
-            <% @followed_channels.each do |follow| %>
-              <li class="flex items-center space-x-4 p-2 hover:bg-gray-800 rounded">
-                <img src="<%= follow['profile_image_url'] %>" alt="<%= follow['broadcaster_name'] %>" class="w-10 h-10 rounded-full object-cover">
-                <div>
-                  <p class="text-white font-semibold"><%= follow['broadcaster_name'] %></p>
-                </div>
-              </li>
+ <aside class="w-64 bg-gray-custom p-4 fixed top-16 bottom-0 left-0 overflow-y-auto z-40 border border-gray-300 shadow-md">
+  <h2 class="text-xl font-bold text-black mb-6">フォローしているチャンネル</h2>
+  <% if current_user.present? %>
+    <% if @followed_channels.present? %>
+      <ul class="space-y-0">
+        <% @followed_channels.each do |follow| %>
+          <li class="flex items-center py-2 px-4 hover:bg-gray-100 rounded cursor-pointer">
+            <%= link_to search_path(q: follow['broadcaster_name']), data: { turbo_frame: "clips" }, class: "flex items-center space-x-3 w-full" do %>
+              <!-- プロフィール画像 -->
+              <img src="<%= follow['profile_image_url'] %>" alt="<%= follow['broadcaster_name'] %>" class="w-10 h-10 rounded-full object-cover">
+              <!-- 名前 -->
+              <div class="flex-1">
+                <p class="font-medium text-gray-800 text-sm truncate"><%= follow['broadcaster_name'] %></p>
+              </div>
             <% end %>
-          </ul>
-        <% else %>
-          <p class="text-white">フォローリストがありません。</p>
+          </li>
         <% end %>
-      <% else %>
-        <div class="flex justify-center">
-          <%= button_to "ログイン", user_twitch_omniauth_authorize_path, data: { turbo: false }, class: "btn btn-secondary" %>
-        </div>
-      <% end %>
-    </aside>
+      </ul>
+    <% else %>
+      <p class="text-black">フォローリストがありません。</p>
+    <% end %>
+  <% else %>
+    <div class="flex justify-center">
+      <%= button_to "ログイン", user_twitch_omniauth_authorize_path, data: { turbo: false }, class: "btn btn-secondary" %>
+    </div>
+  <% end %>
+</aside>
 
     <!-- メインコンテンツ -->
     <main class="flex-1 p-6 bg-gray-100 ml-64">
