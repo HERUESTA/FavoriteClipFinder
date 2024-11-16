@@ -1,7 +1,7 @@
-class playlistClip < ApplicationRecord
+class PlaylistClip < ApplicationRecord
   # 関連付け
   belongs_to :playlist
-  belongs_to :clip 
+  belongs_to :clip
 
   # 並び替えのためのデフォルトスコープ
   default_scope { order(:position) }
