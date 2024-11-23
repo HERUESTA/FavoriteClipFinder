@@ -3,6 +3,7 @@ class FavoriteClip < ApplicationRecord
   belongs_to :user, foreign_key: "user_uid"
   belongs_to :clip
 
+
     # バリデーション
     validates :user_uid, presence: true
     validates :clip_id, presence: true

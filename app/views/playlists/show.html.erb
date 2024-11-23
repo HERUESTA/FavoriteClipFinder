@@ -1,0 +1,10 @@
+<!-- app/views/playlists/show.html.erb -->
+<h1><%= @playlist.name %></h1>
+<p><%= @playlist.description %></p>
+
+<h2>クリップ一覧</h2>
+<ul>
+  <% @clips.each do |clip| %>
+    <li><%= clip.name %></li>
+  <% end %>
+</ul>

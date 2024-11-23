@@ -21,8 +21,9 @@ class SearchController < ApplicationController
     # 重複を排除してクリップを一意にする
     @clips = @clips.uniq
     @clips = Kaminari.paginate_array(@clips).page(params[:page]).per(60)
+    @search_query = search_query
 
     # ビューにフラグを渡して、検索結果がゲームからか配信者からかを示す
-    render partial: "search/clips", locals: { clips: @clips, game_search: @games.any? }
+    render partial: "search/clips", locals: { clips: @clips, search_query: @search_query }
   end
 end

@@ -5,4 +5,4 @@ scheduler:
     fetch_japanese_streamers_job:
       cron: "0 */3 * * *"   # 3時間ごとに実行
       class: FetchJapaneseStreamersJob
-      queue: default
+      queue: default  

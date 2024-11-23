@@ -1,0 +1,24 @@
+<!-- app/views/users/show.html.erb -->
+<div>
+  <h2>非公開プレイリスト</h2>
+  <ul>
+    <% @private_playlists.each do |playlist| %>
+      <li>
+        <%= link_to playlist.name, playlist_path(playlist) %>
+        (<%= playlist.clips.count %> クリップ)
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+<div>
+  <h2>いいねした公開プレイリスト</h2>
+  <ul>
+    <% @liked_playlists.each do |playlist| %>
+      <li>
+        <%= link_to playlist.name, playlist_path(playlist) %>
+        (<%= playlist.clips.count %> クリップ)
+      </li>
+    <% end %>
+  </ul>
+</div>

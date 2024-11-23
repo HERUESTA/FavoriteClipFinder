@@ -1,6 +1,8 @@
 class Clip < ApplicationRecord
   belongs_to :streamer, foreign_key: :streamer_id, primary_key: :streamer_id
   belongs_to :game, foreign_key: :game_id, primary_key: :game_id
+  has_many :playlist_clips, dependent: :destroy
+  has_many :playlists, through: :playlist_clips
 
   validates :clip_id, presence: true, uniqueness: true
   validates :title, presence: true
