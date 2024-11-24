@@ -1,10 +1,52 @@
-<!-- app/views/playlists/show.html.erb -->
-<h1><%= @playlist.name %></h1>
-<p><%= @playlist.description %></p>
+<div class="bg-gray-900 text-white min-h-screen flex flex-col">
+  <!-- 動画プレイヤー -->
+  <%= turbo_frame_tag "video_player" do %>
+    <div class="bg-gray-700 p-4 rounded-lg shadow-md mx-4 mt-4">
+      <!-- 動画プレイヤー部分 -->
+      <iframe
+        class="w-full h-[30vh] rounded-lg"
+        src="https://clips.twitch.tv/embed?clip=<%= @clip&.clip_id %>&parent=<%= ENV['TWITCH_PARENT_URL'] %>"
+        frameborder="0"
+        allowfullscreen
+        loading="lazy"
+      ></iframe>
 
-<h2>クリップ一覧</h2>
-<ul>
-  <% @clips.each do |clip| %>
-    <li><%= clip.name %></li>
+      <!-- 動画情報 -->
+      <h1 class="text-lg font-bold text-purple-300 mt-2 truncate">
+        <%= @clip&.title || "タイトルなし" %>
+      </h1>
+      <p class="text-gray-400 text-sm mt-1">視聴数: <%= @clip&.view_count || "不明" %></p>
+      <p class="text-sm font-bold text-white truncate"><%= @clip&.game&.name || "不明なゲーム" %></p>
+
+      <!-- 配信者情報 -->
+      <div class="flex items-center mt-2">
+        <%= image_tag @clip&.streamer&.profile_image_url, class: "w-8 h-8 rounded-full mr-3" if @clip&.streamer&.profile_image_url.present? %>
+        <p class="text-base text-white truncate">
+          <%= @clip&.streamer&.display_name || "不明な配信者" %>
+        </p>
+      </div>
+    </div>
   <% end %>
-</ul>
+
+  <!-- クリップ一覧 -->
+  <div class="flex-1 bg-gray-800 p-4 rounded-lg mx-4 mt-4 overflow-y-auto" style="max-height: 50vh;">
+    <h2 class="text-lg font-bold text-white mb-4"><%= @playlist.name || "プレイリスト" %></h2>
+    <ul class="space-y-4">
+      <% @clips.each do |clip| %>
+        <li class="flex items-center bg-gray-700 p-3 rounded-lg hover:bg-gray-600 transition">
+          <%= link_to playlist_path(@playlist, clip_id: clip.id, turbo_frame: "video_player"), class: "flex items-center space-x-3 w-full" do %>
+            <img
+              src="<%= clip.thumbnail_url.gsub('%{width}x%{height}', '160x90') %>"
+              alt="<%= clip.title %>"
+              class="w-16 h-auto rounded"
+            />
+            <div class="truncate w-full">
+              <p class="text-sm font-bold text-white truncate"><%= clip.title %></p>
+              <p class="text-xs text-gray-400 truncate"><%= clip.streamer&.display_name || "不明な配信者" %></p>
+            </div>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

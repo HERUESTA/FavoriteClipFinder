@@ -1,0 +1,7 @@
+<%= turbo_stream.replace "flash_messages" do %>
+  <%= render "layouts/flash_messages" %>
+<% end %>
+
+<%= turbo_stream.replace "clips" do %>
+  <%= render "search/clips", clips: @clips, search_query: @search_query %>
+<% end %>

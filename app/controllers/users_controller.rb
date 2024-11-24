@@ -92,8 +92,6 @@ class UsersController < ApplicationController
     @private_playlists = current_user.playlists.where(visibility: "private")
 
   # いいねした公開プレイリストを取得
-  # いいねした公開プレイリストを取得
-  @liked_playlists = Playlist.joins(:likes)
-  .where(likes: { user_id: current_user.id }, visibility: "public")
+  @liked_playlists = Playlist.where(visibility: "public").order(likes: :desc)
   end
 end

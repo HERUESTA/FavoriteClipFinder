@@ -104,8 +104,13 @@
 
     <!-- メインコンテンツ -->
     <main class="flex-1 p-6 bg-gray-100 ml-64">
+      <!-- クリップ表示用のTurbo Frame -->
       <%= turbo_frame_tag "clips" do %>
         <%= yield %>
+      <% end %>
+      <!-- フラッシュメッセージ用のTurbo Frame -->
+      <%= turbo_frame_tag "flash_messages" do %>
+        <%= render "layouts/flash_messages" %>
       <% end %>
     </main>
   </div>

@@ -21,7 +21,7 @@ Rails.application.routes.draw do
   resources :playlist_clips, only: [ :create ]
 
   # プレイリストのルート
-  resources :playlists, only: [ :show ]
+  resources :playlists
 
   # マイページ用ルート
   get "show", to: "users#show", as: "show"

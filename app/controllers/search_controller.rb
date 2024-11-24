@@ -21,6 +21,8 @@ class SearchController < ApplicationController
     # 重複を排除してクリップを一意にする
     @clips = @clips.uniq
     @clips = Kaminari.paginate_array(@clips).page(params[:page]).per(60)
+
+    # 検索ワードを変数化する
     @search_query = search_query
 
     # ビューにフラグを渡して、検索結果がゲームからか配信者からかを示す

@@ -6,8 +6,6 @@
         <div class="relative">
           <!-- 各クリップをレンダリング -->
           <%= render partial: "search/clip", locals: { clip: clip, clips: clips, search_query: search_query } %>
-          <!-- デバッグ用: search_queryの値を表示 -->
-          <p>Search Query: <%= search_query %></p>
         </div>
       <% end %>
     </div>

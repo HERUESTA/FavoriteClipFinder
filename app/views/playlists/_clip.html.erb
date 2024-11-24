@@ -1,0 +1,150 @@
+<!-- 単一のクリップカード -->
+<div class="clip-container p-4 relative rounded-lg border-b-4 border-gray-200 flex flex-col justify-between">
+  <!-- 動画部分 -->
+  <figure class="relative" data-controller="video">
+    <img
+      data-video-target="thumbnail"
+      src="<%= clip.thumbnail_url.gsub('%{width}x%{height}', '1280x720') %>"
+      alt="<%= clip.title %>"
+      class="w-full h-auto cursor-pointer"
+      style="height: 300px;"
+      data-action="click->video#showVideo"
+      loading="lazy"
+    />
+    <iframe
+      data-video-target="iframe"
+      src="https://clips.twitch.tv/embed?clip=<%= clip.clip_id %>&parent=<%= ENV['TWITCH_PARENT_URL'] %>"
+      scrolling="no"
+      allowfullscreen="true"
+      class="w-full h-auto"
+      style="max-width: 100%; height: 300px; display: none;"
+      loading="lazy"
+    ></iframe>
+  </figure>
+
+  <div class="pl-4 w-full max-w-full">
+    <!-- クリップタイトル -->
+    <h2 class="text-lg font-bold mb-1 truncate">
+      <%= clip.title %>
+    </h2>
+
+    <div class="flex items-start">
+      <!-- 配信者アイコンと名前 -->
+      <%= link_to search_path(q: clip.streamer.display_name), data: { turbo_frame: "clips" } do %>
+        <img
+          src="<%= clip.streamer.profile_image_url ? clip.streamer.profile_image_url.gsub('{width}x{height}', '100x100') : 'default-avatar-url.jpg' %>"
+          alt="<%= clip.streamer.display_name %>"
+          class="w-10 h-10 rounded-full object-cover mr-4"
+          loading="lazy"
+        />
+      <% end %>
+      <div>
+        <!-- 配信者名 -->
+        <%= link_to clip.streamer.display_name, search_path(q: clip.streamer.display_name), data: { turbo_frame: "clips" }, class: "text-sm text-gray-600 mb-1" %>
+
+        <!-- ゲーム名 -->
+        <%= link_to clip.game.name, search_path(q: clip.game.name), data: { turbo_frame: "clips" }, class: "text-sm text-gray-500" %>
+
+        <!-- クリップ作成者名 -->
+        <p class="text-sm text-gray-600">
+          作成者: <%= clip.creator_name %>
+        </p>
+      </div>
+    </div>
+
+    <!-- 保存ボタン -->
+    <label for="playlist-modal-<%= clip.id %>" class="btn btn-primary bg-purple-600 hover:bg-purple-700 text-white border-none flex items-center px-3 py-1 rounded transition-colors duration-200 cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+      </svg>
+      <span>保存</span>
+    </label>
+
+    <!-- モーダルのトグル用チェックボックス -->
+    <input type="checkbox" id="playlist-modal-<%= clip.id %>" class="modal-toggle" />
+
+    <!-- モーダル本体 -->
+    <div class="modal">
+      <div class="modal-box rounded-lg shadow-lg">
+        <h3 class="font-bold text-lg">動画の保存先</h3>
+        <!-- モーダル内のコンテンツ -->
+        <div class="py-4">
+          <!-- プレイリストのチェックボックスリスト -->
+          <%= form_with url: playlist_clips_path, method: :post do |f| %>
+            <input type="hidden" name="search_query" value="<%= @search_query %>" />
+            <input type="hidden" name="clip_id" value="<%= clip.id %>" />
+
+            <!-- プレイリストのチェックボックスをリスト表示 -->
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">保存先のプレイリストを選択</span>
+              </label>
+              <% if @playlists.present? %>
+                <% @playlists.each do |playlist| %>
+                  <label class="cursor-pointer label">
+                    <input type="checkbox" name="playlist_ids[]" value="<%= playlist.id %>" class="checkbox checkbox-primary" />
+                    <span class="label-text ml-2"><%= playlist.name %></span>
+                  </label>
+                <% end %>
+              <% else %>
+                <!-- プレイリストがない場合、「後で見る」を表示しチェック済みにする -->
+                <label class="cursor-pointer label">
+                  <input type="checkbox" name="watch_later" value="true" class="checkbox checkbox-secondly" checked />
+                  <span class="label-text ml-2">後で見る</span>
+                </label>
+              <% end %>
+            </div>
+
+            <!-- 「新しいプレイリストを作成」 -->
+            <div class="mt-4">
+              <label for="new-playlist-modal" class="btn btn-secondary flex items-center justify-center w-full">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+                ＋新しいプレイリストを作成
+              </label>
+            </div>
+
+            <!-- 保存ボタン -->
+            <div class="modal-action">
+              <button type="submit" class="btn btn-primary">保存</button>
+              <label for="playlist-modal-<%= clip.id %>" class="btn">キャンセル</label>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 新しいプレイリスト作成モーダル -->
+  <input type="checkbox" id="new-playlist-modal" class="modal-toggle" />
+  <div class="modal">
+    <div class="modal-box rounded-lg shadow-lg">
+      <h3 class="font-bold text-lg">新しいプレイリストを作成</h3>
+      <%= form_with url: playlist_clips_path, method: :post do |f| %>
+        <input type="hidden" name="search_query" value="<%= @search_query %>" />
+        <div class="form-control mt-4">
+          <label class="label">
+            <span class="label-text">タイトルを入力してください</span>
+          </label>
+          <input type="text" name="playlist_name" placeholder="例: マイプレイリスト" class="input input-bordered" required />
+        </div>
+
+        <div class="form-control mt-4">
+          <label class="label">
+            <span class="label-text">公開設定</span>
+          </label>
+          <select name="visibility" class="select select-bordered">
+            <option value="private" selected>非公開</option>
+            <option value="public">公開</option>
+          </select>
+        </div>
+
+        <div class="modal-action">
+          <label for="new-playlist-modal" class="btn">キャンセル</label>
+          <button type="submit" class="btn btn-primary">作成</button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
