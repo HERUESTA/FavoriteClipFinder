@@ -1,7 +1,6 @@
-<div class="bg-gray-900 text-white min-h-screen">
+<div class="bg-gray-100 text-black min-h-screen">
   <!-- Header -->
-  <!-- ナビゲーションヘッダー -->
-  <header class="navbar bg-[#f7f7f8] text-black px-4 py-2 flex justify-between items-center fixed top-0 left-0 right-0 z-50 shadow">
+  <header class="navbar bg-white text-black px-4 py-2 flex justify-between items-center fixed top-0 left-0 right-0 z-50 shadow">
     <!-- ロゴとリンク -->
     <div class="flex items-center space-x-4">
       <!-- ロゴ -->
@@ -13,24 +12,23 @@
     </div>
 
     <!-- 検索ボックス -->
-<form action="/search" method="get" data-turbo-frame="clips">
-  <div class="flex items-center gap-2">
-    <input
-      type="text"
-      name="q"
-      placeholder="検索"
-      class="input input-bordered w-[300px] text-gray-900 bg-white border-gray-600"
-      autocomplete="off"
-      value="<%= params[:q] %>"
-      style="background-color: white !important;"
-    >
-    <button type="submit">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4">
-        <path fill-rule="evenodd" d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" clip-rule="evenodd" />
-      </svg>
-    </button>
-  </div>
-</form>
+    <form action="/search" method="get" data-turbo-frame="clips">
+      <div class="flex items-center gap-2">
+        <input
+          type="text"
+          name="q"
+          placeholder="検索"
+          class="input input-bordered w-[300px] text-gray-900 bg-gray-200 border-gray-400"
+          autocomplete="off"
+          value="<%= params[:q] %>"
+        >
+        <button type="submit">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4">
+            <path fill-rule="evenodd" d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+    </form>
 
     <!-- ログイン -->
     <% if user_signed_in? %>
@@ -44,50 +42,53 @@
           <li><%= link_to 'プロフィール', show_path(current_user) %></li>
           <li><a href="#">設定</a></li>
           <li>
-            <%= button_to "ログアウト", destroy_user_session_path, method: :delete, class: "text-white-500 no-button-style" %>
+            <%= button_to "ログアウト", destroy_user_session_path, method: :delete, class: "text-gray-500 no-button-style" %>
           </li>
         </ul>
       </div>
     <% else %>
-      <%= button_to "ログイン", user_twitch_omniauth_authorize_path, data: { turbo: false }, class: "btn btn-secondary" %>
+      <%= button_to "ログイン", user_twitch_omniauth_authorize_path, data: { turbo: false }, class: "btn btn-primary" %>
     <% end %>
   </header>
 
-    <!-- Main section -->
-    <main class="flex-1 p-6">
-      <div class="bg-gray-700 p-4 rounded-lg">
-        <!-- User Profile -->
-        <div class="flex items-center mb-6">
-          <div class="w-12 rounded-full">
-            <%= image_tag(current_user.profile_image_url, alt: "プロフィール画像", class: "profile-image", width: "50", height: "50") if current_user.profile_image_url.present? %>
-          </div>
-          <div class="ml-4">
-            <h2 class="text-xl font-bold"><%=current_user.user_name%></h2>
-          </div>
+  <!-- Main section -->
+  <main class="flex-1 p-6 mt-16">
+    <div class="bg-white p-4 rounded-lg shadow-md">
+      <!-- User Profile -->
+      <div class="flex items-center mb-6">
+        <div class="w-12 rounded-full">
+          <%= image_tag(current_user.profile_image_url, alt: "プロフィール画像", class: "profile-image", width: "50", height: "50") if current_user.profile_image_url.present? %>
+        </div>
+        <div class="ml-4">
+          <h2 class="text-xl font-bold"><%= current_user.user_name %></h2>
         </div>
       </div>
-<div class="mt-8 bg-gray-800 p-6 rounded-lg">
-  <!-- プレイリスト（マイライブラリ） -->
-  <h2 class="text-xl font-bold text-white mb-4">マイライブラリ</h2>
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    <% @private_playlists.each do |playlist| %>
-      <!-- プレイリストカード -->
-      <div class="bg-gray-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-        <h3 class="text-lg font-bold text-purple-300">
-          <%= link_to playlist.name, playlist_path(playlist), class: "hover:underline" %>
-        </h3>
-        <p class="text-gray-400 text-sm mt-2">
-          <%= playlist.description.presence || "説明がありません。" %>
-        </p>
-        <p class="text-gray-400 text-sm mt-2">クリップ数: <%= playlist.clips.count %></p>
-        <div class="mt-4 flex items-center justify-between">
-          <span class="text-sm text-gray-500">いいね: <%= playlist.likes %></span>
-          <%= link_to "編集", edit_playlist_path(playlist), class: "text-sm bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600" %>
-        </div>
+    </div>
+
+    <!-- プレイリスト（マイライブラリ） -->
+    <div class="mt-8 bg-gray-50 p-6 rounded-lg">
+      <h2 class="text-xl font-bold text-black mb-4">マイライブラリ</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% @private_playlists.each do |playlist| %>
+          <!-- プレイリストカード -->
+          <div class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <div class="relative">
+              <%= image_tag playlist.clips.first&.thumbnail_url , alt: "サムネイル", class: "rounded-lg w-full h-32 object-cover" %>
+              <span class="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">クリップ数: <%= playlist.clips.count %></span>
+            </div>
+            <h3 class="text-lg font-bold text-purple-500 mt-4">
+              <%= link_to playlist.name, playlist_path(playlist), class: "hover:underline" %>
+            </h3>
+            <p class="text-gray-500 text-sm mt-2">
+              <%= playlist.description.presence || "説明がありません。" %>
+            </p>
+            <div class="mt-4 flex items-center justify-between">
+              <span class="text-sm text-gray-500">いいね: <%= playlist.likes %></span>
+              <%= link_to "編集", edit_playlist_path(playlist), class: "text-sm bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600" %>
+            </div>
+          </div>
+        <% end %>
       </div>
-    <% end %>
-  </div>
-</div>
-
-
+    </div>
+  </main>
 </div>
