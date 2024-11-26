@@ -17,6 +17,15 @@ Rails.application.routes.draw do
   # 検索ルート
   get "search", to: "search#index"
 
+  # プレイリストクリップ用ルート
+  resources :playlist_clips, only: [ :create ]
+
+  # プレイリストのルート
+  resources :playlists
+
+  # マイページ用ルート
+  get "show", to: "users#show", as: "show"
+
   # CI/CD用route
   get "up" => "rails/health#show", as: :rails_health_check
 

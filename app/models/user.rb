@@ -8,6 +8,9 @@ class User < ApplicationRecord
          :omniauthable, omniauth_providers: [ :twitch ],
          authentication_keys: [ :user_name ]
 
+  # コールバック：　ユーザー作成時に「後で見る」を作成
+  after_create :create_default_playlist
+
   # uidを元にユーザーを検索または作成し、トークンがない場合や期限が切れている場合は更新
   def self.from_omniauth(auth)
     user = where(provider: auth.provider, uid: auth.uid).first_or_initialize do |u|
@@ -66,5 +69,9 @@ class User < ApplicationRecord
 
   def email_changed?
     false
+  end
+
+  def create_default_playlist
+    playlists.create(name: "後で見る", is_watch_later: true)
   end
 end

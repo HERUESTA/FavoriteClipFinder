@@ -59,7 +59,7 @@
           </div>
         </div>
         <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-          <li><a href="#">プロフィール</a></li>
+          <li><%= link_to 'プロフィール', show_path(current_user) %></li>
           <li><a href="#">設定</a></li>
           <li>
             <%= button_to "ログアウト", destroy_user_session_path, method: :delete, class: "text-white-500 no-button-style" %>
@@ -104,8 +104,13 @@
 
     <!-- メインコンテンツ -->
     <main class="flex-1 p-6 bg-gray-100 ml-64">
+      <!-- クリップ表示用のTurbo Frame -->
       <%= turbo_frame_tag "clips" do %>
         <%= yield %>
+      <% end %>
+      <!-- フラッシュメッセージ用のTurbo Frame -->
+      <%= turbo_frame_tag "flash_messages" do %>
+        <%= render "layouts/flash_messages" %>
       <% end %>
     </main>
   </div>

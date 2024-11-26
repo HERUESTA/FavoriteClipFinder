@@ -65,6 +65,12 @@ group :development do
   gem "web-console"
   # N+1検出用
   gem "bullet"
+
+  # Prettier用
+  gem "prettier_print"
+  gem "syntax_tree"
+  gem "syntax_tree-haml"
+  gem "syntax_tree-rbs"
 end
 
 group :test do

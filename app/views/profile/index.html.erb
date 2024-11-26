@@ -1,0 +1,81 @@
+<div class="bg-gray-900 text-white min-h-screen">
+  <!-- Header -->
+  <div class="flex justify-between items-center bg-gray-800 p-4">
+    <div class="text-purple-300 font-bold">利用規約</div>
+    <div class="text-purple-300 font-bold">使い方</div>
+  </div>
+
+  <!-- Main content -->
+  <div class="flex">
+    <!-- Sidebar -->
+    <aside class="w-1/4 bg-gray-800 p-4">
+      <h2 class="text-white text-lg font-bold mb-4">フォローしているチャンネル</h2>
+      <ul class="space-y-2">
+        <li>
+          <div class="flex items-center">
+            <span class="w-3 h-3 bg-green-500 rounded-full mr-2"></span> チャンネル1
+          </div>
+        </li>
+        <li>
+          <div class="flex items-center">
+            <span class="w-3 h-3 bg-gray-400 rounded-full mr-2"></span> チャンネル2
+          </div>
+        </li>
+        <li>
+          <div class="flex items-center">
+            <span class="w-3 h-3 bg-gray-400 rounded-full mr-2"></span> チャンネル3
+          </div>
+        </li>
+        <li>
+          <div class="flex items-center">
+            <span class="w-3 h-3 bg-gray-400 rounded-full mr-2"></span> チャンネル4
+          </div>
+        </li>
+        <li>
+          <div class="flex items-center">
+            <span class="w-3 h-3 bg-gray-400 rounded-full mr-2"></span> チャンネル5
+          </div>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Main section -->
+    <main class="flex-1 p-6">
+      <div class="bg-gray-700 p-4 rounded-lg">
+        <!-- User Profile -->
+        <div class="flex items-center mb-6">
+          <div class="w-16 h-16 rounded-full bg-gray-500 flex items-center justify-center">
+            <i class="text-3xl text-white fas fa-user"></i>
+          </div>
+          <div class="ml-4">
+            <h2 class="text-xl font-bold">ユーザー名</h2>
+          </div>
+        </div>
+
+        <!-- Liked Clips -->
+        <h3 class="text-lg font-bold mb-4">いいねしたクリップ</h3>
+        <div class="grid grid-cols-5 gap-4">
+          <% 5.times do %>
+            <div class="relative bg-gray-600 rounded-lg aspect-video">
+              <div class="absolute bottom-2 right-2">
+                <button class="bg-red-500 text-white p-2 rounded-full">
+                  <i class="fas fa-heart"></i>
+                </button>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 p-4 mt-6">
+    <div class="flex justify-between items-center text-sm text-gray-400">
+      <div>© 2023 ストリーミングプラットフォーム. All rights reserved.</div>
+      <div class="flex space-x-4">
+        <a href="#" class="hover:text-white">お問い合わせ</a>
+      </div>
+    </div>
+  </footer>
+</div>

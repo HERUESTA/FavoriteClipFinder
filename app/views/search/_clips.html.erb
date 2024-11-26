@@ -5,7 +5,7 @@
       <% clips.each do |clip| %>
         <div class="relative">
           <!-- 各クリップをレンダリング -->
-          <%= render partial: "search/clip", locals: { clip: clip, game_search: game_search } %>
+          <%= render partial: "search/clip", locals: { clip: clip, clips: clips, search_query: search_query } %>
         </div>
       <% end %>
     </div>

@@ -85,4 +85,13 @@ class UsersController < ApplicationController
       []
     end
   end
+
+  # マイページへ
+  def show
+    # 非公開プレイリストを取得
+    @private_playlists = current_user.playlists.where(visibility: "private")
+
+  # いいねした公開プレイリストを取得
+  @liked_playlists = Playlist.where(visibility: "public").order(likes: :desc)
+  end
 end
