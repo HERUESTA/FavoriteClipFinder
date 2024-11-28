@@ -101,7 +101,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
-                ＋新しいプレイリストを作成
+                  新しいプレイリストを作成
               </label>
             </div>
 
@@ -123,11 +123,12 @@
       <h3 class="font-bold text-lg">新しいプレイリストを作成</h3>
       <%= form_with url: playlist_clips_path, method: :post do |f| %>
         <input type="hidden" name="search_query" value="<%= @search_query %>" />
+        <input type="hidden" name="clip_id" value="<%= clip.id %>" />
         <div class="form-control mt-4">
           <label class="label">
             <span class="label-text">タイトルを入力してください</span>
           </label>
-          <input type="text" name="playlist_name" placeholder="例: マイプレイリスト" class="input input-bordered" required />
+          <%= f.text_field :playlist_name, placeholder: "例： マイプレイリスト", class: "input input-bordered" %>
         </div>
 
         <div class="form-control mt-4">
