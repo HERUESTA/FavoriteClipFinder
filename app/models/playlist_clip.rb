@@ -13,6 +13,4 @@ class PlaylistClip < ApplicationRecord
 
   # 一意性のバリデーション
   validates :clip_id, uniqueness: { scope: :playlist_id }
-
-  
 end

@@ -3,20 +3,13 @@ class PlaylistClipsController < ApplicationController
 
   def create
     # フォームから送信されたデータを取得
-    playlist_clip_params = create_playlist_clip_params
-    @playlist_name = params[:playlist_name]
-    @visibility = params[:visibility]
-    Rails.logger.debug("プレイリスト名 #{@playlist_name.inspect}")
-
-    # クリップIDを取得して数値に変換
-    clip_id = playlist_clip_params[:clip_id]
-
-    # 「後で見る」が選択されているかを確認
-    watch_later = playlist_clip_params[:watch_later] == "true"
-    Rails.logger.debug("「後でみる」のtrue判定 #{watch_later.inspect}")
+    set_params
 
     # クリップを取得
-    clip = Clip.find(clip_id)
+    clip = Clip.find(@clip_id)
+
+    # 「後で見る」が選択されているかを確認
+    watch_later = @watch_later == "true"
 
     # 「後で見る」の処理
     if watch_later
@@ -29,34 +22,19 @@ class PlaylistClipsController < ApplicationController
         is_watch_later: true,
       )
       end
-
       # 該当のクリップがすでにプレイリスト内に存在するかどうか
-      if watch_later_playlist.clips.exists?
-        flash.now[:alert] = "「後で見る」プレイリストには既にこのクリップが追加されています。"
-      else
-        watch_later_playlist.clips.push(clip)
-        flash.now[:notice] = "クリップが「後で見る」に追加されました。"
-      end
+      search_clip(watch_later_playlist, clip)
     end
 
-    #通常のプレイリスト作成の処理
+    # 通常のプレイリスト作成の処理
     unless watch_later
       if playlist = current_user.playlists.find_or_initialize_by(name: @playlist_name)
         if playlist.new_record?
           playlist.save
-          Rails.logger.debug("プレイリストの詳細 #{@playlist.inspect}")
         end
+        search_clip(playlist, clip)
       end
-        playlist = current_user.playlists.find_by(name: @playlist_name)
-        if playlist
-          if playlist.clips.exists?(clip.id)
-            flash.now[:alert] = "「#{playlist.name}」には既にこのクリップが追加されています。"
-          else
-            playlist.clips.push(clip)
-            flash.now[:notice] = "プレイリスト「#{playlist.name}」にクリップが追加されました。"
-          end
-        end
-      end
+    end
 
 
     # クリップ検索の準備
@@ -69,6 +47,9 @@ class PlaylistClipsController < ApplicationController
     @clips = Kaminari.paginate_array(@clips).page(params[:page]).per(60)
     @search_query = search_query
 
+    # プレイリストを変数にして渡す
+    @playlists = current_user.playlists
+
     respond_to do |format|
       format.turbo_stream {
         render turbo_stream: [
@@ -76,7 +57,7 @@ class PlaylistClipsController < ApplicationController
           turbo_stream.replace(
             "clips",
             partial: "search/clips",
-            locals: { clips: @clips, search_query: @search_query }
+            locals: { clips: @clips, search_query: @search_query, playlists: @playlists }
           )
         ]
       }
@@ -89,5 +70,23 @@ class PlaylistClipsController < ApplicationController
   # ストロングパラメーターの定義
   def create_playlist_clip_params
     params.permit(:clip_id, :watch_later, :playlist_name)
+  end
+
+  # プレイリストに該当クリップが存在するかどうかの分岐処理
+  def search_clip(playlist, clip)
+    if playlist.clips.exists?(@clip_id)
+      flash.now[:alert] = "「#{playlist.name}」には既にこのクリップが追加されています。"
+    else
+      playlist.clips.push(clip)
+      flash.now[:notice] = "プレイリスト「#{playlist.name}」にクリップが追加されました。"
+    end
+  end
+
+  # フォームから送信されたデータを取得
+  def set_params
+    @playlist_name = params[:playlist_name]
+    @visibility = params[:visibility]
+    @watch_later = params[:watch_later]
+    @clip_id = params[:clip_id]
   end
 end

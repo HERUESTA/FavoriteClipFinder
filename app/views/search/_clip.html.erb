@@ -69,12 +69,12 @@
         <h3 class="font-bold text-lg">動画の保存先</h3>
         <!-- モーダル内のコンテンツ -->
         <div class="py-4">
-          <!-- プレイリストのチェックボックスリスト -->
+          <!-- プレイリストのラジオボタンリスト -->
           <%= form_with url: playlist_clips_path, method: :post do |f| %>
             <input type="hidden" name="search_query" value="<%= @search_query %>" />
             <input type="hidden" name="clip_id" value="<%= clip.id %>" />
 
-            <!-- プレイリストのチェックボックスをリスト表示 -->
+            <!-- プレイリストのラジオボタンをリスト表示 -->
             <div class="form-control">
               <label class="label">
                 <span class="label-text">保存先のプレイリストを選択</span>
@@ -82,14 +82,14 @@
               <% if @playlists.present? %>
                 <% @playlists.each do |playlist| %>
                   <label class="cursor-pointer label">
-                    <input type="checkbox" name="playlist_ids[]" value="<%= playlist.id %>" class="checkbox checkbox-primary" />
+                    <input type="radio" name="playlist_name" value="<%= playlist.name %>" class="radio checkbox-primary" />
                     <span class="label-text ml-2"><%= playlist.name %></span>
                   </label>
                 <% end %>
               <% else %>
                 <!-- プレイリストがない場合、「後で見る」を表示しチェック済みにする -->
                 <label class="cursor-pointer label">
-                  <input type="checkbox" name="watch_later" value="true" class="checkbox checkbox-secondly" checked />
+                  <input type="radio" name="watch_later" value="true" class="radio radio-secondly" checked />
                   <span class="label-text ml-2">後で見る</span>
                 </label>
               <% end %>
