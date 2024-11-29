@@ -3,78 +3,39 @@ class PlaylistClipsController < ApplicationController
 
   def create
     # フォームから送信されたデータを取得
-    playlist_clip_params = create_playlist_clip_params
-    Rails.logger.debug("フォームから送信されたデータ #{params.inspect}")
+    set_params
 
-    # クリップIDを取得して数値に変換
-    clip_id = playlist_clip_params[:clip_id].to_i
-    Rails.logger.debug("Converted Clip ID: #{clip_id}")
-
-    # プレイリストのIDを取得（デフォルトは空配列）
-    playlist_ids = playlist_clip_params[:playlist_ids] || []
+    # クリップを取得
+    clip = Clip.find(@clip_id)
 
     # 「後で見る」が選択されているかを確認
-    watch_later = playlist_clip_params[:watch_later] == "true"
-
-    # クリップを取得（存在しない場合は404エラー）
-    clip = Clip.find(clip_id)
-
-    # フラッシュメッセージを格納する変数
-    success_messages = []
-    error_messages = []
-
-    # プレイリストにクリップを追加
-    if playlist_ids.any?
-      playlist_ids.each do |playlist_id|
-        playlist = current_user.playlists.find_by(id: playlist_id)
-        if playlist
-          if playlist.clips.exists?(clip.id)
-            error_messages << "プレイリスト「#{playlist.name}」には既にこのクリップが追加されています。"
-          else
-            playlist.clips << clip
-            Rails.logger.debug("Clip #{clip.id} added to playlist #{playlist.id}")
-            success_messages << "プレイリスト「#{playlist.name}」にクリップが追加されました。"
-          end
-        else
-          Rails.logger.debug("Playlist with ID #{playlist_id} not found for user #{current_user.id}")
-          error_messages << "指定されたプレイリストが見つかりませんでした。"
-        end
-      end
-    else
-      error_messages << "プレイリストが選択されていません。"
-    end
+    watch_later = @watch_later == "true"
 
     # 「後で見る」の処理
     if watch_later
       watch_later_playlist = current_user.playlists.find_or_initialize_by(name: "後で見る")
+      # 新規作成の場合の処理
+      if watch_later_playlist.new_record?
+        watch_later_playlist.save
       watch_later_playlist.assign_attributes(
         user_uid: current_user.uid,
         is_watch_later: true,
-        visibility: "private"
       )
-
-      if watch_later_playlist.new_record?
-        if watch_later_playlist.save
-          Rails.logger.debug("Created new 'Watch Later' playlist: #{watch_later_playlist.inspect}")
-        else
-          error_messages << "「後で見る」プレイリストの作成に失敗しました。"
-        end
-      else
-        Rails.logger.debug("'Watch Later' playlist already exists: #{watch_later_playlist.inspect}")
       end
+      # 該当のクリップがすでにプレイリスト内に存在するかどうか
+      search_clip(watch_later_playlist, clip)
+    end
 
-      if watch_later_playlist.clips.exists?(clip.id)
-        error_messages << "「後で見る」プレイリストには既にこのクリップが追加されています。"
-      else
-        watch_later_playlist.clips << clip
-        Rails.logger.debug("Clip #{clip.id} added to 'Watch Later' playlist #{watch_later_playlist.id}")
-        success_messages << "クリップが「後で見る」に追加されました。"
+    # 通常のプレイリスト作成の処理
+    unless watch_later
+      if playlist = current_user.playlists.find_or_initialize_by(name: @playlist_name)
+        if playlist.new_record?
+          playlist.save
+        end
+        search_clip(playlist, clip)
       end
     end
 
-    # 成功とエラーのメッセージをフラッシュに設定
-    flash[:notice] = success_messages.join(" ") if success_messages.any?
-    flash[:alert] = error_messages.join(" ") if error_messages.any?
 
     # クリップ検索の準備
     search_query = params[:search_query]
@@ -86,6 +47,9 @@ class PlaylistClipsController < ApplicationController
     @clips = Kaminari.paginate_array(@clips).page(params[:page]).per(60)
     @search_query = search_query
 
+    # プレイリストを変数にして渡す
+    @playlists = current_user.playlists
+
     respond_to do |format|
       format.turbo_stream {
         render turbo_stream: [
@@ -93,7 +57,7 @@ class PlaylistClipsController < ApplicationController
           turbo_stream.replace(
             "clips",
             partial: "search/clips",
-            locals: { clips: @clips, search_query: @search_query }
+            locals: { clips: @clips, search_query: @search_query, playlists: @playlists }
           )
         ]
       }
@@ -105,6 +69,24 @@ class PlaylistClipsController < ApplicationController
 
   # ストロングパラメーターの定義
   def create_playlist_clip_params
-    params.permit(:clip_id, :watch_later, playlist_ids: [])
+    params.permit(:clip_id, :watch_later, :playlist_name)
+  end
+
+  # プレイリストに該当クリップが存在するかどうかの分岐処理
+  def search_clip(playlist, clip)
+    if playlist.clips.exists?(@clip_id)
+      flash.now[:alert] = "「#{playlist.name}」には既にこのクリップが追加されています。"
+    else
+      playlist.clips.push(clip)
+      flash.now[:notice] = "プレイリスト「#{playlist.name}」にクリップが追加されました。"
+    end
+  end
+
+  # フォームから送信されたデータを取得
+  def set_params
+    @playlist_name = params[:playlist_name]
+    @visibility = params[:visibility]
+    @watch_later = params[:watch_later]
+    @clip_id = params[:clip_id]
   end
 end

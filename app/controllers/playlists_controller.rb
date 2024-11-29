@@ -75,6 +75,6 @@ class PlaylistsController < ApplicationController
 
   # ストロングパラメータの定義
   def playlist_params
-    params.require(:playlist).permit(:name, :description)
+    params.require(:playlist).permit(:name)
   end
 end

@@ -8,9 +8,6 @@
       <h3 class="text-lg font-bold text-purple-300">
         <%= link_to playlist.name, playlist_path(playlist), class: "hover:underline" %>
       </h3>
-      <p class="text-gray-400 text-sm mt-2">
-        <%= playlist.description.presence %>
-      </p>
       <p class="text-gray-400 text-sm mt-2">クリップ数: <%= playlist.clips.count %></p>
       <div class="mt-4 flex items-center justify-between">
         <span class="text-sm text-gray-500">いいね: <%= playlist.likes %></span>

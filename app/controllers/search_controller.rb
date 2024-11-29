@@ -22,10 +22,13 @@ class SearchController < ApplicationController
     @clips = @clips.uniq
     @clips = Kaminari.paginate_array(@clips).page(params[:page]).per(60)
 
+    # プレイリストを渡してあげる
+    @playlists = current_user.playlists
+
     # 検索ワードを変数化する
     @search_query = search_query
 
     # ビューにフラグを渡して、検索結果がゲームからか配信者からかを示す
-    render partial: "search/clips", locals: { clips: @clips, search_query: @search_query }
+    render partial: "search/clips", locals: { clips: @clips, search_query: @search_query, playlists: @playlists }
   end
 end

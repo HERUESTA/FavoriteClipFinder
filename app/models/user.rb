@@ -70,8 +70,4 @@ class User < ApplicationRecord
   def email_changed?
     false
   end
-
-  def create_default_playlist
-    playlists.create(name: "後で見る", is_watch_later: true)
-  end
 end

@@ -79,9 +79,6 @@
             <h3 class="text-lg font-bold text-purple-500 mt-4">
               <%= link_to playlist.name, playlist_path(playlist), class: "hover:underline" %>
             </h3>
-            <p class="text-gray-500 text-sm mt-2">
-              <%= playlist.description.presence || "説明がありません。" %>
-            </p>
             <div class="mt-4 flex items-center justify-between">
               <span class="text-sm text-gray-500">いいね: <%= playlist.likes %></span>
               <%= link_to "編集", edit_playlist_path(playlist), class: "text-sm bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600" %>

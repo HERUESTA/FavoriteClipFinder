@@ -69,12 +69,12 @@
         <h3 class="font-bold text-lg">動画の保存先</h3>
         <!-- モーダル内のコンテンツ -->
         <div class="py-4">
-          <!-- プレイリストのチェックボックスリスト -->
+          <!-- プレイリストのラジオボタンリスト -->
           <%= form_with url: playlist_clips_path, method: :post do |f| %>
             <input type="hidden" name="search_query" value="<%= @search_query %>" />
             <input type="hidden" name="clip_id" value="<%= clip.id %>" />
 
-            <!-- プレイリストのチェックボックスをリスト表示 -->
+            <!-- プレイリストのラジオボタンをリスト表示 -->
             <div class="form-control">
               <label class="label">
                 <span class="label-text">保存先のプレイリストを選択</span>
@@ -82,14 +82,14 @@
               <% if @playlists.present? %>
                 <% @playlists.each do |playlist| %>
                   <label class="cursor-pointer label">
-                    <input type="checkbox" name="playlist_ids[]" value="<%= playlist.id %>" class="checkbox checkbox-primary" />
+                    <input type="radio" name="playlist_name" value="<%= playlist.name %>" class="radio checkbox-primary" />
                     <span class="label-text ml-2"><%= playlist.name %></span>
                   </label>
                 <% end %>
               <% else %>
                 <!-- プレイリストがない場合、「後で見る」を表示しチェック済みにする -->
                 <label class="cursor-pointer label">
-                  <input type="checkbox" name="watch_later" value="true" class="checkbox checkbox-secondly" checked />
+                  <input type="radio" name="watch_later" value="true" class="radio radio-secondly" checked />
                   <span class="label-text ml-2">後で見る</span>
                 </label>
               <% end %>
@@ -101,7 +101,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
-                ＋新しいプレイリストを作成
+                  新しいプレイリストを作成
               </label>
             </div>
 
@@ -123,11 +123,12 @@
       <h3 class="font-bold text-lg">新しいプレイリストを作成</h3>
       <%= form_with url: playlist_clips_path, method: :post do |f| %>
         <input type="hidden" name="search_query" value="<%= @search_query %>" />
+        <input type="hidden" name="clip_id" value="<%= clip.id %>" />
         <div class="form-control mt-4">
           <label class="label">
             <span class="label-text">タイトルを入力してください</span>
           </label>
-          <input type="text" name="playlist_name" placeholder="例: マイプレイリスト" class="input input-bordered" required />
+          <%= f.text_field :playlist_name, placeholder: "例： マイプレイリスト", class: "input input-bordered", required: true %>
         </div>
 
         <div class="form-control mt-4">
