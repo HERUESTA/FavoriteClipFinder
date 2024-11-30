@@ -1,5 +1,4 @@
-<%= turbo_frame_tag "clips" do %>
-  <% if clips.any? %>
+<% if clips.any? %>
     <!-- クリップ一覧 -->
     <div id="clips-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <% clips.each do |clip| %>
@@ -35,4 +34,3 @@
       </div>
     </div>
   <% end %>
-<% end %>
