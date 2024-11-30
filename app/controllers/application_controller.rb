@@ -10,11 +10,8 @@ class ApplicationController < ActionController::Base
 
   # フォローリストを取得するメソッド
   def set_followed_channnels
-    logger.debug "ここから{#{current_user.id}}"
     if user_signed_in?
-      logger.debug "入っている{#{current_user.id}}"
       @followed_channels = fetch_followed_channels(current_user.id)
-      logger.debug "フォローリストの中身{#{@followed_channels}}"
     else
       @followed_channels = []
     end

@@ -21,8 +21,13 @@ class SearchController < ApplicationController
     @clips = @clips.uniq
     @clips = Kaminari.paginate_array(@clips).page(params[:page]).per(60)
 
-    # プレイリストを渡してあげる
-    @playlists = current_user.playlists
+    # プレイリストを渡してあげる（ログインユーザーでない場合、空配列を返す）
+    if user_signed_in?
+      @playlists = current_user.playlists
+    else
+      @playlists = []
+    end
+
 
     # 検索ワードを変数化する
     @search_query = search_query
