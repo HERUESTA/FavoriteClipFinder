@@ -12,7 +12,6 @@ class SearchController < ApplicationController
     @clips = []
 
     # ゲームと配信者のクリップを取得
-    # テスト
     game_ids = @games.pluck(:game_id)
     streamer_ids = @streamers.pluck(:streamer_id)
 
@@ -27,8 +26,5 @@ class SearchController < ApplicationController
 
     # 検索ワードを変数化する
     @search_query = search_query
-
-    # ビューにフラグを渡して、検索結果がゲームからか配信者からかを示す
-    render partial: "search/clips", locals: { clips: @clips, search_query: @search_query, playlists: @playlists }
   end
 end

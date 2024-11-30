@@ -3,13 +3,12 @@ class User < ApplicationRecord
   has_many :playlists, foreign_key: "user_uid", primary_key: "uid", dependent: :destroy
   has_many :favorite_clips, foreign_key: "user_uid", primary_key: "uid", dependent: :destroy
   has_many :favorited_clips, through: :favorite_clips, source: :clip
+  has_many :likes, foreign_key: "user_uid", primary_key: "uid", dependent: :destroy
+  has_many :liked_playlists, through: :likes, source: :playlist
 
   devise :database_authenticatable, :registerable, :recoverable, :rememberable,
          :omniauthable, omniauth_providers: [ :twitch ],
          authentication_keys: [ :user_name ]
-
-  # コールバック：　ユーザー作成時に「後で見る」を作成
-  after_create :create_default_playlist
 
   # uidを元にユーザーを検索または作成し、トークンがない場合や期限が切れている場合は更新
   def self.from_omniauth(auth)

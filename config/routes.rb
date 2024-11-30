@@ -24,7 +24,7 @@ Rails.application.routes.draw do
   resources :playlists
 
   # マイページ用ルート
-  get "show", to: "users#show", as: "show"
+  get "show", to: "users#show"
 
   # CI/CD用route
   get "up" => "rails/health#show", as: :rails_health_check

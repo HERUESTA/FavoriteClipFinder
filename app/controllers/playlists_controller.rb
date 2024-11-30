@@ -8,22 +8,15 @@ class PlaylistsController < ApplicationController
   # 明示的に application レイアウトを使用
   layout "application"
 
-
-  # 特定のプレイリストとその中のクリップを表示
   def show
     # プレイリスト内の全クリップを取得
-    @clips = @playlist.clips
+    @playlist = Playlist.find(params[:id])
+    @clips = @playlist.clips.includes(:streamer).page(params[:page]).per(60)
 
     # 再生するクリップを特定（パラメータがなければ最初のクリップを使用）
     @clip = params[:clip_id].present? ? @clips.find_by(id: params[:clip_id]) : @clips.first
-
-    respond_to do |format|
-      format.html # 通常のHTML表示
-      format.turbo_stream # Turboフレーム更新
-    end
   end
 
-  # GET /playlists/new
   # 新しいプレイリスト作成フォームを表示
   def new
     @playlist = current_user.playlists.build
@@ -40,12 +33,10 @@ class PlaylistsController < ApplicationController
     end
   end
 
-  # GET /playlists/:id/edit
   # プレイリスト編集フォームを表示
   def edit
   end
 
-  # PATCH/PUT /playlists/:id
   # プレイリストを更新
   def update
     if @playlist.update(playlist_params)
@@ -55,7 +46,6 @@ class PlaylistsController < ApplicationController
     end
   end
 
-  # DELETE /playlists/:id
   # プレイリストを削除
   def destroy
     @playlist.destroy

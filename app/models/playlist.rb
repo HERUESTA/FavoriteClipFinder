@@ -4,6 +4,8 @@ class Playlist < ApplicationRecord
 
   has_many :playlist_clips, dependent: :destroy
   has_many :clips, through: :playlist_clips
+  has_many :likes, dependent: :destroy
+  has_many :liked_users, through: :likes, source: :user
 
    # 公開プレイリストのスコープ
    scope :public_playlists, -> { where(visibility: "public") }
