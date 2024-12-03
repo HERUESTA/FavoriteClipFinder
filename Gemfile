@@ -58,6 +58,10 @@ group :development, :test do
 
   # 環境変数を使用するため
   gem "dotenv-rails"
+
+  # テスト用
+  gem "rspec-rails"
+  gem "factory_bot_rails"
 end
 
 group :development do
@@ -65,12 +69,6 @@ group :development do
   gem "web-console"
   # N+1検出用
   gem "bullet"
-
-  # Prettier用
-  gem "prettier_print"
-  gem "syntax_tree"
-  gem "syntax_tree-haml"
-  gem "syntax_tree-rbs"
 end
 
 group :test do
