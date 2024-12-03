@@ -36,7 +36,7 @@ class TwitchClient
     end
   end
 
-  # 登録者数12000以上の日本配信者を取得
+  # 登録者数4万人以上の日本配信者を取得
   def fetch_japanese_streamers(max_results: 50)
     streamers = []
     pagination = nil
@@ -96,51 +96,71 @@ class TwitchClient
     nil
   end
 
-  # ストリーマーのクリップを取得するメソッド
-  # broadcaster_id: ストリーマーのTwitch ID（文字列）
-  # max_results: 取得するクリップの最大数（デフォルトは20）
-  def fetch_clips(broadcaster_id, max_results: 5)
+  # 配信者のクリップを取得するメソッド
+  def fetch_clips(broadcaster_id, max_results: 200)
     clips = []
     pagination = nil
 
-    loop do
-      remaining = max_results - clips.size
-      break if remaining <= 0
+    # 配信者のクリップが存在しているかどうか
+    clip = Clip.find_by(id: broadcaster_id)
 
-      params = {
-        broadcaster_id: broadcaster_id,
-        first: [ remaining, 40 ].min
-      }
-      params[:after] = pagination if pagination
+    if clip == nil
+      loop do
+        remaining = max_results - clips.size
+        break if remaining <= 0
 
-      response = @connection.get("clips", params) do |req|
-        req.headers["Client-ID"] = @client_id
-        req.headers["Authorization"] = "Bearer #{@access_token}"
+        params = {
+          broadcaster_id: broadcaster_id,
+          # APIでリクエストできる最大の数の100件をリクエストする
+          first: [ remaining, 100 ].min
+        }
+        params[:after] = pagination if pagination
+
+        response = @connection.get("clips", params) do |req|
+          req.headers["Client-ID"] = @client_id
+          req.headers["Authorization"] = "Bearer #{@access_token}"
+        end
+
+        if response.success?
+          data = response.body["data"]
+          clips += data
+          pagination = response.body["pagination"]["cursor"]
+          break if pagination.nil? || data.empty?
+        else
+          break
+        end
+        clips.first(max_results)
       end
 
-      Rails.logger.debug "Received response status: #{response.status}"
-      Rails.logger.debug "Received response body: #{response.body}"
+    else
+      loop do
+        now = Time.now
+        yesterday = now - 1.day.ago
 
-      if response.success?
-        data = response.body["data"]
-        clips += data
-        pagination = response.body["pagination"]["cursor"]
-        break if pagination.nil? || data.empty?
-      else
-        Rails.logger.error "Twitch API Error: #{response.status} - #{response.body['message']}"
-        break
+        params = {
+          broadcaster_id: broadcaster_id,
+          started_at: yesterday,
+          ended_at: now,
+          first: [ 100 ].min
+        }
+
+        response = @connection.get("clips", params) do |req|
+          req.headers["Client-ID"] = @client_id
+          req.headers["Authorization"] = "Bearer #{@access_token}"
+        end
+
+        if response.success?
+          data = response.body["data"]
+          clips += data
+          break
+        else
+          break
+        end
       end
     end
-
-    clips.first(max_results)
-  rescue StandardError => e
-    Rails.logger.error "TwitchClient Error: #{e.message}"
-    Rails.logger.error e.backtrace.join("\n")
-    []
   end
 
   # ゲーム情報を取得するメソッド
-  # game_id: Twitch のゲーム ID（文字列）
   def fetch_game(game_id)
     response = @connection.get("games") do |req|
       req.params["id"] = game_id
@@ -182,4 +202,8 @@ class TwitchClient
     Rails.logger.error e.backtrace.join("\n")
     nil
   end
+
+  private
+
+  #
 end
