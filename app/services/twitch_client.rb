@@ -36,7 +36,7 @@ class TwitchClient
     end
   end
 
-  # 登録者数12000以上の日本配信者を取得
+  # 登録者数4万人以上の日本配信者を取得
   def fetch_japanese_streamers(max_results: 50)
     streamers = []
     pagination = nil
@@ -97,19 +97,20 @@ class TwitchClient
   end
 
   # ストリーマーのクリップを取得するメソッド
-  # broadcaster_id: ストリーマーのTwitch ID（文字列）
-  # max_results: 取得するクリップの最大数（デフォルトは20）
-  def fetch_clips(broadcaster_id, max_results: 5)
+  # 200のクリップを取得する
+  def fetch_clips(broadcaster_id, max_results: 200)
     clips = []
     pagination = nil
 
     loop do
       remaining = max_results - clips.size
+      # ２００のクリップを取得したらループを終了する
       break if remaining <= 0
 
       params = {
         broadcaster_id: broadcaster_id,
-        first: [ remaining, 40 ].min
+        # APIでリクエストできる最大の数の100件をリクエストする
+        first: [ remaining, 100 ].min
       }
       params[:after] = pagination if pagination
 
@@ -117,9 +118,6 @@ class TwitchClient
         req.headers["Client-ID"] = @client_id
         req.headers["Authorization"] = "Bearer #{@access_token}"
       end
-
-      Rails.logger.debug "Received response status: #{response.status}"
-      Rails.logger.debug "Received response body: #{response.body}"
 
       if response.success?
         data = response.body["data"]
@@ -135,7 +133,6 @@ class TwitchClient
     clips.first(max_results)
   rescue StandardError => e
     Rails.logger.error "TwitchClient Error: #{e.message}"
-    Rails.logger.error e.backtrace.join("\n")
     []
   end
 
