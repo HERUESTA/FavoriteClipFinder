@@ -96,23 +96,58 @@ class TwitchClient
     nil
   end
 
-  # ストリーマーのクリップを取得するメソッド
-  # 200のクリップを取得する
+  # 配信者のクリップを取得するメソッド
   def fetch_clips(broadcaster_id, max_results: 200)
     clips = []
     pagination = nil
 
+    # 配信者のクリップが存在しているかどうか
+    clip = Clip.find_by(id: broadcaster_id)
+
+    if clip == nil
+      loop do
+        remaining = max_results - clips.size
+        break if remaining <= 0
+
+        params = {
+          broadcaster_id: broadcaster_id,
+          # APIでリクエストできる最大の数の100件をリクエストする
+          first: [ remaining, 100 ].min
+        }
+        params[:after] = pagination if pagination
+
+        response = @connection.get("clips", params) do |req|
+          req.headers["Client-ID"] = @client_id
+          req.headers["Authorization"] = "Bearer #{@access_token}"
+        end
+
+        if response.success?
+          data = response.body["data"]
+          clips += data
+          pagination = response.body["pagination"]["cursor"]
+          break if pagination.nil? || data.empty?
+        else
+          Rails.logger.error "Twitch API Error: #{response.status} - #{response.body['message']}"
+          break
+        end
+      end
+
+      clips.first(max_results)
+    rescue StandardError => e
+      Rails.logger.error "TwitchClient Error: #{e.message}"
+      []
+    end
+  else
     loop do
-      remaining = max_results - clips.size
-      # ２００のクリップを取得したらループを終了する
-      break if remaining <= 0
+      now = Time.now
+      yesterday = now - 1.day.ago
 
       params = {
         broadcaster_id: broadcaster_id,
-        # APIでリクエストできる最大の数の100件をリクエストする
-        first: [ remaining, 100 ].min
+        started_at: yesterday,
+        ended_at: now,
+        first: [100].min
       }
-      params[:after] = pagination if pagination
 
       response = @connection.get("clips", params) do |req|
         req.headers["Client-ID"] = @client_id
@@ -122,22 +157,14 @@ class TwitchClient
       if response.success?
         data = response.body["data"]
         clips += data
-        pagination = response.body["pagination"]["cursor"]
-        break if pagination.nil? || data.empty?
+        break
       else
-        Rails.logger.error "Twitch API Error: #{response.status} - #{response.body['message']}"
         break
       end
     end
-
-    clips.first(max_results)
-  rescue StandardError => e
-    Rails.logger.error "TwitchClient Error: #{e.message}"
-    []
   end
 
   # ゲーム情報を取得するメソッド
-  # game_id: Twitch のゲーム ID（文字列）
   def fetch_game(game_id)
     response = @connection.get("games") do |req|
       req.params["id"] = game_id
@@ -179,4 +206,8 @@ class TwitchClient
     Rails.logger.error e.backtrace.join("\n")
     nil
   end
+
+  private
+
+  # 
 end
