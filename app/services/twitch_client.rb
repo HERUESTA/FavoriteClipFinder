@@ -127,39 +127,35 @@ class TwitchClient
           pagination = response.body["pagination"]["cursor"]
           break if pagination.nil? || data.empty?
         else
-          Rails.logger.error "Twitch API Error: #{response.status} - #{response.body['message']}"
           break
         end
+        clips.first(max_results)
       end
 
-      clips.first(max_results)
-    rescue StandardError => e
-      Rails.logger.error "TwitchClient Error: #{e.message}"
-      []
-    end
-  else
-    loop do
-      now = Time.now
-      yesterday = now - 1.day.ago
+    else
+      loop do
+        now = Time.now
+        yesterday = now - 1.day.ago
 
-      params = {
-        broadcaster_id: broadcaster_id,
-        started_at: yesterday,
-        ended_at: now,
-        first: [100].min
-      }
+        params = {
+          broadcaster_id: broadcaster_id,
+          started_at: yesterday,
+          ended_at: now,
+          first: [ 100 ].min
+        }
 
-      response = @connection.get("clips", params) do |req|
-        req.headers["Client-ID"] = @client_id
-        req.headers["Authorization"] = "Bearer #{@access_token}"
-      end
+        response = @connection.get("clips", params) do |req|
+          req.headers["Client-ID"] = @client_id
+          req.headers["Authorization"] = "Bearer #{@access_token}"
+        end
 
-      if response.success?
-        data = response.body["data"]
-        clips += data
-        break
-      else
-        break
+        if response.success?
+          data = response.body["data"]
+          clips += data
+          break
+        else
+          break
+        end
       end
     end
   end
@@ -209,5 +205,5 @@ class TwitchClient
 
   private
 
-  # 
+  #
 end
