@@ -11,11 +11,12 @@ console_command = '/rails/bin/rails console'
   dockerfile = './Dockerfile'
 
 [processes]
-  app = "bin/rails server" 
-  worker = "bundle exec sidekiq"
+  app = "bin/rails server"       # Web サーバープロセス
+  worker = "bundle exec sidekiq" # Sidekiq プロセス
 
-[processes.app]
-  auto_stop_machines = false
+[processes_options]
+  [processes_options.app]
+    auto_stop_machines = false # appプロセスの自動停止を無効化
 
 [deploy]
   strategy = "immediate"
