@@ -8,11 +8,11 @@ class FetchTwitchClipsJob < ApplicationJob
     # 配信者を順に処理
     Streamer.order(:id).find_each do |streamer|
       begin
-        Rails.logger.info "開始: 配信者 #{streamer.name} (ID: #{streamer.streamer_id})"
+        Rails.logger.info "開始: 配信者 #{streamer.display_name} (ID: #{streamer.streamer_id})"
         get_clips(client, streamer)
-        Rails.logger.info "終了: 配信者 #{streamer.name} (ID: #{streamer.streamer_id})"
+        Rails.logger.info "終了: 配信者 #{streamer.display_name} (ID: #{streamer.streamer_id})"
       rescue StandardError => e
-        Rails.logger.error "エラー: 配信者 #{streamer.name} (ID: #{streamer.streamer_id}) - #{e.message}"
+        Rails.logger.error "エラー: 配信者 #{streamer.display_name} (ID: #{streamer.streamer_id}) - #{e.message}"
         Rails.logger.error e.backtrace.join("\n")
       end
     end
@@ -24,7 +24,6 @@ class FetchTwitchClipsJob < ApplicationJob
   def get_clips(client, streamer)
     # 最大120件のクリップを取得
     clips = client.fetch_clips(streamer.streamer_id, max_results: 120)
-    Rails.logger.debug "取得したクリップ: #{clips.size} 件"
 
     # 各クリップをデータベースに保存
     clips.each do |clip_data|

@@ -96,8 +96,10 @@ class TwitchClient
     nil
   end
 
-  # ストリーマーのクリップを取得するメソッド
+# broadcaster_id: ストリーマーのTwitch ID（文字列）
+# max_results: 取得するクリップの最大数（デフォルトは120）
 def fetch_clips(broadcaster_id, max_results: 120)
+  clips = []
   pagination = nil
   total_clips = 0
 
@@ -105,13 +107,15 @@ def fetch_clips(broadcaster_id, max_results: 120)
     remaining = max_results - total_clips
     break if remaining <= 0
 
+    # Twitch APIへのリクエストパラメータ
     params = {
       broadcaster_id: broadcaster_id,
-      first: [remaining, 60].min
+      first: [ remaining, 60 ].min # 最大60件ずつ取得
     }
     params[:after] = pagination if pagination
 
     begin
+      # Twitch APIにリクエスト
       response = @connection.get("clips", params) do |req|
         req.headers["Client-ID"] = @client_id
         req.headers["Authorization"] = "Bearer #{@access_token}"
@@ -119,13 +123,24 @@ def fetch_clips(broadcaster_id, max_results: 120)
 
       if response.success?
         data = response.body["data"]
-        data.each { |clip| save_clips_to_database(clip) } # 逐次保存
+        Rails.logger.debug "取得したクリップ数: #{data.size}"
+
+        # クリップデータを蓄積
+        clips += data
+
+        # 合計取得数を更新
         total_clips += data.size
+
+        # 次のページを設定
         pagination = response.body["pagination"]["cursor"]
 
+        # ページネーションが終了またはデータが空の場合ループを終了
         break if pagination.nil? || data.empty?
-        sleep(1) # レート制限回避
+
+        # レート制限を避けるためのスリープ
+        sleep(1)
       else
+        # APIエラー時のログ
         Rails.logger.error "Twitch API Error: #{response.status} - #{response.body['message']}"
         break
       end
@@ -141,8 +156,10 @@ def fetch_clips(broadcaster_id, max_results: 120)
       break
     end
   end
-end
 
+  # 最終的なクリップデータを返す
+  clips
+end
   # ゲーム情報を取得するメソッド
   def fetch_game(game_id)
     response = @connection.get("games") do |req|
