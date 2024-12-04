@@ -18,22 +18,27 @@ class ApplicationController < ActionController::Base
   end
 
   # フォローリストをAPI経由で取得
-  # フォローリストを取得するメソッド (Faradayを使用)
   def fetch_followed_channels(user_id)
+    # ClientIDを取得
     client_id = ENV["TWITCH_CLIENT_ID"]
+    # 現在のユーザーのアクセストークンを取得する
     access_token = current_user.access_token
 
     begin
+      # Faradayを使用してTwitchAPIにリクエストを送る
       response = Faraday.get("https://api.twitch.tv/helix/channels/followed") do |req|
         req.params["user_id"] = current_user.uid
         req.headers["Authorization"] = "Bearer #{access_token}"
         req.headers["Client-ID"] = client_id
       end
 
+      # もし成功したら
       if response.success?
+        # フォローリストが返ってくる
         follows = JSON.parse(response.body)["data"]
         user_ids = follows.map { |follow| follow["broadcaster_id"] }
 
+        # ユーザー情報が返ってkくる
         users_info = fetch_users_info(access_token, user_ids)
         follows.map do |follow|
           user_info = users_info.find { |user| user["id"] == follow["broadcaster_id"] }

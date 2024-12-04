@@ -1,16 +1,13 @@
 class UsersController < ApplicationController
   # TOPページに遷移
+
   def index
     if current_user.present?
-      # トークンの有効期限が存在し、期限が切れている場合はリフレッシュ
+      Rails.logger.debug "現在のユーザー: #{current_user}"
+      # トークンの期限が存在し、期限が切れている場合はリフレッシュ
       if current_user.token_expires_at.present? && current_user.token_expires_at < Time.now
         refresh_access_token(current_user)
       end
-
-      user_id = current_user.id
-      @followed_channels = fetch_followed_channels(user_id)
-    else
-      @followed_channels = nil
     end
   end
 
@@ -24,6 +21,7 @@ class UsersController < ApplicationController
         grant_type: "refresh_token"
       }
       req.headers["Content-Type"] = "application/x-www-form-urlencoded"
+      Rails.logger.debug "リクエストの内容: #{req.headers}"
     end
 
     if response.success?
@@ -34,7 +32,7 @@ class UsersController < ApplicationController
         token_expires_at: Time.now + token_data["expires_in"].to_i.seconds
       )
     else
-      redirect_to root_path, alert: "アクセストークンの更新に失敗しました。"
+      Rails.logger.debug "リクエストに失敗しました"
     end
   end
 
