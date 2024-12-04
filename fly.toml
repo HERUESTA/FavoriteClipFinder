@@ -17,6 +17,8 @@ console_command = '/rails/bin/rails console'
 [processes_options]
   [processes_options.app]
     auto_stop_machines = false # appプロセスの自動停止を無効化
+  [processes_options.worker]
+    auto_stop_machines = false # workerプロセスの自動停止も無効化
 
 [deploy]
   strategy = "immediate"
