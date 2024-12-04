@@ -117,9 +117,8 @@ class TwitchClient
         req.headers["Client-ID"] = @client_id
         req.headers["Authorization"] = "Bearer #{@access_token}"
       end
-
-      Rails.logger.debug "Received response status: #{response.status}"
-      Rails.logger.debug "Received response body: #{response.body}"
+      # レート制限対策
+      sleep(1)
 
       if response.success?
         data = response.body["data"]
@@ -127,7 +126,6 @@ class TwitchClient
         pagination = response.body["pagination"]["cursor"]
         break if pagination.nil? || data.empty?
       else
-        Rails.logger.error "Twitch API Error: #{response.status} - #{response.body['message']}"
         break
       end
     end
@@ -138,6 +136,7 @@ class TwitchClient
     Rails.logger.error e.backtrace.join("\n")
     []
   end
+
   # ゲーム情報を取得するメソッド
   def fetch_game(game_id)
     response = @connection.get("games") do |req|
