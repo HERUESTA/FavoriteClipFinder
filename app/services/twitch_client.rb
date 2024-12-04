@@ -97,45 +97,51 @@ class TwitchClient
   end
 
   # ストリーマーのクリップを取得するメソッド
-  # broadcaster_id: ストリーマーのTwitch ID（文字列）
-  # max_results: 取得するクリップの最大数（デフォルトは20）
-  def fetch_clips(broadcaster_id, max_results: 120)
-    clips = []
-    pagination = nil
+def fetch_clips(broadcaster_id, max_results: 120)
+  pagination = nil
+  total_clips = 0
 
-    loop do
-      remaining = max_results - clips.size
-      break if remaining <= 0
+  loop do
+    remaining = max_results - total_clips
+    break if remaining <= 0
 
-      params = {
-        broadcaster_id: broadcaster_id,
-        first: [ remaining, 60 ].min
-      }
-      params[:after] = pagination if pagination
+    params = {
+      broadcaster_id: broadcaster_id,
+      first: [remaining, 60].min
+    }
+    params[:after] = pagination if pagination
 
+    begin
       response = @connection.get("clips", params) do |req|
         req.headers["Client-ID"] = @client_id
         req.headers["Authorization"] = "Bearer #{@access_token}"
       end
-      # レート制限対策
-      sleep(1)
 
       if response.success?
         data = response.body["data"]
-        clips += data
+        data.each { |clip| save_clips_to_database(clip) } # 逐次保存
+        total_clips += data.size
         pagination = response.body["pagination"]["cursor"]
+
         break if pagination.nil? || data.empty?
+        sleep(1) # レート制限回避
       else
+        Rails.logger.error "Twitch API Error: #{response.status} - #{response.body['message']}"
         break
       end
+    rescue Faraday::ConnectionFailed => e
+      Rails.logger.error "Connection failed: #{e.message}"
+      retry
+    rescue Faraday::TimeoutError => e
+      Rails.logger.error "Request timeout: #{e.message}"
+      retry
+    rescue StandardError => e
+      Rails.logger.error "Unexpected error: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n")
+      break
     end
-
-    clips.first(max_results)
-  rescue StandardError => e
-    Rails.logger.error "TwitchClient Error: #{e.message}"
-    Rails.logger.error e.backtrace.join("\n")
-    []
   end
+end
 
   # ゲーム情報を取得するメソッド
   def fetch_game(game_id)
