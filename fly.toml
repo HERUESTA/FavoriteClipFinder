@@ -13,6 +13,7 @@ console_command = '/rails/bin/rails console'
 [processes]
   app = "bin/rails server"
   worker = "bundle exec sidekiq"
+  app = { auto_stop_machines = false }
 
 [deploy]
   strategy = "immediate"

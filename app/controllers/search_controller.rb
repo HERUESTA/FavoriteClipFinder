@@ -18,7 +18,9 @@ class SearchController < ApplicationController
     @clips = Clip.get_game_clips(game_ids) + Clip.get_streamer_clips(streamer_ids)
 
     # 重複を排除してクリップを一意にする
+    Rails.logger.debug "uniq適用前クリップ数: #{@clips.count}"
     @clips = @clips.uniq
+    Rails.logger.debug "クリップの数: #{@clips.count}"
     @clips = Kaminari.paginate_array(@clips).page(params[:page]).per(60)
 
     # プレイリストを渡してあげる（ログインユーザーでない場合、空配列を返す）
