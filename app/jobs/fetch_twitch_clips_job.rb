@@ -1,59 +1,56 @@
 class FetchTwitchClipsJob < ApplicationJob
   queue_as :default
 
-  # クリップを保存するメソッド
   def perform
     client = TwitchClient.new
-    # すべてのストリーマーのstreamer_idを取得し、クリップを保存する処理を呼び出す
-    Streamer.order(:id).find_each do |streamer|
+
+    Streamer.order(:id).find_each(batch_size: 500) do |streamer|
       get_clips(client, streamer)
     end
   end
 
   private
 
-  # 取得した配信者のクリップをAPIを用いて取得し、保存する
   def get_clips(client, streamer)
-    # クリップを取得（最大20件）
-    clips = client.fetch_clips(streamer.streamer_id, max_results: 20)
+    Rails.logger.info "開始: 配信者 #{streamer.display_name} (ID: #{streamer.streamer_id})"
 
-    # 各クリップをデータベースに保存
-    clips.each do |clip_data|
-      save_clip(client, clip_data, streamer)
-    end
+    # クリップを取得
+    clips = client.fetch_clips(streamer.streamer_id, max_results: 200)
+    Rails.logger.info "取得クリップ数: #{clips.size} (配信者: #{streamer.display_name})"
+
+    # クリップを保存
+    save_clips(clips, streamer)
   end
 
-# クリップをデータベースに保存する
-def save_clip(client, clip_data, streamer)
-  Rails.logger.debug "保存しようとしているクリップのデータ: #{clip_data}"
-  Rails.logger.debug "保存しようとしている配信者ID: #{streamer&.streamer_id}"
-  Rails.logger.debug "保存しようとしているゲームID: #{clip_data['game_id']}"
+  def save_clips(clips, streamer)
+    Clip.transaction do
+      clips.each do |clip_data|
+        save_clip(clip_data, streamer)
+      end
+    end
+  rescue StandardError => e
+    Rails.logger.error "クリップ保存中のエラー: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+  end
 
-  # トランザクションを使用してクリップとゲームの作成処理を一貫性を持って実行
-  Clip.transaction do
-    # ゲームの存在確認と取得
-    game = Game.find_by(game_id: clip_data["game_id"])
-    unless game
-      # ゲームがデータベースに存在しない場合、fetch_gameを呼び出して取得
+  def save_clip(clip_data, streamer)
+    Rails.logger.debug "保存するクリップ: #{clip_data}"
+    Rails.logger.debug "保存する配信者ID: #{streamer.streamer_id}"
+
+    game = Game.find_or_create_by(game_id: clip_data["game_id"]) do |g|
       game_data = client.fetch_game(clip_data["game_id"])
       if game_data
-        game = Game.create!(
-          game_id: game_data["id"],
-          name: game_data["name"],
-          box_art_url: game_data["box_art_url"]
-        )
-        Rails.logger.debug "新しいゲームが保存されました: #{game.inspect}"
+        g.name = game_data["name"]
+        g.box_art_url = game_data["box_art_url"]
       else
-        # ゲームデータの取得失敗時の処理
-        Rails.logger.error "Failed to fetch and save game with ID #{clip_data['game_id']}"
-        return # ゲームが取得できなければクリップの保存を中止
+        Rails.logger.error "ゲームデータ取得失敗: #{clip_data['game_id']}"
       end
     end
 
-    # Clip の作成または更新
+    return unless game
+
     clip = Clip.find_or_initialize_by(clip_id: clip_data["id"])
-    clip.attributes = {
-      clip_id: clip_data["id"],
+    clip.assign_attributes(
       streamer_id: streamer.streamer_id,
       game_id: game.game_id,
       title: clip_data["title"],
@@ -63,25 +60,15 @@ def save_clip(client, clip_data, streamer)
       thumbnail_url: clip_data["thumbnail_url"],
       duration: clip_data["duration"].to_i,
       view_count: clip_data["view_count"].to_i
-    }
+    )
 
-    # デバッグ情報を追加して Clip の状態を確認
-    Rails.logger.debug "Clip before save: #{clip.inspect}"
-    Rails.logger.debug "Clip streamer association: #{clip.streamer.inspect}"
-    Rails.logger.debug "Clip game association: #{clip.game.inspect}"
-
-    # Clip の保存処理
     if clip.save
       Rails.logger.debug "クリップが正常に保存されました: #{clip.inspect}"
     else
-      # 保存に失敗した場合のエラーログ
-      Rails.logger.error "Failed to save clip ID #{clip_data['id']}: #{clip.errors.full_messages.join(', ')}"
+      Rails.logger.error "クリップ保存失敗: #{clip_data['id']} - #{clip.errors.full_messages.join(', ')}"
     end
+  rescue StandardError => e
+    Rails.logger.error "クリップ保存中のエラー: #{clip_data['id']} - #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
   end
-
-# 例外発生時のエラーハンドリング
-rescue StandardError => e
-  Rails.logger.error "Failed to save clip ID #{clip_data['id']}: #{e.message}"
-  Rails.logger.error e.backtrace.join("\n")
-end
 end

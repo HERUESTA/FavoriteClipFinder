@@ -13,12 +13,11 @@ class Clip < ApplicationRecord
   validates :view_count, presence: true
   validates :creator_name, presence: true
 
-  # ゲームに関するクリップを取得(最大60件)
+  # ゲームに関するクリップを取得
   def self.get_game_clips(game_ids)
     where(game_id: game_ids)
       .includes(:streamer, :game)
       .order(clip_created_at: :desc)
-      .limit(60)
   end
 
   # 配信者に関連するクリップを取得
@@ -26,6 +25,5 @@ class Clip < ApplicationRecord
     where(streamer_id: streamer_ids)
       .includes(:streamer, :game)
       .order(clip_created_at: :desc)
-      .limit(60)
   end
 end
