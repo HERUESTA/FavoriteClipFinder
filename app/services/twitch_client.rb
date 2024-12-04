@@ -96,8 +96,9 @@ class TwitchClient
     nil
   end
 
-# broadcaster_id: ストリーマーのTwitch ID（文字列）
-# max_results: 取得するクリップの最大数（デフォルトは120）
+
+# TwitchClient.rb
+
 def fetch_clips(broadcaster_id, max_results: 120)
   clips = []
   pagination = nil
@@ -107,15 +108,13 @@ def fetch_clips(broadcaster_id, max_results: 120)
     remaining = max_results - total_clips
     break if remaining <= 0
 
-    # Twitch APIへのリクエストパラメータ
     params = {
       broadcaster_id: broadcaster_id,
-      first: [ remaining, 60 ].min # 最大60件ずつ取得
+      first: [ remaining, 60 ].min
     }
     params[:after] = pagination if pagination
 
     begin
-      # Twitch APIにリクエスト
       response = @connection.get("clips", params) do |req|
         req.headers["Client-ID"] = @client_id
         req.headers["Authorization"] = "Bearer #{@access_token}"
@@ -125,31 +124,32 @@ def fetch_clips(broadcaster_id, max_results: 120)
         data = response.body["data"]
         Rails.logger.debug "取得したクリップ数: #{data.size}"
 
-        # クリップデータを蓄積
         clips += data
-
-        # 合計取得数を更新
         total_clips += data.size
 
-        # 次のページを設定
-        pagination = response.body["pagination"]["cursor"]
-
-        # ページネーションが終了またはデータが空の場合ループを終了
+        pagination = response.body.dig("pagination", "cursor")
         break if pagination.nil? || data.empty?
-
-        # レート制限を避けるためのスリープ
         sleep(1)
       else
-        # APIエラー時のログ
         Rails.logger.error "Twitch API Error: #{response.status} - #{response.body['message']}"
+        if response.status == 429 # レート制限
+          reset_time = response.headers["Ratelimit-Reset"].to_i
+          sleep_time = reset_time - Time.now.to_i
+          sleep(sleep_time) if sleep_time > 0
+        else
+          break
+        end
+      end
+    rescue Faraday::ConnectionFailed, Faraday::TimeoutError => e
+      @retry_count ||= 0
+      if @retry_count < 3
+        @retry_count += 1
+        sleep(2 ** @retry_count)
+        retry
+      else
+        Rails.logger.error "APIリクエスト失敗: #{e.message}"
         break
       end
-    rescue Faraday::ConnectionFailed => e
-      Rails.logger.error "Connection failed: #{e.message}"
-      retry
-    rescue Faraday::TimeoutError => e
-      Rails.logger.error "Request timeout: #{e.message}"
-      retry
     rescue StandardError => e
       Rails.logger.error "Unexpected error: #{e.message}"
       Rails.logger.error e.backtrace.join("\n")
@@ -157,7 +157,6 @@ def fetch_clips(broadcaster_id, max_results: 120)
     end
   end
 
-  # 最終的なクリップデータを返す
   clips
 end
   # ゲーム情報を取得するメソッド
@@ -202,8 +201,4 @@ end
     Rails.logger.error e.backtrace.join("\n")
     nil
   end
-
-  private
-
-  #
 end
