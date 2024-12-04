@@ -62,6 +62,9 @@ group :development, :test do
   # テスト用
   gem "rspec-rails"
   gem "factory_bot_rails"
+
+  # Lint用
+  gem "solargraph"
 end
 
 group :development do
