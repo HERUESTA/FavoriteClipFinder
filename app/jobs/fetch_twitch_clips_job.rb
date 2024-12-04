@@ -4,7 +4,6 @@ class FetchTwitchClipsJob < ApplicationJob
   # クリップを保存するメソッド
   def perform
     client = TwitchClient.new
-    # すべてのストリーマーのstreamer_idを取得し、クリップを保存する処理を呼び出す
     Streamer.order(:id).find_each do |streamer|
       get_clips(client, streamer)
     end
@@ -15,7 +14,8 @@ class FetchTwitchClipsJob < ApplicationJob
   # 取得した配信者のクリップをAPIを用いて取得し、保存する
   def get_clips(client, streamer)
     # クリップを取得（最大20件）
-    clips = client.fetch_clips(streamer.streamer_id, max_results: 20)
+    clips = client.fetch_clips(streamer.streamer_id, max_results: 120)
+    Rails.logger.debug "クリップの中身の確認: #{clips}"
 
     # 各クリップをデータベースに保存
     clips.each do |clip_data|
