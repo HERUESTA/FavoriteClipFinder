@@ -12,7 +12,7 @@ class FetchTwitchClipsJob < ApplicationJob
   private
 
   def get_clips(client, streamer)
-    client.fetch_clips(streamer.streamer_id, max_results: 120)
+    client.fetch_clips(streamer.streamer_id, max_results: 200)
   end
 
   def save_clips(clips, streamer)

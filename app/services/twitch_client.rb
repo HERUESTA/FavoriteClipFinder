@@ -99,7 +99,7 @@ class TwitchClient
 
 # TwitchClient.rb
 
-def fetch_clips(broadcaster_id, max_results: 120)
+def fetch_clips(broadcaster_id, max_results: 200)
   clips = []
   pagination = nil
   total_clips = 0
@@ -110,7 +110,7 @@ def fetch_clips(broadcaster_id, max_results: 120)
 
     params = {
       broadcaster_id: broadcaster_id,
-      first: [ remaining, 60 ].min
+      first: [ remaining, 100 ].min
     }
     params[:after] = pagination if pagination
 
