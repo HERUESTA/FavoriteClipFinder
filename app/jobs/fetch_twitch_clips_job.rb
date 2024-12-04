@@ -5,17 +5,7 @@ class FetchTwitchClipsJob < ApplicationJob
     client = TwitchClient.new
 
     Streamer.order(:id).find_each(batch_size: 500) do |streamer|
-      begin
-        Rails.logger.info "開始: 配信者 #{streamer.display_name} (ID: #{streamer.streamer_id})"
         clips = get_clips(client, streamer)
-        save_clips(clips, streamer)
-        Rails.logger.info "終了: 配信者 #{streamer.display_name} (ID: #{streamer.streamer_id})"
-      rescue StandardError => e
-        Rails.logger.error "エラー: 配信者 #{streamer.display_name} (ID: #{streamer.streamer_id}) - #{e.message}"
-        Rails.logger.error e.backtrace.join("\n")
-      ensure
-        GC.start
-      end
     end
   end
 
