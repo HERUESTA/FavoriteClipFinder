@@ -7,7 +7,7 @@
 scheduler:
   schedule:
     fetch_twitch_clips_job:
-      cron: "0 1 * * *"       # 毎日午前1時に実行
+      cron: "0 */12 * * *"       # 12時間ごとに実行
       class: FetchTwitchClipsJob
       queue: default
-      description: "毎日午前1時にTwitchクリップを取得するジョブ"
+      description: "12時間ごとにTwitchクリップを取得するジョブ"
