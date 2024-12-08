@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  after_action :set_followed_channels, only: [:index]
+  after_action :set_followed_channels, only: [ :index ]
   # TOPページに遷移
 
   def index
