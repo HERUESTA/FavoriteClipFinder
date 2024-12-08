@@ -97,68 +97,120 @@ class TwitchClient
   end
 
 
-# TwitchClient.rb
+  # 配信者のクリップを取得するメソッド
+  def fetch_clips(broadcaster_id, max_results: 200)
+    clips = []
+    pagination = nil
+    total_clips = 0
 
-def fetch_clips(broadcaster_id, max_results: 200)
-  clips = []
-  pagination = nil
-  total_clips = 0
+    clip = Clip.find_by(streamer_id: broadcaster_id)
 
-  loop do
-    remaining = max_results - total_clips
-    break if remaining <= 0
+    # クリップがない場合、全取得する
+    if clip == nil
+      loop do
+        remaining = max_results - total_clips
+        break if remaining <= 0
 
-    params = {
-      broadcaster_id: broadcaster_id,
-      first: [ remaining, 100 ].min
-    }
-    params[:after] = pagination if pagination
+        params = {
+          broadcaster_id: broadcaster_id,
+          first: [ remaining, 100 ].min
+        }
+        params[:after] = pagination if pagination
 
-    begin
-      response = @connection.get("clips", params) do |req|
-        req.headers["Client-ID"] = @client_id
-        req.headers["Authorization"] = "Bearer #{@access_token}"
-      end
+        begin
+          response = @connection.get("clips", params) do |req|
+            req.headers["Client-ID"] = @client_id
+            req.headers["Authorization"] = "Bearer #{@access_token}"
+          end
 
-      if response.success?
-        data = response.body["data"]
-        Rails.logger.debug "取得したクリップ数: #{data.size}"
+          if response.success?
+            data = response.body["data"]
+            Rails.logger.debug "取得したクリップ数: #{data.size}"
 
-        clips += data
-        total_clips += data.size
+            clips += data
+            total_clips += data.size
 
-        pagination = response.body.dig("pagination", "cursor")
-        break if pagination.nil? || data.empty?
-        sleep(1)
-      else
-        Rails.logger.error "Twitch API Error: #{response.status} - #{response.body['message']}"
-        if response.status == 429 # レート制限
-          reset_time = response.headers["Ratelimit-Reset"].to_i
-          sleep_time = reset_time - Time.now.to_i
-          sleep(sleep_time) if sleep_time > 0
-        else
+            pagination = response.body.dig("pagination", "cursor")
+            break if pagination.nil? || data.empty?
+            sleep(1)
+          else
+            Rails.logger.error "Twitch API Error: #{response.status} - #{response.body['message']}"
+            if response.status == 429 # レート制限
+              reset_time = response.headers["Ratelimit-Reset"].to_i
+              sleep_time = reset_time - Time.now.to_i
+              sleep(sleep_time) if sleep_time > 0
+            else
+              break
+            end
+          end
+        rescue Faraday::ConnectionFailed, Faraday::TimeoutError => e
+          @retry_count ||= 0
+          if @retry_count < 3
+            @retry_count += 1
+            sleep(2 ** @retry_count)
+            retry
+          else
+            Rails.logger.error "APIリクエスト失敗: #{e.message}"
+            break
+          end
+        rescue StandardError => e
+          Rails.logger.error "Unexpected error: #{e.message}"
+          Rails.logger.error e.backtrace.join("\n")
           break
         end
       end
-    rescue Faraday::ConnectionFailed, Faraday::TimeoutError => e
-      @retry_count ||= 0
-      if @retry_count < 3
-        @retry_count += 1
-        sleep(2 ** @retry_count)
-        retry
-      else
-        Rails.logger.error "APIリクエスト失敗: #{e.message}"
-        break
-      end
-    rescue StandardError => e
-      Rails.logger.error "Unexpected error: #{e.message}"
-      Rails.logger.error e.backtrace.join("\n")
-      break
+
+      clips
+    # クリップがある場合、過去1日分のクリップを取得する
+    else
+        currentTime = Time.now
+        yesterday = currentTime.yesterday
+        params = {
+          broadcaster_id: broadcaster_id,
+          first: [ 100 ].min,
+          started_at: currentTime,
+          ended_at: yesterday
+        }
+        Rails.logger.debug "Paramsの中身を確認: #{params.inspect}"
+
+        begin
+          response = @connection.get("clips", params) do |req|
+            req.headers["Client-ID"] = @client_id
+            req.headers["Authorization"] = "Bearer #{@access_token}"
+          end
+
+          if response.success?
+            data = response.body["data"]
+            Rails.logger.debug "取得したクリップ数: #{data.size}"
+
+            clips += data
+          else
+            if response.status == 429 # レート制限
+              reset_time = response.headers["Ratelimit-Reset"].to_i
+              sleep_time = reset_time - Time.now.to_i
+              sleep(sleep_time) if sleep_time > 0
+            else
+              return
+            end
+          end
+        rescue Faraday::ConnectionFailed, Faraday::TimeoutError => e
+          @retry_count ||= 0
+          if @retry_count < 3
+            @retry_count += 1
+            sleep(2 ** @retry_count)
+            retry
+          else
+            Rails.logger.error "APIリクエスト失敗: #{e.message}"
+            return
+          end
+        rescue StandardError => e
+          Rails.logger.error "Unexpected error: #{e.message}"
+          Rails.logger.error e.backtrace.join("\n")
+          return
+        end
+        clips
     end
   end
-
-  clips
-end
   # ゲーム情報を取得するメソッド
   def fetch_game(game_id)
     response = @connection.get("games") do |req|

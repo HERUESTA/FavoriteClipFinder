@@ -12,11 +12,8 @@ class FetchTwitchClipsJob < ApplicationJob
   private
 
   def get_clips(client, streamer)
-    Rails.logger.info "開始: 配信者 #{streamer.display_name} (ID: #{streamer.streamer_id})"
-
     # クリップを取得
     clips = client.fetch_clips(streamer.streamer_id, max_results: 200)
-    Rails.logger.info "取得クリップ数: #{clips.size} (配信者: #{streamer.display_name})"
 
     # クリップを保存
     save_clips(clips, streamer)
