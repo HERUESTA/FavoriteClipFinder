@@ -1,0 +1,21 @@
+<!-- プレイリストカード -->
+<% if playlist.present? %>
+<div class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow" , id="<%= dom_id(playlist) %>">
+  <div class="relative">
+    <%= image_tag playlist.clips.first&.thumbnail_url, alt: "サムネイル", class: "rounded-lg w-full h-32 object-cover" %>
+    <span class="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+      クリップ数: <%= playlist.clips.count %>
+    </span>
+  </div>
+  <h3 class="text-lg font-bold text-purple-500 mt-4">
+    <%= link_to playlist.name, playlist_path(playlist), class: "hover:underline" %>
+  </h3>
+  <div class="mt-4 flex items-center justify-between">
+    <span class="text-sm text-gray-500">いいね: </span>
+    <%= link_to "編集", edit_playlist_path(playlist), class: "text-sm bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600" %>
+    <%= link_to "削除", playlist_path(playlist), data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？", turbo_frame: "_top" }, class: "text-sm bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600" %>
+  </div>
+</div>
+<% else %>
+<p>プレイリストはありません</p>
+<% end %>

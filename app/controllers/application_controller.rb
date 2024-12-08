@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
-  before_action :set_followed_channnels
+  before_action :set_followed_channels
 
   protected
 
@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   end
 
   # フォローリストを取得するメソッド
-  def set_followed_channnels
+  def set_followed_channels
     if user_signed_in?
       @followed_channels = fetch_followed_channels(current_user.id)
     else
@@ -48,6 +48,7 @@ class ApplicationController < ActionController::Base
           }
         end
       else
+
         []
       end
     rescue Faraday::ConnectionFailed => e
