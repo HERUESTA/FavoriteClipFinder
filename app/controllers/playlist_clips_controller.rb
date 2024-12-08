@@ -49,20 +49,6 @@ class PlaylistClipsController < ApplicationController
 
     # プレイリストを変数にして渡す
     @playlists = current_user.playlists
-
-    respond_to do |format|
-      format.turbo_stream {
-        render turbo_stream: [
-          turbo_stream.prepend("flash_messages", partial: "layouts/flash_messages"),
-          turbo_stream.replace(
-            "clips",
-            partial: "search/clips",
-            locals: { clips: @clips, search_query: @search_query, playlists: @playlists }
-          )
-        ]
-      }
-      format.html { redirect_to some_path }
-    end
   end
 
   private
@@ -74,11 +60,15 @@ class PlaylistClipsController < ApplicationController
 
   # プレイリストに該当クリップが存在するかどうかの分岐処理
   def search_clip(playlist, clip)
-    if playlist.clips.exists?(@clip_id)
-      flash.now[:alert] = "「#{playlist.name}」には既にこのクリップが追加されています。"
-    else
-      playlist.clips.push(clip)
-      flash.now[:notice] = "プレイリスト「#{playlist.name}」にクリップが追加されました。"
+    respond_to do |format|
+      if playlist.clips.exists?(@clip_id)
+        format.turbo_stream { flash.now[:alert] = "「#{playlist.name}」には既にこのクリップが追加されています。" }
+      else
+        format.turbo_stream do
+          playlist.clips.push(clip)
+          flash.now[:notice] = "プレイリスト「#{playlist.name}」にクリップが追加されました。"
+        end
+      end
     end
   end
 

@@ -49,7 +49,10 @@ class PlaylistsController < ApplicationController
   # プレイリストを削除
   def destroy
     @playlist.destroy
-    redirect_to playlists_path
+    respond_to do |format|
+      format.turbo_stream { flash.now[:notice] = "#{@playlist.name}を削除しました" }
+      format.html { redirect_to show_path, notice: "#{@playlist.name}を削除しました", status: :see_other }
+    end
   end
 
   private
@@ -60,7 +63,7 @@ class PlaylistsController < ApplicationController
     @playlist = current_user.playlists.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     # プレイリストが見つからない場合はプレイリスト一覧ページにリダイレクト
-    redirect_to playlists_path
+    redirect_to "users/show"
   end
 
   # ストロングパラメータの定義

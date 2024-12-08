@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title><%= content_for(:title) || "Myapp" %></title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -25,88 +26,80 @@
       <!-- ロゴ -->
       <div class="text-purple-500">
         <%= link_to root_path do %>
-          <%= image_tag "Icon.png", alt: "ロゴ", class: "h-8 w-8" %>
+        <%= image_tag "Icon.png", alt: "ロゴ", class: "h-8 w-8" %>
         <% end %>
       </div>
     </div>
 
     <!-- 検索ボックス -->
-<form action="/search" method="get" data-turbo-frame="clips">
-  <div class="flex items-center gap-2">
-    <input
-      type="text"
-      name="q"
-      placeholder="検索"
-      class="input input-bordered w-[300px] text-gray-900 bg-white border-gray-600"
-      autocomplete="off"
-      value="<%= params[:q] %>"
-      style="background-color: white !important;"
-    >
-    <button type="submit">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4">
-        <path fill-rule="evenodd" d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" clip-rule="evenodd" />
-      </svg>
-    </button>
-  </div>
-</form>
+    <form action="/search" method="get" data-turbo-frame="clips">
+      <div class="flex items-center gap-2">
+        <input type="text" name="q" placeholder="検索" class="input input-bordered w-[300px] text-gray-900 bg-white border-gray-600" autocomplete="off" value="<%= params[:q] %>" style="background-color: white !important;">
+        <button type="submit">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4">
+            <path fill-rule="evenodd" d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+    </form>
 
     <!-- ログイン -->
     <% if user_signed_in? %>
-      <div class="dropdown dropdown-end">
-        <div tabindex="0" role="button" class="avatar m-1">
-          <div class="w-12 rounded-full">
-            <%= image_tag(current_user.profile_image_url, alt: "プロフィール画像", class: "profile-image", width: "50", height: "50") if current_user.profile_image_url.present? %>
-          </div>
+    <div class="dropdown dropdown-end">
+      <div tabindex="0" role="button" class="avatar m-1">
+        <div class="w-12 rounded-full">
+          <%= image_tag(current_user.profile_image_url, alt: "プロフィール画像", class: "profile-image", width: "50", height: "50") if current_user.profile_image_url.present? %>
         </div>
-        <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-          <li><%= link_to 'プロフィール', show_path(current_user) %></li>
-          <li>
-            <%= button_to "ログアウト", destroy_user_session_path, method: :delete, class: "text-white-500 no-button-style" %>
-          </li>
-        </ul>
       </div>
+      <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+        <li><%= link_to 'プロフィール', show_path(current_user) %></li>
+        <li>
+          <%= button_to "ログアウト", destroy_user_session_path, method: :delete, class: "text-white-500 no-button-style" %>
+        </li>
+      </ul>
+    </div>
     <% else %>
-      <%= button_to "ログイン", user_twitch_omniauth_authorize_path, data: { turbo: false }, class: "btn btn-secondary" %>
+    <%= button_to "ログイン", user_twitch_omniauth_authorize_path, data: { turbo: false }, class: "btn btn-secondary" %>
     <% end %>
   </header>
 
   <!-- フォローリスト -->
   <div class="flex flex-1 min-h-screen pt-16">
     <!-- サイドバー -->
- <aside class="w-64 bg-gray-custom p-4 fixed top-16 bottom-0 left-0 overflow-y-auto z-40 border border-gray-300 shadow-md">
-  <h2 class="text-xl font-bold text-black mb-6">フォローしているチャンネル</h2>
-  <% if current_user.present? %>
-    <% if @followed_channels.present? %>
+    <aside class="w-64 bg-gray-custom p-4 fixed top-16 bottom-0 left-0 overflow-y-auto z-40 border border-gray-300 shadow-md">
+      <h2 class="text-xl font-bold text-black mb-6">フォローしているチャンネル</h2>
+      <% if current_user.present? %>
+      <% if @followed_channels.present? %>
       <ul class="space-y-0">
         <% @followed_channels.each do |follow| %>
-          <li class="flex items-center py-2 px-4 hover:bg-gray-100 rounded cursor-pointer">
-            <%= link_to search_path(q: follow['broadcaster_name']), class: "flex items-center space-x-3 w-full" do %>
-              <!-- プロフィール画像 -->
-              <img src="<%= follow['profile_image_url'] %>" alt="<%= follow['broadcaster_name'] %>" class="w-10 h-10 rounded-full object-cover">
-              <!-- 名前 -->
-              <div class="flex-1">
-                <p class="font-medium text-gray-800 text-sm truncate"><%= follow['broadcaster_name'] %></p>
-              </div>
-            <% end %>
-          </li>
+        <li class="flex items-center py-2 px-4 hover:bg-gray-100 rounded cursor-pointer">
+          <%= link_to search_path(q: follow['broadcaster_name']), class: "flex items-center space-x-3 w-full" do %>
+          <!-- プロフィール画像 -->
+          <img src="<%= follow['profile_image_url'] %>" alt="<%= follow['broadcaster_name'] %>" class="w-10 h-10 rounded-full object-cover">
+          <!-- 名前 -->
+          <div class="flex-1">
+            <p class="font-medium text-gray-800 text-sm truncate"><%= follow['broadcaster_name'] %></p>
+          </div>
+          <% end %>
+        </li>
         <% end %>
       </ul>
-    <% else %>
+      <% else %>
       <p class="text-black">フォローリストがありません。</p>
-    <% end %>
-  <% else %>
-    <div class="flex justify-center">
-      <%= button_to "ログイン", user_twitch_omniauth_authorize_path, data: { turbo: false }, class: "btn btn-secondary" %>
-    </div>
-  <% end %>
-</aside>
+      <% end %>
+      <% else %>
+      <div class="flex justify-center">
+        <%= button_to "ログイン", user_twitch_omniauth_authorize_path, data: { turbo: false }, class: "btn btn-secondary" %>
+      </div>
+      <% end %>
+    </aside>
 
     <!-- メインコンテンツ -->
     <main class="flex-1 p-6 bg-gray-100 ml-64">
-        <%= yield %>
+      <%= yield %>
       <!-- フラッシュメッセージ用のTurbo Frame -->
       <%= turbo_frame_tag "flash_messages" do %>
-        <%= render "layouts/flash_messages" %>
+      <%= render "layouts/flash_messages" %>
       <% end %>
     </main>
   </div>
@@ -116,4 +109,5 @@
     <p>&copy; 2024 TODOアプリ. All Rights Reserved.</p>
   </footer>
 </body>
+
 </html>
