@@ -1,0 +1,12 @@
+:concurrency: 5
+
+:queues:
+  - default
+  - critical
+
+scheduler:
+  schedule:
+    fetch_twitch_clips_job:
+      cron: "0 0 * * *"   # 毎日0時に実行
+      class: FetchTwitchClipsJob
+      queue: default

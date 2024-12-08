@@ -13,7 +13,7 @@ class FetchTwitchClipsJob < ApplicationJob
 
   def get_clips(client, streamer)
     # クリップを取得
-    clips = client.fetch_clips(streamer.streamer_id, max_results: 200)
+    clips = client.fetch_clips(streamer.streamer_id, 200)
 
     # クリップを保存
     save_clips(clips, streamer)
@@ -31,9 +31,6 @@ class FetchTwitchClipsJob < ApplicationJob
   end
 
   def save_clip(clip_data, streamer)
-    Rails.logger.debug "保存するクリップ: #{clip_data}"
-    Rails.logger.debug "保存する配信者ID: #{streamer.streamer_id}"
-
     game = Game.find_or_create_by(game_id: clip_data["game_id"]) do |g|
       game_data = client.fetch_game(clip_data["game_id"])
       if game_data
@@ -66,6 +63,5 @@ class FetchTwitchClipsJob < ApplicationJob
     end
   rescue StandardError => e
     Rails.logger.error "クリップ保存中のエラー: #{clip_data['id']} - #{e.message}"
-    Rails.logger.error e.backtrace.join("\n")
   end
 end
