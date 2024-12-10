@@ -3,7 +3,7 @@ class PlaylistsController < ApplicationController
   # ユーザーが認証されていることを確認
   before_action :authenticate_user!
   # 特定のアクション前にプレイリストを設定
-  before_action :set_playlist, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_playlist, only: [ :show, :update, :destroy ]
 
   # 明示的に application レイアウトを使用
   layout "application"
@@ -39,19 +39,19 @@ class PlaylistsController < ApplicationController
 
   # プレイリストを更新
   def update
-    if @playlist.update(playlist_params)
-      redirect_to @playlist
-    else
-      render :edit
-    end
+    Rails.logger.debug "プレイリストの中身: #{@playlist.inspect}"
+    @playlist.update(playlist_params)
+      respond_to do |format|
+        format.html { redirect_to request.referer, notice: "#{@playlist.title}を更新しました" }
+      end
   end
 
   # プレイリストを削除
   def destroy
     @playlist.destroy
     respond_to do |format|
-      format.turbo_stream { flash.now[:notice] = "#{@playlist.name}を削除しました" }
-      format.html { redirect_to show_path, notice: "#{@playlist.name}を削除しました", status: :see_other }
+      format.turbo_stream { flash.now[:notice] = "#{@playlist.title}を削除しました" }
+      format.html { redirect_to show_path, notice: "#{@playlist.title}を削除しました", status: :see_other }
     end
   end
 
@@ -61,13 +61,11 @@ class PlaylistsController < ApplicationController
   def set_playlist
     # 現在のユーザーが所有するプレイリストのみを検索
     @playlist = current_user.playlists.find(params[:id])
-  rescue ActiveRecord::RecordNotFound
-    # プレイリストが見つからない場合はプレイリスト一覧ページにリダイレクト
-    redirect_to "users/show"
+    @playlists = current_user.playlists.order(:id)
   end
 
   # ストロングパラメータの定義
   def playlist_params
-    params.require(:playlist).permit(:name)
+    params.require(:playlist).permit(:title, :visibility, :id)
   end
 end

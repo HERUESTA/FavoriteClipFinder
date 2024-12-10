@@ -23,7 +23,7 @@
 
   <!-- クリップ一覧 -->
   <div class="flex-1 bg-gray-100 p-4 rounded-lg mx-4 mt-4 overflow-y-auto" style="max-height: 50vh;">
-    <h2 class="text-lg font-bold text-black mb-4"><%= @playlist.name %></h2>
+    <h2 class="text-lg font-bold text-black mb-4"><%= @playlist.title %></h2>
     <ul class="space-y-4">
       <% @clips.each do |clip| %>
       <li class="flex items-center bg-gray-200 p-3 rounded-lg hover:bg-gray-300 transition">

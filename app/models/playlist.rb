@@ -13,7 +13,8 @@ class Playlist < ApplicationRecord
    scope :private_playlists, -> { where(visibility: "private") }
 
   # バリデーション
-  validates :name, presence: true
+  validates :title, presence: true
+  validates :title, length: { in: 1..30 }
 
   # カラムの値を簡単に操作するメソッドを追加
   def increment_likes

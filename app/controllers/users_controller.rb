@@ -41,5 +41,7 @@ class UsersController < ApplicationController
   def show
     # プレイリストを取得
     @playlists = current_user.playlists
+    @playlists = @playlists.order(:id)
+    @playlists = Kaminari.paginate_array(@playlists).page(params[:page]).per(9)
   end
 end

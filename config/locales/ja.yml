@@ -1,5 +1,10 @@
 ja:
   activerecord:
+    attributes:
+      playlist:
+        visibility:
+          public: "公開"
+          private: "非公開"
     errors:
       models:
         clip:
@@ -11,4 +16,3 @@ ja:
           required: "クリップは %{attribute} が必要です。"
       messages:
         required: "を入力してください。"
-

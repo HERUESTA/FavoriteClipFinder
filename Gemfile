@@ -31,6 +31,9 @@ gem "sidekiq"
 # Sidekiq Schedulerをジョブのスケジューリングに使用
 gem "sidekiq-scheduler"
 
+# 日本語化
+gem "rails-i18n"
+
 # 検索用
 gem "ransack"
 

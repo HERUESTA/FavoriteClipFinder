@@ -13,7 +13,7 @@ class PlaylistClipsController < ApplicationController
 
     # 「後で見る」の処理
     if watch_later
-      watch_later_playlist = current_user.playlists.find_or_initialize_by(name: "後で見る")
+      watch_later_playlist = current_user.playlists.find_or_initialize_by(title: "後で見る")
       # 新規作成の場合の処理
       if watch_later_playlist.new_record?
         watch_later_playlist.save
@@ -28,8 +28,9 @@ class PlaylistClipsController < ApplicationController
 
     # 通常のプレイリスト作成の処理
     unless watch_later
-      if playlist = current_user.playlists.find_or_initialize_by(name: @playlist_name)
+      if playlist = current_user.playlists.find_or_initialize_by(title: @playlist_title)
         if playlist.new_record?
+          playlist.visibility = params[:visibility]
           playlist.save
         end
         search_clip(playlist, clip)
@@ -53,20 +54,15 @@ class PlaylistClipsController < ApplicationController
 
   private
 
-  # ストロングパラメーターの定義
-  def create_playlist_clip_params
-    params.permit(:clip_id, :watch_later, :playlist_name)
-  end
-
   # プレイリストに該当クリップが存在するかどうかの分岐処理
   def search_clip(playlist, clip)
     respond_to do |format|
       if playlist.clips.exists?(@clip_id)
-        format.turbo_stream { flash.now[:alert] = "「#{playlist.name}」には既にこのクリップが追加されています。" }
+        format.turbo_stream { flash.now[:alert] = "「#{playlist.title}」には既にこのクリップが追加されています。" }
       else
         format.turbo_stream do
           playlist.clips.push(clip)
-          flash.now[:notice] = "プレイリスト「#{playlist.name}」にクリップが追加されました。"
+          flash.now[:notice] = "プレイリスト「#{playlist.title}」にクリップが追加されました。"
         end
       end
     end
@@ -74,9 +70,13 @@ class PlaylistClipsController < ApplicationController
 
   # フォームから送信されたデータを取得
   def set_params
-    @playlist_name = params[:playlist_name]
-    @visibility = params[:visibility]
+    @playlist_title = params[:playlist_title]
     @watch_later = params[:watch_later]
     @clip_id = params[:clip_id]
   end
+
+    # ストロングパラメーターの定義
+    def create_playlist_clip_params
+      params.permit(:clip_id, :watch_later, :playlist_title, :visibility)
+    end
 end
