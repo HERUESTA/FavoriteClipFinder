@@ -10,6 +10,9 @@ application.register("clip-loader", ClipLoaderController)
 import FlashController from "./flash_controller"
 application.register("flash", FlashController)
 
+import FormValidationController from "./form_validation_controller"
+application.register("form-validation", FormValidationController)
+
 import GameSearchController from "./game_search_controller"
 application.register("game-search", GameSearchController)
 

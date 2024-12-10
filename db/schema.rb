@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_29_104043) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_10_134136) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -42,7 +42,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_29_104043) do
     t.index ["user_uid", "clip_id"], name: "index_favorite_clips_on_user_uid_and_clip_id", unique: true
   end
 
-  create_table "games", force: :cascade do |t|
+  create_table "games", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.string "box_art_url"
     t.datetime "created_at", null: false
@@ -73,7 +73,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_29_104043) do
 
   create_table "playlists", force: :cascade do |t|
     t.string "user_uid", null: false
-    t.string "name", null: false
+    t.string "title", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "visibility", default: "private", null: false
