@@ -18,7 +18,7 @@ Rails.application.routes.draw do
   get "search", to: "search#index"
 
   # プレイリストクリップ用ルート
-  resources :playlist_clips, only: [ :create ]
+  resources :playlist_clips
 
   # プレイリストのルート
   resources :playlists
@@ -32,7 +32,7 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
-  # 認証をハードコード
+  # Sidekiq認証
   Sidekiq::Web.use Rack::Auth::Basic do |username, password|
     username == ENV["SIDEKIQ_USERNAME"] && password == ENV["SIDEKIQ_PASSWORD"]
   end

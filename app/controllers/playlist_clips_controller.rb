@@ -1,10 +1,8 @@
 class PlaylistClipsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_params
 
   def create
-    # フォームから送信されたデータを取得
-    set_params
-
     # クリップを取得
     clip = Clip.find(@clip_id)
 
@@ -50,6 +48,21 @@ class PlaylistClipsController < ApplicationController
 
     # プレイリストを変数にして渡す
     @playlists = current_user.playlists
+  end
+
+  def destroy
+    playlist = Playlist.find(params[:id])
+    @clip = Clip.find(@clip_id)
+    playlist.clips.destroy(@clip)
+    if playlist.clips.empty?
+      playlist.destroy
+      redirect_to playlists_path, notice: "クリップを全て削除したためプロフィール画面へ移動しました", status: :see_other
+    else
+      respond_to do |format|
+        format.turbo_stream { flash.now[:notice] = "該当のクリップを削除しました" }
+        format.html { redirect_to edit_playlist_path(playlist), notice: "該当のクリップを削除しました", status: :see_other }
+      end
+    end
   end
 
   private

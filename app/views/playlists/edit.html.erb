@@ -1,0 +1,27 @@
+<div class="bg-white text-base-content p-6 rounded-lg max-w-[calc(100%-4cm)] mx-auto min-h-screen shadow flex flex-col">
+  <!-- ヘッダー -->
+  <div class="flex items-center mb-6">
+    <!-- プロフィール画像とユーザー名 -->
+    <div class="flex items-center">
+      <!-- プロフィール画像 -->
+      <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-300">
+        <img src="<%= current_user.profile_image_url %>" alt="<%= current_user.user_name %>" class="w-full h-full object-cover" />
+      </div>
+      <!-- ユーザー名 -->
+      <div class="ml-4">
+        <h1 class="text-lg font-bold text-black"><%= current_user.user_name %></h1>
+      </div>
+    </div>
+  </div>
+
+  <!-- プレイリストのクリップ編集 -->
+  <% if @playlist.present? %>
+  <%= render partial: "edit_playlist_clips", locals: { playlist: @playlist } %>
+
+  <!-- クリップリスト -->
+  <%= render partial: "clip_list", locals: { clips: @clips, playlist: @playlist } %>
+
+  <!-- モーダル画面 -->
+  <%= render partial: "modal", locals: { playlist: @playlist } %>
+  <% end %>
+</div>

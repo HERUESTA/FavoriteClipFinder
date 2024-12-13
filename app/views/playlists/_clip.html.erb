@@ -49,7 +49,7 @@
         <!-- モーダル内のコンテンツ -->
         <div class="py-4">
           <!-- プレイリストのチェックボックスリスト -->
-          <%= form_with url: playlist_clips_path, method: :post do |f| %>
+          <%= form_with url: playlist_playlist_clip_index_path, method: :post do |f| %>
           <input type="hidden" name="search_query" value="<%= @search_query %>" />
           <input type="hidden" name="clip_id" value="<%= clip.id %>" />
 
@@ -102,7 +102,7 @@
   <div class="modal">
     <div class="modal-box rounded-lg shadow-lg">
       <h3 class="font-bold text-lg">新しいプレイリストを作成</h3>
-      <%= form_with url: playlist_clips_path, method: :post do |f| %>
+      <%= form_with url: playlist_playlist_clip_index_path, method: :post do |f| %>
       <input type="hidden" name="search_query" value="<%= @search_query %>" />
       <div class="form-control mt-4">
         <label class="label">

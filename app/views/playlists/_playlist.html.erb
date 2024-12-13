@@ -37,8 +37,7 @@
       <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 right-0 bg-white z-10">
         <li class="flex items-center">
           <!-- 編集モーダルをトグルするラベル -->
-          <label for="edit-modal-<%= playlist.id %>" class="flex w-full items-center hover:bg-purple-600 hover:text-white text-black rounded">
-            <span>編集</span>
+          <%= link_to "編集", edit_playlist_path(playlist), class: "flex w-full items-center hover:bg-purple-600 hover:text-white text-black rounded" %>
           </label>
         </li>
         <li class="flex items-center">
@@ -59,5 +58,5 @@
 </div>
 
 <!-- モーダルの部分テンプレート -->
-<%= render partial: "users/modal", locals: { playlist: playlist } %>
+<%= render partial: "modal", locals: { playlist: playlist } %>
 <% end %>

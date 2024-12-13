@@ -8,10 +8,22 @@ class PlaylistsController < ApplicationController
   # 明示的に application レイアウトを使用
   layout "application"
 
+  def index
+    # プレイリストを取得
+    @playlists = current_user.playlists
+    @playlists = @playlists.order(:id)
+    @playlists = Kaminari.paginate_array(@playlists).page(params[:page]).per(9)
+  end
+
+  def edit
+    @playlist = Playlist.find(params[:id])
+    @clips = @playlist.clips.includes(:streamer)
+  end
+
   def show
     # プレイリスト内の全クリップを取得
     @playlist = Playlist.find(params[:id])
-    @clips = @playlist.clips.includes(:streamer).page(params[:page]).per(60)
+    @clips = @playlist.clips.includes(:streamer)
 
     # 再生するクリップを特定（パラメータがなければ最初のクリップを使用）
     @clip = params[:clip_id].present? ? @clips.find_by(id: params[:clip_id]) : @clips.first
@@ -22,7 +34,6 @@ class PlaylistsController < ApplicationController
     @playlist = current_user.playlists.build
   end
 
-  # POST /playlists
   # 新しいプレイリストを作成
   def create
     @playlist = current_user.playlists.build(playlist_params)
@@ -31,10 +42,6 @@ class PlaylistsController < ApplicationController
     else
       render :new
     end
-  end
-
-  # プレイリスト編集フォームを表示
-  def edit
   end
 
   # プレイリストを更新

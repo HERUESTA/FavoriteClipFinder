@@ -16,6 +16,7 @@
   <link rel="apple-touch-icon" href="/icon.png">
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+  <script src="https://kit.fontawesome.com/4025a67f93.js" crossorigin="anonymous"></script>
 </head>
 
 <body class="bg-gray-100 flex flex-col min-h-screen">
@@ -52,7 +53,7 @@
         </div>
       </div>
       <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-        <li><%= link_to 'プロフィール', show_path(current_user) %></li>
+        <li><%= link_to 'プロフィール', playlists_path %></li>
         <li>
           <%= button_to "ログアウト", destroy_user_session_path, method: :delete, class: "text-white-500 no-button-style" %>
         </li>
