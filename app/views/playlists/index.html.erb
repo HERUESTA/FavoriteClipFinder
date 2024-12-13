@@ -1,18 +1,26 @@
-<h1>マイプレイリスト</h1>
-
-<%= link_to "新しいプレイリストを作成", new_playlist_path, class: "bg-green-500 text-white px-4 py-2 rounded" %>
-
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-  <% @playlists.each do |playlist| %>
-    <div class="bg-gray-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-      <h3 class="text-lg font-bold text-purple-300">
-        <%= link_to playlist.name, playlist_path(playlist), class: "hover:underline" %>
-      </h3>
-      <p class="text-gray-400 text-sm mt-2">クリップ数: <%= playlist.clips.count %></p>
-      <div class="mt-4 flex items-center justify-between">
-        <span class="text-sm text-gray-500">いいね: <%= playlist.likes %></span>
-        <%= link_to "編集", edit_playlist_path(playlist), class: "text-sm bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600" %>
-      </div>
+<div class="bg-white p-4 rounded-lg shadow-md">
+  <!-- ユーザープロフィール -->
+  <div class="flex items-center mb-6">
+    <div class="w-12 rounded-full">
+      <%= image_tag(current_user.profile_image_url, alt: "プロフィール画像", class: "profile-image", width: "50", height: "50") if current_user.profile_image_url.present? %>
     </div>
-  <% end %>
+    <div class="ml-4">
+      <h2 class="text-xl font-bold"><%= current_user.user_name %></h2>
+    </div>
+  </div>
+</div>
+
+<div class="mt-8 bg-gray-50 p-6 rounded-lg">
+  <h2 class="text-xl font-bold text-black mb-4">マイライブラリ</h2>
+  <!-- プレイリスト一覧 -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <% @playlists.each do |playlist| %>
+    <%= render 'playlist', playlist: playlist %>
+    <% end %>
+  </div>
+
+  <!-- ページネーションリンク -->
+  <div data-controller="scroll-to-top" class="pagination-links mt-6 flex justify-center">
+    <%= paginate @playlists %>
+  </div>
 </div>

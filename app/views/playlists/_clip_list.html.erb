@@ -1,0 +1,25 @@
+<!-- 動画リスト -->
+<div class="overflow-y-auto flex-grow max-h-[calc(100vh-16rem)]">
+  <ul class="space-y-4">
+    <% @clips.each do |clip| %>
+    <li class="flex items-center bg-gray-100 rounded-lg shadow-md p-4" id="<%= dom_id(clip) %>">
+      <!-- サムネイル -->
+      <div class="w-32 h-20 bg-gray-300 rounded-lg flex-shrink-0">
+        <img src="<%= clip.thumbnail_url %>" alt="<%= clip.title %>" class="w-full h-full object-cover rounded-lg" />
+      </div>
+      <!-- 動画情報 -->
+      <div class="ml-4 flex-1">
+        <h3 class="text-base font-bold text-black"><%= clip.title %></h3>
+        <p class="text-sm text-gray-500"><%= clip.streamer.display_name %> · <%= clip.view_count %>回視聴</p>
+      </div>
+      <!-- ゴミ箱マーク -->
+      <div>
+        <%= button_to playlist_clip_path(@playlist), method: :delete, data: { turbo_frame: "_top" }, class: "btn btn-ghost btn-sm text-error" do %>
+        <i class="fa-solid fa-trash"></i>
+        <%= hidden_field_tag :clip_id, clip.id %>
+        <% end %>
+      </div>
+    </li>
+    <% end %>
+  </ul>
+</div>

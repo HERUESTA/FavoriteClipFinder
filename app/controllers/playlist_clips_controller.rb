@@ -54,7 +54,6 @@ class PlaylistClipsController < ApplicationController
     playlist = Playlist.find(params[:id])
     @clip = Clip.find(@clip_id)
     playlist.clips.destroy(@clip)
-    playlist.clips.destroy(@clip)
     if playlist.clips.empty?
       playlist.destroy
       redirect_to playlists_path, notice: "クリップを全て削除したためプロフィール画面へ移動しました", status: :see_other

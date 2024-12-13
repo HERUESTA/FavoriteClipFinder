@@ -1,0 +1,33 @@
+<div class="mb-6">
+  <!-- プレイリストタイトルセクション -->
+  <div class="p-4 rounded-lg bg-gray-50">
+    <!-- タイトルと公開・非公開の配置 -->
+    <div class="flex justify-between items-center mb-4">
+      <!-- プレイリストタイトル -->
+      <h2 class="text-3xl font-bold tracking-wide text-black break-words"><%= @playlist.title %></h2>
+      <!-- 公開・非公開 -->
+      <div class="flex items-center space-x-2 text-sm bg-gray-100 p-2 rounded-lg">
+        <% if @playlist.visibility == "private" %>
+        <i class="fa-solid fa-lock text-gray-500"></i>
+        <span class="text-gray-500">非公開</span>
+        <% elsif @playlist.visibility == "public" %>
+        <i class="fa-solid fa-earth-americas text-gray-500"></i>
+        <span class="text-gray-500">公開</span>
+        <% end %>
+      </div>
+    </div>
+    <!-- 編集アイコンと共有アイコン -->
+    <div class="flex items-center space-x-4">
+      <!-- 編集アイコン -->
+      <button class="btn btn-circle btn-outline text-gray-700 hover:bg-purple-700 hover:text-white transition" title="編集">
+        <label for="edit-modal-<%= @playlist.id %>">
+          <i class="fa-regular fa-pen-to-square text-xl"></i>
+        </label>
+      </button>
+      <!-- 共有アイコン -->
+      <button class="btn btn-circle btn-outline text-gray-700 hover:bg-purple-700 hover:text-white transition" title="共有">
+        <i class="fa-brands fa-twitter text-xl"></i>
+      </button>
+    </div>
+  </div>
+</div>
