@@ -37,7 +37,6 @@ class PlaylistClipsController < ApplicationController
 
 
     # クリップ検索の準備
-    # CI/CD
     search_query = params[:search_query]
     @games = Game.ransack(name_cont: search_query).result(distinct: true)
     @streamers = Streamer.ransack(streamer_name_or_display_name_cont: search_query).result(distinct: true)
