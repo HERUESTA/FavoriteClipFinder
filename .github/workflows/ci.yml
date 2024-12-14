@@ -30,8 +30,9 @@ jobs:
       - name: Scan for common Rails security vulnerabilities using static analysis
         run: bin/brakeman --no-pager
 
-  lint:
+  rubocop:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -42,7 +43,7 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Lint code for consistent style
+      - name: Run rubocop
         run: bin/rubocop -f github
 
   test:
@@ -84,3 +85,50 @@ jobs:
           name: screenshots
           path: ${{ github.workspace }}/tmp/screenshots
           if-no-files-found: ignore
+  
+  rspec:
+    runs-on: ubuntu-latest
+      defaults:
+        run:
+          working-directory: .
+      service:
+        postgres:
+          image: postgres
+          env:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+          ports:
+          - 5432:5432
+        
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+        
+        - name: Set up Ruby
+          uses: ruby/setup-ruby@v1
+          with:
+            ruby-version: .ruby-version
+            bundler-cache: true
+
+        - name: Cache node modules
+          uses: actions/cache@v3
+          with:
+            path: node_modules 
+            key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+            restore-keys: |
+              ${{ runner.os }}-node-
+          
+        - name: Bundler and gem install
+          run: |
+            gem install bundler 
+            bundle install
+
+        - name: Database create and migrate
+          run: |
+            cp config/database.yml.ci config/database.yml
+            bundle exec rails db:create RAILS_ENV=test
+            bundle exec rails db:migrate RAILS_ENV=test
+        
+        - name: Run rspec
+          run: bundle exec rspec
+
