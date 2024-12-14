@@ -1,0 +1,7 @@
+test:
+  adapter: postgres
+  encoding: utf8
+  username: root
+  password:
+  host: 127.0.0.1
+  database: twitch-clip-finder_test
