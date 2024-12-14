@@ -88,47 +88,45 @@ jobs:
   
   rspec:
     runs-on: ubuntu-latest
-      defaults:
-        run:
-          working-directory: .
-      service:
-        postgres:
-          image: postgres
-          env:
-            POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: postgres
-          ports:
+    defaults:
+      run:
+        working-directory: .
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
           - 5432:5432
-        
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
-        
-        - name: Set up Ruby
-          uses: ruby/setup-ruby@v1
-          with:
-            ruby-version: .ruby-version
-            bundler-cache: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-        - name: Cache node modules
-          uses: actions/cache@v3
-          with:
-            path: node_modules 
-            key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-            restore-keys: |
-              ${{ runner.os }}-node-
-          
-        - name: Bundler and gem install
-          run: |
-            gem install bundler 
-            bundle install
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
 
-        - name: Database create and migrate
-          run: |
-            cp config/database.yml.ci config/database.yml
-            bundle exec rails db:create RAILS_ENV=test
-            bundle exec rails db:migrate RAILS_ENV=test
-        
-        - name: Run rspec
-          run: bundle exec rspec
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
+      - name: Bundler and gem install
+        run: |
+          gem install bundler
+          bundle install
+
+      - name: Database create and migrate
+        run: |
+          cp config/database.yml.ci config/database.yml
+          bundle exec rails db:create RAILS_ENV=test
+          bundle exec rails db:migrate RAILS_ENV=test
+
+      - name: Run rspec
+        run: bundle exec rspec
