@@ -47,6 +47,7 @@ class PlaylistClipsController < ApplicationController
     @search_query = search_query
 
     # プレイリストを変数にして渡す
+    # CI/CDを走らせるために追加
     @playlists = current_user.playlists
   end
 
