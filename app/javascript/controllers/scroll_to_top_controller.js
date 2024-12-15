@@ -1,4 +1,4 @@
-// app/javascript/controllers/scroll_to_top_controller.js
+  // app/javascript/controllers/scroll_to_top_controller.js
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
@@ -9,10 +9,7 @@ export default class extends Controller {
     });
   }
 
-  scrollToTopWithDelay(event) {
-    // クリック後、少し遅延を加えて画面上部にスクロール
-    setTimeout(() => {
+  scrollToTop(event) {
       window.scrollTo(0, 0);
-    }, 200); // 遅延時間を調整（200ミリ秒）
-  }
+  };
 }
