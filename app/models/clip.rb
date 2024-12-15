@@ -26,4 +26,20 @@ class Clip < ApplicationRecord
       .includes(:streamer, :game)
       .order(clip_created_at: :desc)
   end
+
+  # ゲームIDを定数として定義
+  GAME_ID = {
+    GTA: 32982,
+    APEX: 511224,
+    SF6: 55453844,
+    VALORANT: 516575,
+    LOL: 21779
+  }.freeze
+
+  # 最新のクリップを取得するスコープ
+  scope :latest, ->(limit = 6) { order(created_at: :desc).limit(limit) }
+
+
+  # 特定のゲームの最新クリップを取得するスコープ
+  scope :for_game, ->(game_id, limit = 6) { where(game_id: game_id).latest(limit).preload(:game, :streamer) }
 end

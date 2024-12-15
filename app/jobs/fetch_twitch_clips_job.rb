@@ -2,18 +2,17 @@ class FetchTwitchClipsJob < ApplicationJob
   queue_as :default
 
   def perform
-    client = TwitchClient.new
-
     Streamer.order(:id).find_each(batch_size: 500) do |streamer|
-      get_clips(client, streamer)
+      get_clips(streamer)
     end
   end
 
   private
 
-  def get_clips(client, streamer)
+  def get_clips(streamer)
+    @client = TwitchClient.new
     # クリップを取得
-    clips = client.fetch_clips(streamer.streamer_id, 200)
+    clips = @client.fetch_clips(streamer.streamer_id, 200)
 
     # クリップを保存
     save_clips(clips, streamer)
@@ -32,7 +31,7 @@ class FetchTwitchClipsJob < ApplicationJob
 
   def save_clip(clip_data, streamer)
     game = Game.find_or_create_by(game_id: clip_data["game_id"]) do |g|
-      game_data = client.fetch_game(clip_data["game_id"])
+      game_data = @client.fetch_game(clip_data["game_id"])
       if game_data
         g.name = game_data["name"]
         g.box_art_url = game_data["box_art_url"]

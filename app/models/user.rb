@@ -61,6 +61,31 @@ class User < ApplicationRecord
     end
   end
 
+    # アクセストークンをリフレッシュするメソッド
+    def refresh_access_token(user)
+      response = Faraday.post("https://id.twitch.tv/oauth2/token") do |req|
+        req.body = {
+          client_id: ENV["TWITCH_CLIENT_ID"],
+          client_secret: ENV["TWITCH_CLIENT_SECRET"],
+          refresh_token: user.refresh_token,
+          grant_type: "refresh_token"
+        }
+        req.headers["Content-Type"] = "application/x-www-form-urlencoded"
+        Rails.logger.debug "リクエストの内容: #{req.headers}"
+      end
+
+      if response.success?
+        token_data = JSON.parse(response.body)
+        user.update(
+          access_token: token_data["access_token"],
+          refresh_token: token_data["refresh_token"],
+          token_expires_at: Time.now + token_data["expires_in"].to_i.seconds
+        )
+      else
+        Rails.logger.debug "リクエストに失敗しました"
+      end
+    end
+
   # メール認証は使用しないため、falseにする
   def email_required?
     false

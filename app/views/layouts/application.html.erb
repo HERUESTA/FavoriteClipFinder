@@ -64,22 +64,22 @@
     <% end %>
   </header>
 
-  <!-- フォローリスト -->
-  <div class="flex flex-1 min-h-screen pt-16">
-    <!-- サイドバー -->
-    <aside class="w-64 bg-gray-custom p-4 fixed top-16 bottom-0 left-0 overflow-y-auto z-40 border border-gray-300 shadow-md">
-      <h2 class="text-xl font-bold text-black mb-6">フォローしているチャンネル</h2>
+  <!-- フォローリストとメインコンテンツのレイアウト -->
+  <div class="flex pt-16 min-h-screen">
+    <!-- フォローリスト（サイドバー） -->
+    <aside class="w-60 bg-gray-custom pt-2 fixed top-16 bottom-0 left-0 overflow-y-auto z-40 border border-gray-300 shadow-md">
+      <h2 class="text-sm font-bold text-black mb-3">フォローしているチャンネル</h2>
       <% if current_user.present? %>
       <% if @followed_channels.present? %>
       <ul class="space-y-0">
         <% @followed_channels.each do |follow| %>
-        <li class="flex items-center py-2 px-4 hover:bg-gray-100 rounded cursor-pointer">
-          <%= link_to search_path(q: follow['broadcaster_name']), class: "flex items-center space-x-3 w-full" do %>
+        <li class="flex items-center pt-2 hover:bg-gray-100 rounded cursor-pointer">
+          <%= link_to search_path(q: follow['broadcaster_name']), class: "flex items-center space-x-1 w-full" do %>
           <!-- プロフィール画像 -->
           <img src="<%= follow['profile_image_url'] %>" alt="<%= follow['broadcaster_name'] %>" class="w-10 h-10 rounded-full object-cover">
           <!-- 名前 -->
           <div class="flex-1">
-            <p class="font-medium text-gray-800 text-sm truncate"><%= follow['broadcaster_name'] %></p>
+            <p class="text-gray-800 text-xs truncate"><%= follow['broadcaster_name'] %></p>
           </div>
           <% end %>
         </li>
@@ -96,7 +96,7 @@
     </aside>
 
     <!-- メインコンテンツ -->
-    <main class="flex-1 p-6 bg-gray-100 ml-64">
+    <main class="flex-1 ml-60 pt-6 p-1">
       <%= yield %>
       <!-- フラッシュメッセージ用のTurbo Frame -->
       <%= turbo_frame_tag "flash_messages" do %>

@@ -6,7 +6,7 @@ Rails.application.routes.draw do
     devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
 
   # root_path
-  root "users#index"
+  root "top#index"
 
   # 配信者ID検索用ルート
   get "streamers/show", to: "streamers#show"
@@ -16,6 +16,7 @@ Rails.application.routes.draw do
 
   # 検索ルート
   get "search", to: "search#index"
+  get "search/playlist", to: "search#playlist"
 
   # プレイリストクリップ用ルート
   resources :playlist_clips

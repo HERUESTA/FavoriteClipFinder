@@ -3,7 +3,6 @@ class SearchController < ApplicationController
   def index
     # ransack検索用の変数定義
     search_query = params[:q]
-    Rails.logger.debug "Ransack Query: #{search_query.inspect}"
 
     # ゲームと配信者のクリップ検索を両方実行
     @games = Game.ransack(name_cont: search_query).result(distinct: true)
@@ -18,9 +17,7 @@ class SearchController < ApplicationController
     @clips = Clip.get_game_clips(game_ids) + Clip.get_streamer_clips(streamer_ids)
 
     # 重複を排除してクリップを一意にする
-    Rails.logger.debug "uniq適用前クリップ数: #{@clips.count}"
     @clips = @clips.uniq
-    Rails.logger.debug "クリップの数: #{@clips.count}"
     @clips = Kaminari.paginate_array(@clips).page(params[:page]).per(60)
 
     # プレイリストを渡してあげる（ログインユーザーでない場合、空配列を返す）
@@ -33,5 +30,10 @@ class SearchController < ApplicationController
 
     # 検索ワードを変数化する
     @search_query = search_query
+  end
+
+  def playlist
+    # プレイリスト取得
+    @playlists = Playlist.where(visibility: "public")
   end
 end

@@ -1,0 +1,16 @@
+<div>
+  <div class="border-b border-gray-400">
+    <div class="flex items-center justify-between">
+      <%= link_to search_name, search_path(q: search_name), class: "text-xl font-bold text-purple-800 pl-3 hover:underline" %>
+    </div>
+    <div id="clips-container" class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
+      <% clips.each do |clip| %>
+      <div>
+        <div class="relative">
+          <%= render partial: "search/clip", locals: { clip: clip, clips: @clips, search_query: search_query, playlists: playlists } %>
+        </div>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>
