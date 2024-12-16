@@ -4,7 +4,7 @@ class PlaylistClipsController < ApplicationController
 
   def create
     # クリップを取得
-    clip = Clip.find(@clip_id)
+    clip = Clip.preload(:game, :streamer).find(@clip_id)
 
     # 「後で見る」が選択されているかを確認
     watch_later = @watch_later == "true"

@@ -37,6 +37,9 @@ gem "rails-i18n"
 # 検索用
 gem "ransack"
 
+# カウンタキャッシュ
+gem "counter_culture", "~> 3.2"
+
 # Twitch関連
 gem "devise", "~> 4.9"
 gem "omniauth", "~> 2.1"

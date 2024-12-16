@@ -22,7 +22,9 @@ Rails.application.routes.draw do
   resources :playlist_clips
 
   # プレイリストのルート
-  resources :playlists
+  resources :playlists do
+    resource :likes, only: %i[create destroy]
+  end
 
   # マイページ用ルート
   get "show", to: "users#show"

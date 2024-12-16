@@ -19,6 +19,9 @@ application.register("game-search", GameSearchController)
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
 
+import LikeController from "./like_controller"
+application.register("like", LikeController)
+
 import PaginationScrollController from "./pagination_scroll_controller"
 application.register("pagination-scroll", PaginationScrollController)
 
