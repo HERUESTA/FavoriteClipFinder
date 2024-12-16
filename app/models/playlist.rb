@@ -16,12 +16,9 @@ class Playlist < ApplicationRecord
   validates :title, presence: true
   validates :title, length: { in: 1..30 }
 
-  # カラムの値を簡単に操作するメソッドを追加
-  def increment_likes
-    self.increment!(:likes)
-  end
-
-  def decrement_likes
-    self.decrement!(:likes) if likes > 0
+  # いいねしているかどうか
+  def like_by?(user)
+  return false if user.nil?
+  likes.exists?(user_uid: user.uid)
   end
 end
