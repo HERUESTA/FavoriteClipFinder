@@ -9,10 +9,12 @@ class PlaylistsController < ApplicationController
   layout "application"
 
   def index
-    # プレイリストを取得
-    @playlists = current_user.playlists
-    @playlists = @playlists.order(:id)
-    @playlists = Kaminari.paginate_array(@playlists).page(params[:page]).per(9)
+    @page = params[:page]
+    @active_tab = (params[:active_tab] == "liked_playlists") ? "liked_playlists" : "my_library"
+    # いいねしたプレイリスト
+    @liked_playlists = Playlist.get_liked_playlists(current_user, @page)
+    # マイライブラリ
+    @my_playlists = Playlist.get_my_playlists(current_user, @page)
   end
 
   def edit

@@ -28,5 +28,8 @@ application.register("pagination-scroll", PaginationScrollController)
 import ScrollToTopController from "./scroll_to_top_controller"
 application.register("scroll-to-top", ScrollToTopController)
 
+import TabsController from "./tabs_controller"
+application.register("tabs", TabsController)
+
 import VideoController from "./video_controller"
 application.register("video", VideoController)
