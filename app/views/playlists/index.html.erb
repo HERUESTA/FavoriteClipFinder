@@ -10,17 +10,35 @@
   </div>
 </div>
 
+<!-- タブ切り替え部分 -->
 <div class="mt-8 bg-gray-50 p-6 rounded-lg">
-  <h2 class="text-xl font-bold text-black mb-4">マイライブラリ</h2>
-  <!-- プレイリスト一覧 -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    <% @playlists.each do |playlist| %>
-    <%= render 'playlist', playlist: playlist %>
-    <% end %>
+  <div role="tabs" class="flex border-b border-gray-200">
+    <%= link_to "マイライブラリ",
+      playlists_path(active_tab: "my_library"),
+      class: (@active_tab == 'my_library' ? "mr-8 pb-2 border-b-2 border-purple-500 text-black font-medium" : "mr-8 pb-2 border-b-2 border-transparent text-gray-600 hover:text-gray-800") %>
+
+    <%= link_to "いいねしたプレイリスト",
+      playlists_path(active_tab: "liked_playlists"),
+      class: (@active_tab == 'liked_playlists' ? "mr-8 pb-2 border-b-2 border-purple-500 text-black font-medium" : "mr-8 pb-2 border-b-2 border-transparent text-gray-600 hover:text-gray-800") %>
   </div>
 
-  <!-- ページネーションリンク -->
-  <div data-controller="scroll-to-top" class="pagination-links mt-6 flex justify-center">
-    <%= paginate @playlists %>
+  <% if @active_tab == 'my_library' %>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <% @my_playlists.each do |playlist| %>
+    <%= render 'my_playlist', playlist: playlist %>
+    <% end %>
   </div>
+  <div data-controller="scroll-to-top" class="pagination-links mt-6 flex justify-center">
+    <%= paginate @my_playlists %>
+  </div>
+  <% elsif @active_tab == 'liked_playlists' %>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <% @liked_playlists.each do |playlist| %>
+    <%= render 'liked_playlist', playlist: playlist %>
+    <% end %>
+  </div>
+  <div data-controller="scroll-to-top" class="pagination-links mt-6 flex justify-center">
+    <%= paginate @liked_playlists %>
+  </div>
+  <% end %>
 </div>

@@ -5,7 +5,7 @@ class Playlist < ApplicationRecord
   has_many :playlist_clips, dependent: :destroy
   has_many :clips, through: :playlist_clips
   has_many :likes, dependent: :destroy
-  has_many :liked_users, through: :likes, source: :user
+  has_many :users, through: :likes, source: :user
 
    # 公開プレイリストのスコープ
    scope :public_playlists, -> { where(visibility: "public") }
@@ -20,5 +20,19 @@ class Playlist < ApplicationRecord
   def like_by?(user)
   return false if user.nil?
   likes.exists?(user_uid: user.uid)
+  end
+
+  # いいねしたプレイリストを取得する
+  def self.get_liked_playlists(user, page)
+    @playlists = Playlist.joins(:likes).where(likes: { user_uid: user.uid }).where.not(playlists: { user_uid: user.uid })
+    @playlists = @playlists.order(:id)
+    @playlists = Kaminari.paginate_array(@playlists).page(page).per(6)
+  end
+
+  # マイプレイリストを取得する
+  def self.get_my_playlists(user, page)
+    @playlists = user.playlists
+    @playlists = @playlists.order(:id)
+    @playlists = Kaminari.paginate_array(@playlists).page(page).per(6)
   end
 end

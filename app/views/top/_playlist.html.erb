@@ -11,34 +11,7 @@
       <% @playlists.each do |playlist| %>
       <div class="rounded-lg p-2 relative group">
         <%= link_to playlist_path(playlist), class: "block relative" do %>
-        <!-- 1枚目の背景画像（最奥） -->
-        <div class="absolute -top-6 left-0 w-full h-full bg-black rounded-lg transform scale-95">
-          <%= image_tag "black.webp", 
-                        alt: "背景画像1", 
-                        class: "w-full h-full object-cover rounded-lg opacity-50", 
-                        loading: "lazy" %>
-        </div>
-        <!-- 2枚目の背景画像（中間） -->
-        <div class="absolute -top-3 left-0 w-full h-full bg-black rounded-lg transform scale-98">
-          <%= image_tag "black.webp", 
-                        alt: "背景画像2", 
-                        class: "w-full h-full object-cover rounded-lg opacity-75", 
-                        loading: "lazy" %>
-        </div>
-        <!-- 3枚目のサムネイル（最前面） -->
-        <%= image_tag playlist.clips.first&.thumbnail_url.gsub('%{width}x%{height}', '320x180'), 
-                      alt: "メインサムネイル", 
-                      class: "rounded-lg w-full object-cover relative z-10", 
-                      style: "height: 200px;", 
-                      loading: "lazy" %>
-        <!-- 再生アイコン -->
-        <div class="absolute inset-0 flex items-center justify-center">
-          <div class="bg-black bg-opacity-50 rounded-full w-12 h-12 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" width="24" height="24">
-              <path d="M8 5v14l11-7z"></path>
-            </svg>
-          </div>
-        </div>
+        <%= render "shared/playlist_card", playlist: playlist %>
         <% end %>
         <!-- タイトルとハートアイコン -->
         <div class="flex items-center justify-between mt-2">

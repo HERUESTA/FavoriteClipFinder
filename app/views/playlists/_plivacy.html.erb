@@ -1,0 +1,19 @@
+<% if playlist.visibility == "private" %>
+<div class="flex items-center space-x-1">
+  <i class="fa-solid fa-lock text-gray-500"></i>
+  <span class="text-gray-500 text-xs">非公開</span>
+</div>
+<% elsif playlist.visibility == "public" %>
+<div class="flex items-center space-x-1">
+  <i class="fa-solid fa-earth-americas text-gray-500"></i>
+  <span class="text-gray-500">公開</span>
+</div>
+<div class="flex items-center space-x-4">
+  <!-- いいねボタン -->
+  <div id="playlist_<%= playlist.id %>_like">
+    <%= render "playlists/like", playlist: playlist %>
+  </div>
+  <!-- 共有アイコン -->
+  <i class="fa-brands fa-twitter text-gray-500"></i>
+</div>
+<% end %>
