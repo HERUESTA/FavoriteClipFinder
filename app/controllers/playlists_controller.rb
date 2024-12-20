@@ -3,7 +3,7 @@ class PlaylistsController < ApplicationController
   # ユーザーが認証されていることを確認
   before_action :authenticate_user!
   # 特定のアクション前にプレイリストを設定
-  before_action :set_playlist, only: [ :show, :update, :destroy ]
+  before_action :set_playlist, only: [ :update, :destroy ]
 
   # 明示的に application レイアウトを使用
   layout "application"
@@ -31,21 +31,6 @@ class PlaylistsController < ApplicationController
     @clip = params[:clip_id].present? ? @clips.find_by(id: params[:clip_id]) : @clips.first
   end
 
-  # 新しいプレイリスト作成フォームを表示
-  def new
-    @playlist = current_user.playlists.build
-  end
-
-  # 新しいプレイリストを作成
-  def create
-    @playlist = current_user.playlists.build(playlist_params)
-    if @playlist.save
-      redirect_to @playlist
-    else
-      render :new
-    end
-  end
-
   # プレイリストを更新
   def update
     Rails.logger.debug "プレイリストの中身: #{@playlist.inspect}"
@@ -57,7 +42,7 @@ class PlaylistsController < ApplicationController
 
   # プレイリストを削除
   def destroy
-    @playlist.destroy
+    @playlist.destroy!
     respond_to do |format|
       format.turbo_stream { flash.now[:notice] = "#{@playlist.title}を削除しました" }
       format.html { redirect_to show_path, notice: "#{@playlist.title}を削除しました", status: :see_other }

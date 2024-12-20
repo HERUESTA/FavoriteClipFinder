@@ -1,4 +1,4 @@
-class TopController < ApplicationController
+class TopsController < ApplicationController
   # TOP画面に遷移
   def index
     if current_user.present?
@@ -11,6 +11,7 @@ class TopController < ApplicationController
 
     # プレイリスト取得
     @playlists = Playlist.where(visibility: "public").limit(20)
+    @my_playlists = Playlist.where(user_uid: current_user.uid)
     # クリップの取得
     @GTA_clips = Clip.for_game(Clip::GAME_ID[:GTA])
     @Apex_clips = Clip.for_game(Clip::GAME_ID[:APEX])
