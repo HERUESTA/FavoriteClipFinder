@@ -3,6 +3,7 @@ class SearchController < ApplicationController
   def index
     # ransack検索用の変数定義
     search_query = params[:q]
+    Rails.logger.debug "検索後: #{search_query.inspect}"
 
     # ゲームと配信者のクリップ検索を両方実行
     @games = Game.ransack(name_cont: search_query).result(distinct: true)

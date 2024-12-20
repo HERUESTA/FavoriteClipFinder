@@ -6,13 +6,7 @@ Rails.application.routes.draw do
     devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
 
   # root_path
-  root "top#index"
-
-  # 配信者ID検索用ルート
-  get "streamers/show", to: "streamers#show"
-
-  # ゲームID検索用ルート
-  get "games/show", to: "games#show"
+  root "tops#index"
 
   # 検索ルート
   get "search", to: "search#index"
@@ -20,14 +14,13 @@ Rails.application.routes.draw do
 
   # プレイリストクリップ用ルート
   resources :playlist_clips
+  # IDを必要とせず、プレイリストにクリップを追加できるアクションを追加する
+  post "add_clip_in_playlist", to: "playlist_clips#add_clip_in_playlist"
 
   # プレイリストのルート
   resources :playlists do
     resource :likes, only: %i[create destroy]
   end
-
-  # マイページ用ルート
-  get "show", to: "users#show"
 
   # CI/CD用route
   get "up" => "rails/health#show", as: :rails_health_check
