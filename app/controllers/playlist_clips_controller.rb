@@ -28,7 +28,8 @@ class PlaylistClipsController < ApplicationController
   end
 
   def add_clip_in_playlist
-    playlist = Playlist.find_by(id: params[:id])
+    playlist = Playlist.find_by(id: params[:playlist_id])
+    Rails.logger.debug "プレイリスト: #{playlist.inspect}"
     clip = Clip.find(params[:clip_id])
     unless playlist.clips.include?(clip)
       playlist.clips << clip
