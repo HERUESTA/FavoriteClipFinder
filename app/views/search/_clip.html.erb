@@ -117,7 +117,9 @@
       <%= form_with url: playlist_clips_path, method: :post do |f| %>
       <input type="hidden" name="search_query" value="<%= @search_query %>" />
       <input type="hidden" name="clip_id" value="<%= clip.id %>" />
+      <% if current_user.present? %>
       <input type="hidden" name="user_uid" value="<%= current_user.uid %>" />
+      <% end %>
       <div class="form-control mt-4">
         <label class="label">
           <span class="label-text text-black">タイトルを入力してください</span>
