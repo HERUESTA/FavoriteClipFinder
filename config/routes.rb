@@ -12,6 +12,11 @@ Rails.application.routes.draw do
   get "search", to: "search#index"
   get "search/playlist", to: "search#playlist"
 
+  # autoCompleteルート
+  resources :clips do
+    get :search, on: :collection
+  end
+
   # プレイリストクリップ用ルート
   resources :playlist_clips
   # IDを必要とせず、プレイリストにクリップを追加できるアクションを追加する

@@ -13,6 +13,15 @@ class Clip < ApplicationRecord
   validates :view_count, presence: true
   validates :creator_name, presence: true
 
+# Ransackで検索可能な属性を定義
+def self.ransackable_attributes(auth_object = nil)
+  %w[clip_id title creator_name created_at clip_created_at duration view_count]
+end
+
+    # ransackで検索可能な関連付けを定義
+    def self.ransackable_associations(auth_object = nil)
+      %w[streamer game]
+    end
   # ゲームに関するクリップを取得
   def self.get_game_clips(game_ids)
     where(game_id: game_ids)
