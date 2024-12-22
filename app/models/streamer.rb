@@ -13,6 +13,6 @@ class Streamer < ApplicationRecord
 
   # ransackで検索可能な関連を定義
   def self.ransackable_associations(auth_object = nil)
-    [ "clips" ]
+    [ "clips", "game" ]
   end
 end

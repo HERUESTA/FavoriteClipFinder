@@ -1,7 +1,7 @@
 # app/controllers/playlists_controller.rb
 class PlaylistsController < ApplicationController
   # ユーザーが認証されていることを確認
-  before_action :authenticate_user!
+  before_action :authenticate_user!, only: [ :edit, :index, :update, :destroy ]
   # 特定のアクション前にプレイリストを設定
   before_action :set_playlist, only: [ :update, :destroy ]
 

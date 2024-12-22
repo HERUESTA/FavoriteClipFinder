@@ -32,17 +32,21 @@
       </div>
     </div>
 
-    <!-- 検索ボックス -->
-    <form action="/search" method="get" data-turbo-frame="clips">
-      <div class="flex items-center gap-2">
-        <input type="text" name="q" placeholder="検索" class="input input-bordered w-[300px] text-gray-900 bg-white border-gray-600" autocomplete="off" value="<%= params[:q] %>" style="background-color: white !important;">
+    <%= search_form_for @q, url: search_path do |f| %>
+    <div class="flex items-center border border-gray-300 rounded-full shadow-sm bg-white px-4 py-2">
+      <!-- 検索フィールド -->
+      <div data-controller="autocomplete" data-autocomplete-url-value="/clips/search" role="combobox" class="flex-1 relative">
+        <%= f.search_field :game_name_or_streamer_streamer_name_cont, data: { autocomplete_target: 'input' }, class: "w-full bg-transparent py-1 px-2 text-gray-700 placeholder-gray-400", placeholder: "検索" %>
+        <ul class="list-group bg-white absolute w-full md:text-sm max-w-max border border-gray-300 rounded-md shadow-lg z-10 mt-1" data-autocomplete-target="results"></ul>
+      </div>
+      <!-- 検索アイコン -->
+      <div class="ml-2">
         <button type="submit">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4">
-            <path fill-rule="evenodd" d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" clip-rule="evenodd" />
-          </svg>
+          <i class="fa-brands fa-searchengin"></i>
         </button>
       </div>
-    </form>
+    </div>
+    <% end %>
 
     <!-- ログイン -->
     <% if user_signed_in? %>
