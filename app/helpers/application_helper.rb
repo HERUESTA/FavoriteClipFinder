@@ -1,7 +1,5 @@
 module ApplicationHelper
   def default_meta_tags
-    # プレイリストにサムネイルが存在すればそれを使い、
-    # なければ ogp.jpg を使う
     playlist_title     = @playlist&.title.presence || "Twitchのクリップやプレイリストを共有できるサービス"
     thumbnail_url = @playlist&.clips&.first&.thumbnail_url.presence || image_url("ogp.jpg")
 
@@ -18,7 +16,7 @@ module ApplicationHelper
       # OGP設定
       og: {
         site_name:  "TwitchClipFinder",
-        title:      "Twitchのクリップやプレイリストを共有できるサービス",
+        title:      playlist_title,
         description: "TwitchClipFinderでは他者が作成したクリップやプレイリストを共有することができます",
         type:       "website",
         url:        request.original_url,
@@ -28,7 +26,7 @@ module ApplicationHelper
 
       # Twitterカード設定
       twitter: {
-        card: "summary_large_image",
+        card: "summary",
         site: "@siesta985736",
         title: playlist_title,
         image: thumbnail_url            # ← こちらも同じサムネイルを使用
