@@ -2,18 +2,19 @@
 <html>
 
 <head>
-  <title><%= content_for(:title) || "Myapp" %></title>
+  <title><%= content_for(:title) || "TwitchClipFinder" %></title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
-
   <%= yield :head %>
 
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" href="/icon.png" type="image/png">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/icon.png">
+  <link rel="apple-touch-icon" href="/icon.pn
+   <meta name=" viewport" content="width=device-width, initial-scale=1.0" />
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   <script src="https://kit.fontawesome.com/4025a67f93.js" crossorigin="anonymous"></script>
@@ -37,7 +38,10 @@
     <div class="flex items-center border border-gray-300 rounded-full shadow-sm bg-white px-4 py-2">
       <!-- 検索フィールド -->
       <div data-controller="autocomplete" data-autocomplete-url-value="/clips/search" role="combobox" class="flex-1 relative">
-        <%= f.search_field :game_name_or_streamer_streamer_name_cont, data: { autocomplete_target: 'input' }, class: "w-full bg-transparent py-1 px-2 text-gray-700 placeholder-gray-400", placeholder: "検索" %>
+        <%= f.search_field :game_name_or_streamer_streamer_name_cont,
+                data: { autocomplete_target: 'input' },
+                class: "w-full bg-transparent py-1 px-2 text-gray-700 placeholder-gray-400",
+                placeholder: "検索" %>
         <ul class="list-group bg-white absolute w-full md:text-sm max-w-max border border-gray-300 rounded-md shadow-lg z-10 mt-1" data-autocomplete-target="results"></ul>
       </div>
       <!-- 検索アイコン -->
@@ -49,7 +53,7 @@
     </div>
     <% end %>
 
-    <!-- ログイン -->
+    <!-- ログイン or プロフィール -->
     <% if user_signed_in? %>
     <div class="dropdown dropdown-end">
       <div tabindex="0" role="button" class="avatar m-1">
@@ -69,16 +73,16 @@
     <% end %>
   </header>
 
-  <!-- フォローリストとメインコンテンツのレイアウト -->
   <div class="flex pt-16 min-h-screen">
     <!-- フォローリスト（サイドバー） -->
-    <aside class="w-60 bg-gray-custom pt-2 fixed top-16 bottom-0 left-0 overflow-y-auto z-40 border border-gray-300 shadow-md">
-      <h2 class="text-sm font-bold text-black mb-3">フォローしているチャンネル</h2>
+    <!-- 'hidden sm:block' を追加することで、sm(640px)未満では非表示、640px以上で表示される -->
+    <aside class="hidden sm:block w-60 bg-gray-custom pt-2 fixed top-16 bottom-0 left-0 overflow-y-auto z-40 border border-gray-300 shadow-md">
+      <h2 class="text-sm font-bold text-black mb-3 px-2">フォローしているチャンネル</h2>
       <% if current_user.present? %>
       <% if @followed_channels.present? %>
       <ul class="space-y-0">
         <% @followed_channels.each do |follow| %>
-        <li class="flex items-center pt-2 hover:bg-gray-100 rounded cursor-pointer">
+        <li class="flex items-center pt-2 px-2 hover:bg-gray-100 rounded cursor-pointer">
           <%= link_to search_path(q: follow['broadcaster_name']), class: "flex items-center space-x-1 w-full" do %>
           <!-- プロフィール画像 -->
           <img src="<%= follow['profile_image_url'] %>" alt="<%= follow['broadcaster_name'] %>" class="w-10 h-10 rounded-full object-cover">
@@ -91,7 +95,7 @@
         <% end %>
       </ul>
       <% else %>
-      <p class="text-black">フォローリストがありません。</p>
+      <p class="text-black px-2">フォローリストがありません。</p>
       <% end %>
       <% else %>
       <div class="flex justify-center">
@@ -101,7 +105,8 @@
     </aside>
 
     <!-- メインコンテンツ -->
-    <main class="flex-1 ml-60 pt-6 p-1">
+    <!-- 左余白としてsm:ml-60を設定し、sm未満ではサイドバー分の余白は不要 -->
+    <main class="flex-1 pt-6 p-1 sm:ml-60">
       <%= yield %>
       <!-- フラッシュメッセージ用のTurbo Frame -->
       <%= turbo_frame_tag "flash_messages" do %>
