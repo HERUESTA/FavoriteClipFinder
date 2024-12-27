@@ -1,76 +1,84 @@
 <div class="bg-white text-black min-h-screen flex flex-col px-2 sm:px-4 max-w-xs sm:max-w-md lg:max-w-screen-md mx-auto">
+  <!-- プレイリストタイトル -->
+  <div class="flex items-center mt-4">
+    <h2 class="text-sm lg:text-base text-black">
+      <i class="fa-solid fa-list"></i>
+      プレイリスト:<%= @playlist.title %>
+    </h2>
+  </div>
+
   <!-- 動画プレイヤー -->
-  <div class="bg-gray-100 rounded-lg mt-2 w-full">
+  <div class=" rounded-lg mt-2 w-full">
     <figure class="relative">
       <iframe src="https://clips.twitch.tv/embed?clip=<%= @clip.clip_id %>&parent=<%= ENV['TWITCH_PARENT_URL'] %>" scrolling="no" allowfullscreen="true" width="400" class="w-full h-auto" style="max-width: 100%; height: 300px;" loading="lazy">
       </iframe>
     </figure>
 
-    <!-- 動画情報 -->
-    <div class="flex flex-wrap items-center mt-4 gap-2 sm:flex-col sm:items-start">
-      <!-- ストリーマー画像 -->
-      <%= link_to search_path(q: @clip&.streamer&.display_name), class: "flex items-center gap-2 w-full sm:w-full" do %>
-      <img src="<%= @clip&.streamer&.profile_image_url ? @clip&.streamer&.profile_image_url.gsub('{width}x{height}', '100x100') : 'default-avatar-url.jpg' %>" alt="<%= @clip&.streamer&.display_name %>" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover flex-shrink-0" loading="lazy" />
-      <div class="flex-1">
-        <h1 class="text-sm lg:text-base font-bold text-black truncate">
-          <%= @clip&.streamer&.display_name %>
-        </h1>
+    <!-- アイコン群 -->
+    <div class="flex items-center justify-between px-1 pt-2 py-2 border-b border-gray-300">
+      <!-- 左側: 配信者情報 -->
+      <div class="flex items-center gap-2">
+        <%= link_to search_path(q: @clip&.streamer&.display_name), class: "flex-shrink-0" do %>
+        <img src="<%= @clip&.streamer&.profile_image_url ? @clip&.streamer&.profile_image_url.gsub('{width}x{height}', '100x100') : 'default-avatar-url.jpg' %>" alt="<%= @clip&.streamer&.display_name %>" class="w-10 h-10 rounded-full object-cover" loading="lazy" />
+        <% end %>
         <p class="text-xs lg:text-sm text-gray-700 truncate">
-          <%= @clip&.title %>
+          <%= @clip&.streamer&.display_name %>
         </p>
       </div>
-      <% end %>
-    </div>
 
-    <!-- ゲーム名 -->
-    <%= link_to @clip&.game&.name, search_path(q: @clip&.game&.name),
-      class: "text-xs lg:text-sm text-purple-500 hover:underline hover:decoration-purple-500 block mt-1 truncate" %>
-
-    <!-- 作成者情報 -->
-    <p class="text-xs lg:text-sm text-gray-600 truncate mt-1">
-      作成者: <%= @clip&.creator_name %>
-    </p>
-
-    <!-- ボタンや共有アイコン -->
-    <div class="mt-4 flex items-center gap-2 flex-wrap sm:flex-col sm:items-start">
-      <% if user_signed_in? %>
-      <label for="playlist-modal-<%= @clip.id %>" class="bg-gray text-purple-600 inline-flex items-center px-2 py-1 sm:px-4 sm:py-2 text-xs sm:text-sm rounded cursor-pointer hover:bg-gray-200">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-        </svg>
-        <span>保存</span>
-      </label>
-      <% end %>
-
-      <div class="flex items-center gap-2 sm:flex-row sm:gap-1">
-        <!-- いいねボタン -->
+      <!-- 右側: アイコン -->
+      <div class="flex items-center gap-4">
+        <!-- いいねアイコン -->
         <div id="playlist_<%= @playlist.id %>_like">
           <%= render "playlists/like", playlist: @playlist %>
         </div>
 
-        <!-- 共有アイコン -->
+        <!-- X共有アイコン -->
         <%= link_to "https://twitter.com/share?text=#{CGI.escape("📺 Twitch: https://clips.twitch.tv/#{@playlist&.clips&.first&.clip_id}\n#️⃣ ハッシュタグ: #TwitchClipFinder\n")}&url=#{CGI.escape(playlist_url(@playlist))}",
           target: "_blank",
           rel: "noopener noreferrer",
           title: "Xでシェアする",
           class: "text-gray-500 hover:text-purple-500" do %>
-        <i class="fa-brands fa-twitter text-xl"></i>
+        <i class="fa-brands fa-x-twitter text-lg"></i>
         <% end %>
+
+        <!-- 保存ボタン -->
+        <% if user_signed_in? %>
+        <label for="playlist-modal-<%= @clip.id %>" class="text-gray-500 hover:text-purple-500 cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 1 1 2 2z"></path>
+          </svg>
+        </label>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- 動画情報 -->
+    <div class="flex flex-col mt-4">
+      <div class="flex items-center gap-2">
+        <div>
+          <h1 class="text-sm lg:text-base font-bold text-black truncate">
+            <%= @clip&.title %>
+          </h1>
+          <!-- ゲーム名 -->
+          <%= link_to @clip&.game&.name, search_path(q: @clip&.game&.name),
+            class: "text-xs lg:text-sm text-purple-500 hover:underline hover:decoration-purple-500 block truncate" %>
+          <!-- 作成者情報 -->
+          <p class="text-xs lg:text-sm text-gray-600 truncate">
+            作成者: <%= @clip&.creator_name %>
+          </p>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- クリップ一覧 -->
-  <div class="flex-1 bg-gray-100 p-2 rounded-lg w-full mt-2">
-    <h2 class="text-sm lg:text-base font-bold text-black mb-2">
-      <%= @playlist.title %>
-    </h2>
-
+  <div class="flex-1 bg-gray-300 p-2 rounded-lg w-full mt-2">
     <ul class="space-y-2">
       <% @clips.each do |clip| %>
       <li class="flex items-center bg-gray-200 p-2 rounded-lg hover:bg-gray-300 transition sm:flex-col sm:items-start sm:gap-1">
         <%= link_to playlist_path(@playlist, clip_id: clip.id, turbo_frame: "video_player"), class: "flex items-center gap-2 w-full" do %>
-        <img src="<%= clip.thumbnail_url.gsub('%{width}x%{height}', '160x90') %>" alt="<%= clip.title %>" class="w-16 sm:w-20 h-auto rounded flex-shrink-0" />
+        <img src="<%= clip.thumbnail_url.gsub('%{width}x{height}', '160x90') %>" alt="<%= clip.title %>" class="w-16 sm:w-20 h-auto rounded flex-shrink-0" />
         <div class="truncate w-full">
           <p class="text-xs lg:text-sm font-bold text-black truncate">
             <%= clip.title %>
