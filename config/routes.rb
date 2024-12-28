@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   root "tops#index"
 
   # 検索ルート
-  get 'search', to: 'search#index'
+  get "search", to: "search#index"
   get "search/playlist", to: "search#playlist"
 
   # autoCompleteルート

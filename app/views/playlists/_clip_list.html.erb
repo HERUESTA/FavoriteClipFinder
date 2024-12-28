@@ -14,7 +14,7 @@
       </div>
       <!-- ゴミ箱マーク -->
       <div class="mt-2 sm:mt-0 w-full sm:w-auto text-right">
-        <%= button_to playlist_clip_path(@playlist), method: :delete, data: { turbo_frame: "_top" }, class: "btn btn-ghost btn-sm text-error" do %>
+        <%= button_to playlist_clip_path(playlist), method: :delete, data: { turbo_frame: "_top" }, class: "btn btn-ghost btn-sm text-error" do %>
         <i class="fa-solid fa-trash"></i>
         <%= hidden_field_tag :clip_id, clip.id %>
         <% end %>

@@ -4,7 +4,6 @@ class PlaylistClipsController < ApplicationController
 
   def create
     playlist = Playlist.new(playlist_params)
-    Rails.logger.debug "プレイリストの中身: #{playlist.inspect}"
     if playlist.save
       save_clip_in_plalist(playlist)
     else
@@ -14,10 +13,11 @@ class PlaylistClipsController < ApplicationController
   end
 
   def destroy
-    @clip = Clip.find(params[:clip_id])
-    playlist.clips.destroy(@clip)
+    clip = Clip.find(params[:clip_id])
+    playlist = Playlist.find(params[:id])
+    playlist.clips.destroy(clip)
     if playlist.clips.empty?
-      playlist.destroy
+      playlist.destroy!
       redirect_to playlists_path, notice: "クリップを全て削除したためプロフィール画面へ移動しました", status: :see_other
     else
       respond_to do |format|
@@ -28,7 +28,6 @@ class PlaylistClipsController < ApplicationController
   end
 
   def add_clip_in_playlist
-    Rails.logger.debug "プレイリストID: #{params[:playlist_id]}"
     playlist = Playlist.find_by(id: params[:playlist_id])
 
     clip = Clip.find(params[:clip_id])

@@ -1,6 +1,6 @@
 <div class="bg-white text-base-content p-6 rounded-lg max-w-screen-lg mx-auto min-h-screen shadow flex flex-col">
   <!-- ヘッダー -->
-  <div class="flex items-center mb-6">
+  <div class="flex items-center justify-between mb-6">
     <!-- プロフィール画像とユーザー名 -->
     <div class="flex items-center">
       <!-- プロフィール画像 -->
@@ -12,6 +12,9 @@
         <h1 class="text-lg font-bold text-black"><%= current_user.user_name %></h1>
       </div>
     </div>
+
+    <!-- プロフィールへ戻るボタン -->
+    <%= link_to "プロフィールへ戻る", playlists_path, class: "bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-600 transition" %>
   </div>
 
   <!-- プレイリストのクリップ編集 -->

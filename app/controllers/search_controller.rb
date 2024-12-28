@@ -3,7 +3,7 @@ class SearchController < ApplicationController
   def index
     if params[:q].present?
       @q = Clip.includes(:streamer, :game).ransack(
-        combinator: 'or',
+        combinator: "or",
         game_name_cont: params[:q],
         streamer_name_cont: params[:q],
         streamer_display_name_cont: params[:q]

@@ -21,9 +21,8 @@
         <%= link_to search_path(q: @clip&.streamer&.display_name), class: "flex-shrink-0" do %>
         <img src="<%= @clip&.streamer&.profile_image_url ? @clip&.streamer&.profile_image_url.gsub('{width}x{height}', '100x100') : 'default-avatar-url.jpg' %>" alt="<%= @clip&.streamer&.display_name %>" class="w-10 h-10 rounded-full object-cover" loading="lazy" />
         <% end %>
-        <p class="text-xs lg:text-sm text-gray-700 truncate">
-          <%= @clip&.streamer&.display_name %>
-        </p>
+        <%= link_to @clip.streamer.display_name, search_path(q: @clip.streamer.display_name),  
+        class: "text-xs lg:text-sm text-black hover:underline hover:decoration-purple-500 block truncate" %>
       </div>
 
       <!-- 右側: アイコン -->
