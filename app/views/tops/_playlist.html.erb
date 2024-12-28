@@ -1,41 +1,41 @@
-  <!-- プレイリストセクション -->
-  <div>
-    <div class="flex items-center justify-between mb-4 pb-2">
-      <!-- 見出し部分に下線を追加 -->
-      <h2 class="text-lg font-bold text-gray-800">
-        <%= link_to 'プレイリスト', search_playlist_path, class: "text-purple-800 hover:underline text-xl pl-3" %>
-      </h2>
-    </div>
+<!-- プレイリストセクション -->
+<div>
+  <div class="flex items-center justify-between mb-4 pb-2">
+    <!-- 見出し部分に下線を追加 -->
+    <h2 class="text-lg font-bold text-gray-800">
+      <%= link_to 'プレイリスト', search_playlist_path, class: "text-purple-800 hover:underline text-xl pl-3" %>
+    </h2>
+  </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-6">
-      <% @playlists.each do |playlist| %>
-      <div class="rounded-lg p-2 relative group">
-        <%= link_to playlist_path(playlist), class: "block relative" do %>
-        <%= render "shared/playlist_card", playlist: playlist %>
-        <% end %>
-        <!-- タイトルとハートアイコン -->
-        <div class="flex items-center justify-between mt-2">
-          <!-- タイトル -->
-          <p class="text-md font-bold truncate text-black">
-            <%= truncate(playlist.title, length: 10, omission: '...') %>
-          </p>
+  <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-6">
+    <% @playlists.each do |playlist| %>
+    <div class="rounded-lg p-2 relative group">
+      <%= link_to playlist_path(playlist), class: "block relative" do %>
+      <%= render "shared/playlist_card", playlist: playlist %>
+      <% end %>
+      <!-- タイトルとハートアイコン -->
+      <div class="flex items-center justify-between mt-2">
+        <!-- タイトル -->
+        <p class="text-md font-bold truncate text-black">
+          <%= truncate(playlist.title, length: 10, omission: '...') %>
+        </p>
 
-          <!-- Xボタンといいねボタン -->
-          <div class="flex items-center space-x-1">
-            <!-- X共有ボタン -->
-            <div class="shrink-0">
-              <button type="button" class="text-gray-500 hover:text-gray-700" aria-label="共有">
-                <i class="fa-brands fa-x-twitter text-sm"></i>
-              </button>
-            </div>
+        <!-- Xボタンといいねボタン -->
+        <div class="flex items-center space-x-1 gap-2">
+          <!-- X共有ボタン -->
+          <div class="shrink-0">
+            <%= link_to "https://twitter.com/intent/tweet?text=#{CGI.escape("📺 Twitch: https://clips.twitch.tv/#{playlist&.clips&.first&.clip_id}\n#️⃣ ハッシュタグ: #TwitchClipFinder\n")}&url=#{CGI.escape(playlist_url(playlist))}", target: "_blank", rel: "noopener noreferrer", title: "Xでシェアする" do %>
+            <i class="fa-brands fa-x-twitter text-md"></i>
+            <% end %>
+          </div>
 
-            <!-- いいねボタン部分 -->
-            <div class="shrink-0" id="playlist_<%= playlist.id %>_like">
-              <%= render "playlists/like", playlist: playlist %>
-            </div>
+          <!-- いいねボタン部分 -->
+          <div class="shrink-0" id="playlist_<%= playlist.id %>_like">
+            <%= render "playlists/like", playlist: playlist %>
           </div>
         </div>
       </div>
-      <% end %>
     </div>
+    <% end %>
   </div>
+</div>

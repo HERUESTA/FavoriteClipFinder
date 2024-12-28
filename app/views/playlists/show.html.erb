@@ -1,41 +1,100 @@
-<div class="bg-white text-black min-h-screen flex flex-col">
+<div class="bg-white text-black min-h-screen flex flex-col px-2 sm:px-4 max-w-xs sm:max-w-md lg:max-w-screen-md mx-auto">
+  <!-- プレイリストタイトル -->
+  <div class="flex items-center mt-4">
+    <h2 class="text-sm lg:text-base text-black">
+      <i class="fa-solid fa-list"></i>
+      プレイリスト:<%= @playlist.title %>
+    </h2>
+  </div>
+
   <!-- 動画プレイヤー -->
-  <%= turbo_frame_tag "video_player" do %>
-  <div class="bg-gray-100 p-4 rounded-lg shadow-md mx-4 mt-4">
-    <iframe class="w-full h-[30vh] rounded-lg" src="https://clips.twitch.tv/embed?clip=<%= @clip&.clip_id %>&parent=<%= ENV['TWITCH_PARENT_URL'] %>" frameborder="0" allowfullscreen loading="lazy"></iframe>
+  <div class=" rounded-lg mt-2 w-full">
+    <figure class="relative">
+      <iframe src="https://clips.twitch.tv/embed?clip=<%= @clip.clip_id %>&parent=<%= ENV['TWITCH_PARENT_URL'] %>" scrolling="no" allowfullscreen="true" width="400" class="w-full h-auto" style="max-width: 100%; height: 300px;" loading="lazy">
+      </iframe>
+    </figure>
+
+    <!-- アイコン群 -->
+    <div class="flex items-center justify-between px-1 pt-2 py-2 border-b border-gray-300">
+      <!-- 左側: 配信者情報 -->
+      <div class="flex items-center gap-2">
+        <%= link_to search_path(q: @clip&.streamer&.display_name), class: "flex-shrink-0" do %>
+        <img src="<%= @clip&.streamer&.profile_image_url ? @clip&.streamer&.profile_image_url.gsub('{width}x{height}', '100x100') : 'default-avatar-url.jpg' %>" alt="<%= @clip&.streamer&.display_name %>" class="w-10 h-10 rounded-full object-cover" loading="lazy" />
+        <% end %>
+        <%= link_to @clip.streamer.display_name, search_path(q: @clip.streamer.display_name),  
+        class: "text-xs lg:text-sm text-black hover:underline hover:decoration-purple-500 block truncate" %>
+      </div>
+
+      <!-- 右側: アイコン -->
+      <div class="flex items-center gap-4">
+        <!-- いいねアイコン -->
+        <% if @playlist.visibility == "public" %>
+        <div id="playlist_<%= @playlist.id %>_like">
+          <%= render "playlists/like", playlist: @playlist %>
+        </div>
+        <% end %>
+
+        <!-- X共有アイコン -->
+        <%= link_to "https://twitter.com/intent/tweet?text=#{CGI.escape("📺 Twitch: https://clips.twitch.tv/#{@playlist&.clips&.first&.clip_id}\n#️⃣ ハッシュタグ: #TwitchClipFinder\n")}&url=#{CGI.escape(playlist_url(@playlist))}",
+          target: "_blank",
+          rel: "noopener noreferrer",
+          title: "Xでシェアする",
+          class: "text-gray-500 hover:text-purple-500" do %>
+        <i class="fa-brands fa-x-twitter text-lg"></i>
+        <% end %>
+
+        <!-- 保存ボタン -->
+        <% if user_signed_in? %>
+        <label for="playlist-modal-<%= @clip.id %>" class="text-gray-500 hover:text-purple-500 cursor-pointer flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span>保存</span>
+        </label>
+        <% end %>
+      </div>
+    </div>
 
     <!-- 動画情報 -->
-    <h1 class="text-lg font-bold text-black mt-2 truncate">
-      <%= @clip&.title%>
-    </h1>
-    <p class="text-gray-700 text-sm mt-1">視聴数: <%= @clip&.view_count || "不明" %></p> <!-- テキスト色を濃いグレーに変更 -->
-    <p class="text-sm font-bold text-black truncate"><%= @clip&.game&.name || "不明なゲーム" %></p>
-
-    <!-- 配信者情報 -->
-    <div class="flex items-center mt-2">
-      <%= image_tag @clip&.streamer&.profile_image_url, class: "w-8 h-8 rounded-full mr-3" if @clip&.streamer&.profile_image_url.present? %>
-      <p class="text-base text-black truncate">
-        <%= @clip&.streamer&.display_name || "不明な配信者" %>
-      </p>
+    <div class="flex flex-col mt-4">
+      <div class="flex items-center gap-2">
+        <div>
+          <h1 class="text-sm lg:text-base font-bold text-black truncate">
+            <%= @clip&.title %>
+          </h1>
+          <!-- ゲーム名 -->
+          <%= link_to @clip&.game&.name, search_path(q: @clip&.game&.name),
+            class: "text-xs lg:text-sm text-purple-500 hover:underline hover:decoration-purple-500 block truncate" %>
+          <!-- 作成者情報 -->
+          <p class="text-xs lg:text-sm text-gray-600 truncate">
+            作成者: <%= @clip&.creator_name %>
+          </p>
+        </div>
+      </div>
     </div>
   </div>
-  <% end %>
 
   <!-- クリップ一覧 -->
-  <div class="flex-1 bg-gray-100 p-4 rounded-lg mx-4 mt-4 overflow-y-auto" style="max-height: 50vh;">
-    <h2 class="text-lg font-bold text-black mb-4"><%= @playlist.title %></h2>
-    <ul class="space-y-4">
+  <div class="flex-1 bg-gray-300 p-2 rounded-lg w-full mt-2">
+    <ul class="space-y-2">
       <% @clips.each do |clip| %>
-      <li class="flex items-center bg-gray-200 p-3 rounded-lg hover:bg-gray-300 transition">
-        <%= link_to playlist_path(@playlist, clip_id: clip.id, turbo_frame: "video_player"), class: "flex items-center space-x-3 w-full" do %>
-        <img src="<%= clip.thumbnail_url.gsub('%{width}x%{height}', '160x90') %>" alt="<%= clip.title %>" class="w-16 h-auto rounded" />
+      <li class="flex items-center bg-gray-200 p-2 rounded-lg hover:bg-gray-300 transition sm:flex-col sm:items-start sm:gap-1">
+        <%= link_to playlist_path(@playlist, clip_id: clip.id, turbo_frame: "video_player"), class: "flex items-center gap-2 w-full" do %>
+        <img src="<%= clip.thumbnail_url.gsub('%{width}x{height}', '160x90') %>" alt="<%= clip.title %>" class="w-16 sm:w-20 h-auto rounded flex-shrink-0" />
         <div class="truncate w-full">
-          <p class="text-sm font-bold text-black truncate"><%= clip.title %></p>
-          <p class="text-xs text-gray-700 truncate"><%= clip.streamer&.display_name %></p>
+          <p class="text-xs lg:text-sm font-bold text-black truncate">
+            <%= clip.title %>
+          </p>
+          <p class="text-xs lg:text-sm text-gray-700 truncate">
+            <%= clip.streamer&.display_name %>
+          </p>
         </div>
         <% end %>
       </li>
       <% end %>
     </ul>
   </div>
+
+  <!-- プレイリスト作成モーダル -->
+  <%= render "shared/create_playlist_modal", clip: @clip, playlists: @playlists%>
 </div>
