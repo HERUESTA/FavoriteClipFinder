@@ -44,10 +44,11 @@
 
         <!-- 保存ボタン -->
         <% if user_signed_in? %>
-        <label for="playlist-modal-<%= @clip.id %>" class="text-gray-500 hover:text-purple-500 cursor-pointer">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 1 1 2 2z"></path>
+        <label for="playlist-modal-<%= @clip.id %>" class="text-gray-500 hover:text-purple-500 cursor-pointer flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
           </svg>
+          <span>保存</span>
         </label>
         <% end %>
       </div>
@@ -92,4 +93,7 @@
       <% end %>
     </ul>
   </div>
+
+  <!-- プレイリスト作成モーダル -->
+  <%= render "shared/create_playlist_modal", clip: @clip, playlists: @playlists%>
 </div>

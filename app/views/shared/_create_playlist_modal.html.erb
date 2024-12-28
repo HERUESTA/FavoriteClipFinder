@@ -1,0 +1,107 @@
+<!-- モーダルのトグル用チェックボックス -->
+<input type="checkbox" id="playlist-modal-<%= clip.id %>" class="modal-toggle" />
+
+<!-- モーダル本体 -->
+<div class="modal">
+  <div class="modal-box rounded-lg bg-white shadow-lg">
+
+    <!-- モーダルヘッダー -->
+    <div class="flex justify-between items-center">
+      <h3 class="font-bold text-lg text-gray-800">動画の保存先</h3>
+      <!-- 「X」ボタン -->
+      <label for="playlist-modal-<%= clip.id %>" class="text-black">✕</label>
+    </div>
+    <!-- モーダル内のコンテンツ -->
+    <div class=" py-4">
+      <!-- プレイリストのラジオボタンリスト -->
+      <%= form_with url: add_clip_in_playlist_path, method: :post do |f| %>
+      <input type="hidden" name="search_query" value="<%= @search_query %>" />
+      <input type="hidden" name="clip_id" value="<%= clip.id %>" />
+
+      <div class="form-control">
+        <label class="label purple-800">
+          <span class="label-text text-gray-600">保存先のプレイリストを選択</span>
+        </label>
+
+        <% playlists.each_with_index do |playlist, index| %>
+        <label class="cursor-pointer label py-2">
+          <input type="radio" name="playlist_id" value="<%= playlist.id %>" class="radio mr-2 border-purple-500 checked:bg-purple-500 focus:ring-purple-500" <%= "checked" if index == 0 %> />
+          <span class="label-text text-gray-700"><%= playlist.title %></span>
+        </label>
+        <% end %>
+      </div>
+
+      <!-- 「新しいプレイリストを作成」 -->
+      <div class="mt-6">
+        <label for="new-playlist-modal" class="btn btn-outline hover:bg-purple-800  w-full">
+          <i class="fa-solid fa-plus"></i>
+          新しいプレイリストを作成
+        </label>
+      </div>
+
+      <!-- 保存ボタン -->
+      <div class="modal-action mt-4 flex justify-end space-x-2">
+        <button type="submit" class="btn bg-purple-600 hover:bg-purple-700 text-white border-none">
+          <i class="fa-solid fa-floppy-disk"></i>
+          保存
+        </button>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- 新しいプレイリスト作成モーダル -->
+<input type="checkbox" id="new-playlist-modal" class="modal-toggle" />
+<div class="modal ">
+  <div class="modal-box rounded-lg shadow-lg bg-white" data-controller="form-validation">
+    <!-- モーダルヘッダー -->
+    <div class="flex justify-between items-center">
+      <h3 class="font-bold text-lg text-black">新しいプレイリストを作成</h3>
+      <!-- 「X」ボタン -->
+      <label for="new-playlist-modal" class=" btn btn-sm btn-circle">✕</label>
+    </div>
+    <%= form_with url: playlist_clips_path, method: :post do |f| %>
+    <input type="hidden" name="search_query" value="<%= @search_query %>" />
+    <input type="hidden" name="clip_id" value="<%= clip.id %>" />
+    <% if current_user.present? %>
+    <input type="hidden" name="user_uid" value="<%= current_user.uid %>" />
+    <% end %>
+    <div class="form-control mt-4">
+      <label class="label">
+        <span class="label-text text-black">タイトルを入力してください</span>
+      </label>
+      <%= f.text_field :title,
+         placeholder: "例： マイプレイリスト",
+         class: "mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 text-black", 
+         required: "required",
+         data: { form_validation_target: "input", action: "input->form-validation#validate" }%>
+      <!-- 必須エラーメッセージ -->
+      <div class="text-red-500 text-sm hidden mt-1" data-form-validation-target="errorMessage">
+        プレイリスト名を入力してください。
+      </div>
+      <!-- 長さエラーメッセージ -->
+      <div class="text-red-500 text-sm hidden mt-1" data-form-validation-target="lengthErrorMessage">
+        プレイリスト名が長すぎます。
+      </div>
+      <div class="text-gray-500 text-sm mt-1" data-form-validation-target="charCount">
+        0/30
+      </div>
+
+    </div>
+
+    <!-- 公開設定 -->
+    <div class="form-control mt-4 bg-white">
+      <%= f.label :visibility, "公開設定", class: "label-text block text-sm font-medium text-black" %>
+      <%= f.select :visibility, options_for_select([["非公開", "private"], ["公開", "public"]]), {}, class: "select select-bordered bg-white text-black" %>
+    </div>
+    <!-- モーダルフッター内にフォームの送信ボタンを配置 -->
+    <div class="flex justify-end space-x-2 mt-4">
+      <%= f.submit "変更", 
+            class: "btn bg-purple-600 hover:bg-purple-700 text-white border-none", 
+            data: { action: "form-validation#validate" } %>
+    </div>
+    <% end %>
+  </div>
+</div>
