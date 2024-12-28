@@ -24,7 +24,7 @@
         <div class="flex items-center space-x-1">
           <!-- X共有ボタン -->
           <div class="shrink-0">
-            <%= link_to "https://twitter.com/share?text=#{CGI.escape("📺 Twitch: https://clips.twitch.tv/#{playlist&.clips&.first&.clip_id}\n#️⃣ ハッシュタグ: #TwitchClipFinder\n")}&url=#{CGI.escape(playlist_url(playlist))}", target: "_blank", rel: "noopener noreferrer", title: "Xでシェアする" do %>
+            <%= link_to "https://twitter.com/intent/tweet?text=#{CGI.escape("📺 Twitch: https://clips.twitch.tv/#{playlist&.clips&.first&.clip_id}\n#️⃣ ハッシュタグ: #TwitchClipFinder\n")}&url=#{CGI.escape(playlist_url(playlist))}", target: "_blank", rel: "noopener noreferrer", title: "Xでシェアする" do %>
             <i class="fa-brands fa-twitch mr-1"></i>
             <% end %>
           </div>

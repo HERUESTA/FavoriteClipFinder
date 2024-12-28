@@ -29,12 +29,14 @@
       <!-- 右側: アイコン -->
       <div class="flex items-center gap-4">
         <!-- いいねアイコン -->
+        <% if @playlist.visibility == "public" %>
         <div id="playlist_<%= @playlist.id %>_like">
           <%= render "playlists/like", playlist: @playlist %>
         </div>
+        <% end %>
 
         <!-- X共有アイコン -->
-        <%= link_to "https://twitter.com/share?text=#{CGI.escape("📺 Twitch: https://clips.twitch.tv/#{@playlist&.clips&.first&.clip_id}\n#️⃣ ハッシュタグ: #TwitchClipFinder\n")}&url=#{CGI.escape(playlist_url(@playlist))}",
+        <%= link_to "https://twitter.com/intent/tweet?text=#{CGI.escape("📺 Twitch: https://clips.twitch.tv/#{@playlist&.clips&.first&.clip_id}\n#️⃣ ハッシュタグ: #TwitchClipFinder\n")}&url=#{CGI.escape(playlist_url(@playlist))}",
           target: "_blank",
           rel: "noopener noreferrer",
           title: "Xでシェアする",
