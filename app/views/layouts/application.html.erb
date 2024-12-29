@@ -91,8 +91,6 @@
     <!-- フォローリスト（サイドバー） -->
     <aside class="hidden sm:block w-60 bg-gray-custom pt-2 fixed top-16 bottom-0 left-0 overflow-y-auto z-40 border border-gray-300 shadow-md">
       <h2 class="text-sm font-bold text-black mb-3 px-2">フォローしているチャンネル</h2>
-      <% if current_user.present? %>
-      <% if @followed_channels.present? %>
       <ul class="space-y-0">
         <% @followed_channels.each do |follow| %>
         <li class="flex items-center pt-2 px-2 hover:bg-gray-100 rounded cursor-pointer">
@@ -107,12 +105,6 @@
         </li>
         <% end %>
       </ul>
-      <% else %>
-      <p class="text-black px-2">フォローリストがありません。</p>
-      <% end %>
-      <% else %>
-      <p class="text-black px-2">フォローリストがありません。</p>
-      <% end %>
     </aside>
 
     <!-- メインコンテンツ -->

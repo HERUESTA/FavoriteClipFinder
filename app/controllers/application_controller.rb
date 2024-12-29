@@ -16,6 +16,8 @@ class ApplicationController < ActionController::Base
       @followed_channels = current_user.follows.includes(:streamer).map(&:streamer)
     else
       @followed_channels = []
+      # 空だった場合は他のユーザーのランダムなフォローリストを取得する
+      @followed_channels = User.first.follows.includes(:streamer).map(&:streamer) if Streamer.count > 0
     end
   end
 
