@@ -63,10 +63,10 @@
           class: "bg-white input input-bordered w-full mt-1", 
           placeholder: "パスワード確認" %>
       <!-- パスワード確認のエラーがある場合 -->
-      <% if resource.errors.include?(:encrypted_password) %>
+      <% if resource.errors[:password_confirmation].any? %>
       <ul class="text-red-500 text-sm mt-2">
-        <% resource.errors.full_messages_for(:encrypted_password).each do |error_message| %>
-        <li><%= error_message %></li>
+        <% resource.errors.full_messages_for(:password_confirmation).each do |message| %>
+        <li><%= message %></li>
         <% end %>
       </ul>
       <% end %>

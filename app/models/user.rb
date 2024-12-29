@@ -20,6 +20,7 @@ class User < ApplicationRecord
   length: { minimum: 4, maximum: 20 }
   validates :email, presence: true, uniqueness: true, format: { with: VALID_EMAIL_REGEX, message: "を○○@○○.○○の形式で入力して下さい" }, length: { maximum: 255 }
   validates :password, presence: true, length: { in: 8..75 }, format: { with: VALID_PASSWORD_REGEX, message: "を半角英数字8文字以上で入力して下さい" }
+  validates_confirmation_of :password, message: "とパスワードの確認が一致しません"
 
   # uidを元にユーザーを検索または作成し、トークンがない場合や期限が切れている場合は更新
   def self.from_omniauth(auth)
