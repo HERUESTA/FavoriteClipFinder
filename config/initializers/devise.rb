@@ -6,11 +6,11 @@ Devise.setup do |config|
 
   config.skip_session_storage = [ :http_auth ]
 
-  config.authentication_keys = [ :user_name ]
+  config.authentication_keys = [ :email ]
 
-  config.case_insensitive_keys = [ :user_name ]
+  config.case_insensitive_keys = [ :email ]
 
-  config.strip_whitespace_keys = [ :user_name ]
+  config.strip_whitespace_keys = [ :email ]
 
   config.stretches = Rails.env.test? ? 1 : 12
 
@@ -29,7 +29,7 @@ Devise.setup do |config|
   config.responder.redirect_status = :see_other
 
   # OmniAuth設定
-  config.omniauth :twitch, ENV["TWITCH_CLIENT_ID"], ENV["TWITCH_CLIENT_SECRET"], scope: "user:read:follows"
+  config.omniauth :twitch, ENV["TWITCH_CLIENT_ID"], ENV["TWITCH_CLIENT_SECRET"], scope: "user:read:follows user:read:email"
 
   # OmniAuthでPOSTリクエストを許可
   OmniAuth.config.allowed_request_methods = [ :post ]
