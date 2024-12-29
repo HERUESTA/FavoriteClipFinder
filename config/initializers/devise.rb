@@ -22,9 +22,6 @@ Devise.setup do |config|
 
   config.reset_password_within = 6.hours
 
-  # app/views/deviseのviewを探しに行かないように設定
-  config.scoped_views = true
-
   config.responder.error_status = :unprocessable_entity
   config.responder.redirect_status = :see_other
 

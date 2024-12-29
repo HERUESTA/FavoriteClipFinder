@@ -11,6 +11,16 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :recoverable, :rememberable,
          :omniauthable, omniauth_providers: [ :twitch ]
 
+  before_validation :set_unique_uid, on: :create
+
+  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+  VALID_PASSWORD_REGEX = /\A(?=.*[a-z])(?=.*\d)[a-z\d]{8,75}\z/i
+  validates :user_name,
+  uniqueness: { case_sensitive: :false },
+  length: { minimum: 4, maximum: 20 }
+  validates :email, presence: true, uniqueness: true, format: { with: VALID_EMAIL_REGEX, message: "を○○@○○.○○の形式で入力して下さい" }, length: { maximum: 255 }
+  validates :password, presence: true, length: { in: 8..75 }, format: { with: VALID_PASSWORD_REGEX, message: "を半角英数字8文字以上で入力して下さい" }
+
   # uidを元にユーザーを検索または作成し、トークンがない場合や期限が切れている場合は更新
   def self.from_omniauth(auth)
     user = where(provider: auth.provider, uid: auth.uid).first_or_create! do |u|
@@ -25,6 +35,7 @@ class User < ApplicationRecord
       user.access_token = auth.credentials.token
       user.refresh_token = auth.credentials.refresh_token
       user.token_expires_at = Time.at(auth.credentials.expires_at) if auth.credentials.expires
+      user.password = SecureRandom.alphanumeric(10) # 半角英数字のみのランダムパスワードを生成
       user.save! # 新しいユーザーまたは更新された場合に保存
     else
       Rails.logger.debug "有効なアクセストークンが既に存在します。"
@@ -282,5 +293,22 @@ def fetch_follow_list(twitch_user_id)
   rescue JSON::ParserError => e
     Rails.logger.error "JSONの解析中にエラーが発生しました: #{e.message}"
     nil
+  end
+
+  # Twitch認証でない場合、uidを生成
+  def set_unique_uid
+    self.uid = generate_unique_uid if uid.blank?
+  end
+
+  def generate_unique_uid
+    loop do
+      new_uid = SecureRandom.uuid
+      break new_uid unless User.exists?(uid: new_uid)
+    end
+  end
+
+  # プロフィール画像が未設定の場合のみデフォルト画像を設定
+  def set_default_profile_image
+    self.profile_image_url ||= images/default_profile_image.png
   end
 end

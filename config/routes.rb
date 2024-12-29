@@ -3,8 +3,9 @@ require "sidekiq/web"
 
 Rails.application.routes.draw do
   get "images/ogp"
-    # Devise のルート
-    devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
+  devise_for :users, controllers: {
+    omniauth_callbacks: "users/omniauth_callbacks" # Omniauth用
+  }
 
   # root_path
   root "tops#index"

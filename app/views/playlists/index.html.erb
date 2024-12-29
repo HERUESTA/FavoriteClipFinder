@@ -2,7 +2,13 @@
   <!-- ユーザープロフィール -->
   <div class="flex items-center mb-6">
     <div class="w-12 rounded-full">
-      <%= image_tag(current_user.profile_image_url, alt: "プロフィール画像", class: "profile-image", width: "50", height: "50") if current_user.profile_image_url.present? %>
+      <%= image_tag(
+      current_user.profile_image_url.presence || asset_path("default_profile.png"),
+      alt: "プロフィール画像",
+      class: "profile-image",
+      width: "50",
+      height: "50"
+    ) %>
     </div>
     <div class="ml-4">
       <h2 class="text-xl font-bold"><%= current_user.user_name %></h2>

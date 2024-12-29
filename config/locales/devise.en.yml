@@ -1,65 +1,63 @@
-# Additional translations at https://github.com/heartcombo/devise/wiki/I18n
-
-en:
+ja:
   devise:
     confirmations:
-      confirmed: "Your email address has been successfully confirmed."
-      send_instructions: "You will receive an email with instructions for how to confirm your email address in a few minutes."
-      send_paranoid_instructions: "If your email address exists in our database, you will receive an email with instructions for how to confirm your email address in a few minutes."
+      confirmed: "メールアドレスの確認が完了しました。"
+      send_instructions: "数分以内にメールアドレス確認のための手順を記載したメールが届きます。"
+      send_paranoid_instructions: "もしメールアドレスが登録されている場合、確認手順を記載したメールが数分以内に届きます。"
     failure:
-      already_authenticated: "You are already signed in."
-      inactive: "Your account is not activated yet."
-      invalid: "Invalid %{authentication_keys} or password."
-      locked: "Your account is locked."
-      last_attempt: "You have one more attempt before your account is locked."
-      not_found_in_database: "Invalid %{authentication_keys} or password."
-      timeout: "Your session expired. Please sign in again to continue."
-      unauthenticated: "You need to sign in or sign up before continuing."
-      unconfirmed: "You have to confirm your email address before continuing."
+      already_authenticated: "すでにログインしています。"
+      inactive: "アカウントがまだ有効化されていません。"
+      invalid: "無効な%{authentication_keys}またはパスワードです。"
+      locked: "アカウントがロックされています。"
+      last_attempt: "アカウントがロックされるまであと1回です。"
+      not_found_in_database: "無効な%{authentication_keys}またはパスワードです。"
+      timeout: "セッションの有効期限が切れました。再度ログインしてください。"
+      unauthenticated: "続行するにはログインまたは登録が必要です。"
+      unconfirmed: "続行するにはメールアドレスを確認してください。"
     mailer:
       confirmation_instructions:
-        subject: "Confirmation instructions"
+        subject: "メールアドレス確認の手順"
       reset_password_instructions:
-        subject: "Reset password instructions"
+        subject: "パスワードリセットの手順"
       unlock_instructions:
-        subject: "Unlock instructions"
+        subject: "アカウントロック解除の手順"
       email_changed:
-        subject: "Email Changed"
+        subject: "メールアドレスが変更されました"
       password_change:
-        subject: "Password Changed"
+        subject: "パスワードが変更されました"
     omniauth_callbacks:
-      failure: "Could not authenticate you from %{kind} because \"%{reason}\"."
-      success: "Successfully authenticated from %{kind} account."
+      failure: "ログインに失敗しました。"
+      success: "ログインに成功しました。"
     passwords:
-      no_token: "You can't access this page without coming from a password reset email. If you do come from a password reset email, please make sure you used the full URL provided."
-      send_instructions: "You will receive an email with instructions on how to reset your password in a few minutes."
-      send_paranoid_instructions: "If your email address exists in our database, you will receive a password recovery link at your email address in a few minutes."
-      updated: "Your password has been changed successfully. You are now signed in."
-      updated_not_active: "Your password has been changed successfully."
+      no_token: "パスワードリセットメールからアクセスしてください。このページに直接アクセスすることはできません。"
+      send_instructions: "パスワードリセットの手順を記載したメールが数分以内に届きます。"
+      send_paranoid_instructions: "もしメールアドレスが登録されている場合、パスワードリセットの手順を記載したメールが届きます。"
+      updated: "パスワードが正常に変更されました。ログインしています。"
+      updated_not_active: "パスワードが正常に変更されました。"
     registrations:
-      destroyed: "Bye! Your account has been successfully cancelled. We hope to see you again soon."
-      signed_up: "Welcome! You have signed up successfully."
-      signed_up_but_inactive: "You have signed up successfully. However, we could not sign you in because your account is not yet activated."
-      signed_up_but_locked: "You have signed up successfully. However, we could not sign you in because your account is locked."
-      signed_up_but_unconfirmed: "A message with a confirmation link has been sent to your email address. Please follow the link to activate your account."
-      update_needs_confirmation: "You updated your account successfully, but we need to verify your new email address. Please check your email and follow the confirmation link to confirm your new email address."
-      updated: "Your account has been updated successfully."
-      updated_but_not_signed_in: "Your account has been updated successfully, but since your password was changed, you need to sign in again."
+      destroyed: "アカウントを削除しました。またのご利用をお待ちしております。"
+      signed_up: "新規登録が完了しました。"
+      signed_up_but_inactive: "新規登録が完了しましたが、アカウントがまだ有効化されていません。"
+      signed_up_but_locked: "新規登録が完了しましたが、アカウントがロックされています。"
+      signed_up_but_unconfirmed: "確認リンクを含むメールを送信しました。リンクをクリックしてアカウントを有効化してください。"
+      update_needs_confirmation: "アカウントの更新に成功しましたが、新しいメールアドレスの確認が必要です。メールを確認してリンクをクリックしてください。"
+      updated: "アカウント情報を更新しました。"
+      updated_but_not_signed_in: "アカウント情報を更新しましたが、パスワードが変更されたため、再度ログインが必要です。"
     sessions:
-      signed_in: "Signed in successfully."
-      signed_out: "ログアウトしました"
-      already_signed_out: "ログアウトしました"
+      signed_in: "ログインしました。"
+      signed_out: "ログアウトしました。"
+      already_signed_out: "すでにログアウトしています。"
     unlocks:
-      send_instructions: "You will receive an email with instructions for how to unlock your account in a few minutes."
-      send_paranoid_instructions: "If your account exists, you will receive an email with instructions for how to unlock it in a few minutes."
-      unlocked: "Your account has been unlocked successfully. Please sign in to continue."
+      send_instructions: "アカウントロック解除の手順を記載したメールが数分以内に届きます。"
+      send_paranoid_instructions: "もしアカウントが存在する場合、ロック解除手順を記載したメールが届きます。"
+      unlocked: "アカウントロックを解除しました。ログインしてください。"
   errors:
     messages:
-      already_confirmed: "was already confirmed, please try signing in"
-      confirmation_period_expired: "needs to be confirmed within %{period}, please request a new one"
-      expired: "has expired, please request a new one"
-      not_found: "not found"
-      not_locked: "was not locked"
+      already_confirmed: "すでに確認済みです。ログインを試みてください。"
+      confirmation_period_expired: "%{period}以内に確認する必要があります。新しい確認メールをリクエストしてください。"
+      expired: "期限が切れました。新しいリクエストをしてください。"
+      not_found: "見つかりません。"
+      not_locked: "ロックされていません。"
       not_saved:
-        one: "1 error prohibited this %{resource} from being saved:"
-        other: "%{count} errors prohibited this %{resource} from being saved:"
+        one: "1件のエラーにより%{resource}を保存できませんでした："
+        other: "%{count}件のエラーにより%{resource}を保存できませんでした："

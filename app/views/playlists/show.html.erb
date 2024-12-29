@@ -35,13 +35,7 @@
         <% end %>
 
         <!-- X共有アイコン -->
-        <%= link_to "https://twitter.com/intent/tweet?text=#{CGI.escape("📺 Twitch: https://clips.twitch.tv/#{@playlist&.clips&.first&.clip_id}\n#️⃣ ハッシュタグ: #TwitchClipFinder\n")}&url=#{CGI.escape(playlist_url(@playlist))}",
-          target: "_blank",
-          rel: "noopener noreferrer",
-          title: "Xでシェアする",
-          class: "text-gray-500 hover:text-purple-500" do %>
-        <i class="fa-brands fa-x-twitter text-lg"></i>
-        <% end %>
+        <%= render partial: 'shared/x', locals: { playlist: @playlist } %>
 
         <!-- 保存ボタン -->
         <% if user_signed_in? %>
