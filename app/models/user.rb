@@ -28,6 +28,8 @@ class User < ApplicationRecord
       u.user_name = auth.info.name
       u.email = auth.info.email
       u.profile_image_url = auth.info.image
+      u.provider = auth.provider
+      u.password = SecureRandom.alphanumeric(10)
     end
 
     # ユーザーが新規作成された場合、トークン情報を保存
@@ -36,7 +38,8 @@ class User < ApplicationRecord
       user.access_token = auth.credentials.token
       user.refresh_token = auth.credentials.refresh_token
       user.token_expires_at = Time.at(auth.credentials.expires_at) if auth.credentials.expires
-      user.password = SecureRandom.alphanumeric(10) # 半角英数字のみのランダムパスワードを生成
+      user.password = SecureRandom.alphanumeric(10)
+      user.provider = auth.provider # 既存ユーザーでもプロバイダー情報を更新
       user.save! # 新しいユーザーまたは更新された場合に保存
     else
       Rails.logger.debug "有効なアクセストークンが既に存在します。"

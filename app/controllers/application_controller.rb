@@ -10,14 +10,20 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:sign_up, keys: [ :user_name ])
   end
 
-  # フォローリストを取得するメソッド
   def set_followed_channels
     if user_signed_in?
+      # ログインしている場合は、そのユーザーのフォローリストを取得
       @followed_channels = current_user.follows.includes(:streamer).map(&:streamer)
     else
       @followed_channels = []
-      # 空だった場合は他のユーザーのランダムなフォローリストを取得する
-      @followed_channels = User.first.follows.includes(:streamer).map(&:streamer) if Streamer.count > 0
+  
+      # Twitch認証ユーザーのランダムなフォローリストを取得
+      if Streamer.count > 0
+        random_user = User.where(provider: "twitch").order("RANDOM()").first
+        if random_user.present?
+          @followed_channels = random_user.follows.includes(:streamer).map(&:streamer)
+        end
+      end
     end
   end
 
