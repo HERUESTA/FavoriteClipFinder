@@ -7,12 +7,28 @@
     <div>
       <%= f.label :email, "Eメール", class: "block text-sm font-medium text-gray-700" %>
       <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "bg-white input input-bordered w-full mt-1", placeholder: "general@example.com" %>
+      <!-- Eメールのエラーがある場合 -->
+      <% if resource.errors.include?(:email) %>
+      <ul class="text-red-500 text-sm mt-2">
+        <% resource.errors.full_messages_for(:email).each do |error_message| %>
+        <li><%= error_message %></li>
+        <% end %>
+      </ul>
+      <% end %>
     </div>
 
     <!-- パスワード -->
     <div>
       <%= f.label :password, "パスワード", class: "block text-sm font-medium text-gray-700" %>
       <%= f.password_field :password, autocomplete: "current-password", class: "bg-white input input-bordered w-full mt-1", placeholder: "パスワード" %>
+      <!-- パスワードのエラーがある場合 -->
+      <% if resource.errors.include?(:password) %>
+      <ul class="text-red-500 text-sm mt-2">
+        <% resource.errors.full_messages_for(:password).each do |error_message| %>
+        <li><%= error_message %></li>
+        <% end %>
+      </ul>
+      <% end %>
     </div>
 
     <!-- ログイン情報を保存 -->
@@ -40,8 +56,11 @@
 
     <!-- Twitchログイン -->
     <div class="flex justify-center">
-      <%= button_to user_twitch_omniauth_authorize_path, data: { turbo: false }, class: "btn btn-secondary flex items-center justify-center" do %>
-      <i class="fa-brands fa-twitch mr-2"></i> Twitchでログイン
+      <%= button_to user_twitch_omniauth_authorize_path, data: { turbo: false }, class: "btn btn-primary bg-purple-500 hover:bg-purple-600 flex items-center justify-center" do %>
+      <i class="fa-brands fa-twitch text-lg"></i>
+      <p class="text-white">
+        Twitchでログイン
+      </p>
       <% end %>
     </div>
   </div>

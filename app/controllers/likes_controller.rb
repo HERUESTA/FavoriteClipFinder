@@ -1,7 +1,7 @@
 class LikesController < ApplicationController
   def create
     unless current_user
-      redirect_to root_path, alert: "いいねするにはログインしてください"
+      redirect_to request.referer, alert: "いいねするにはログインしてください"
       return
     end
     playlist = Playlist.preload(:likes).find(params[:playlist_id])
@@ -14,7 +14,7 @@ class LikesController < ApplicationController
           render turbo_stream: turbo_stream.update("playlist_#{playlist.id}_like", partial: "playlists/like", locals: { playlist: playlist })
         end
       else
-        format.html { redirect_to root_path, alert: "ログインしてください" }
+        format.html { redirect_to request.referer, alert: "ログインしてください" }
       end
     end
   end
@@ -29,7 +29,7 @@ class LikesController < ApplicationController
           render turbo_stream: turbo_stream.update("playlist_#{playlist.id}_like", partial: "playlists/like", locals: { playlist: playlist })
         end
       else
-        format.html { redirect_to root_path, alert: "ログインしてください" }
+        format.html { redirect_to request.referer, alert: "ログインしてください" }
       end
     end
   end

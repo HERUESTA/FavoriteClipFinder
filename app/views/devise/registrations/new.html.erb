@@ -3,14 +3,22 @@
     <h2 class="text-2xl font-bold text-center text-black mb-6">サインアップ画面</h2>
 
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "space-y-4" }) do |f| %>
-    <%= render "devise/shared/error_messages", resource: resource %>
+
 
     <!-- ユーザー名 -->
     <div>
       <%= f.label :user_name, "ユーザー名", class: "block text-sm font-medium text-black" %>
       <%= f.text_field :user_name, autofocus: true, autocomplete: "username", 
-        class: "bg-white input input-bordered w-full mt-1", 
-        placeholder: "ユーザー名" %>
+    class: "bg-white input input-bordered w-full mt-1", 
+    placeholder: "ユーザー名" %>
+      <!-- ユーザー名のエラーがある場合 -->
+      <% if resource.errors.include?(:user_name) %>
+      <ul class="text-red-500 text-sm mt-2">
+        <% resource.errors.full_messages_for(:user_name).each do |error_message| %>
+        <li><%= error_message %></li>
+        <% end %>
+      </ul>
+      <% end %>
     </div>
 
     <!-- Eメール -->
@@ -19,6 +27,14 @@
       <%= f.email_field :email, autofocus: true, autocomplete: "email", 
           class: "bg-white input input-bordered w-full mt-1", 
           placeholder: "general@example.com" %>
+      <!-- Eメールのエラーがある場合 -->
+      <% if resource.errors.include?(:email) %>
+      <ul class="text-red-500 text-sm mt-2">
+        <% resource.errors.full_messages_for(:email).each do |error_message| %>
+        <li><%= error_message %></li>
+        <% end %>
+      </ul>
+      <% end %>
     </div>
 
     <!-- パスワード -->
@@ -30,6 +46,14 @@
       <%= f.password_field :password, autocomplete: "new-password", 
           class: "bg-white input input-bordered w-full mt-1", 
           placeholder: "パスワード" %>
+      <!-- パスワードのエラーがある場合 -->
+      <% if resource.errors.include?(:password) %>
+      <ul class="text-red-500 text-sm mt-2">
+        <% resource.errors.full_messages_for(:password).each do |error_message| %>
+        <li><%= error_message %></li>
+        <% end %>
+      </ul>
+      <% end %>
     </div>
 
     <!-- パスワード確認 -->
@@ -38,6 +62,14 @@
       <%= f.password_field :password_confirmation, autocomplete: "new-password", 
           class: "bg-white input input-bordered w-full mt-1", 
           placeholder: "パスワード確認" %>
+      <!-- パスワード確認のエラーがある場合 -->
+      <% if resource.errors.include?(:encrypted_password) %>
+      <ul class="text-red-500 text-sm mt-2">
+        <% resource.errors.full_messages_for(:encrypted_password).each do |error_message| %>
+        <li><%= error_message %></li>
+        <% end %>
+      </ul>
+      <% end %>
     </div>
 
     <!-- サインアップボタン -->

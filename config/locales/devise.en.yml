@@ -56,7 +56,7 @@ ja:
       already_confirmed: "すでに確認済みです。ログインを試みてください。"
       confirmation_period_expired: "%{period}以内に確認する必要があります。新しい確認メールをリクエストしてください。"
       expired: "期限が切れました。新しいリクエストをしてください。"
-      not_found: "見つかりません。"
+      not_found: "が見つかりません。"
       not_locked: "ロックされていません。"
       not_saved:
         one: "1件のエラーにより%{resource}を保存できませんでした："
