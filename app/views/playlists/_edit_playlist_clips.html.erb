@@ -28,9 +28,7 @@
       </button>
       <!-- 共有アイコン -->
       <button class="btn btn-circle btn-outline text-gray-700 hover:bg-purple-700 hover:text-white transition" title="共有">
-        <%= link_to "https://twitter.com/intent/tweet?text=#{CGI.escape("📺 Twitch: https://clips.twitch.tv/#{playlist&.clips&.first&.clip_id}\n#️⃣ ハッシュタグ: #TwitchClipFinder\n")}&url=#{CGI.escape(playlist_url(playlist))}", target: "_blank", rel: "noopener noreferrer", title: "Xでシェアする" do %>
-        <i class="fa-brands fa-x-twitter text-lg sm:text-xl"></i>
-        <% end %>
+        <%= render partial: 'shared/x', locals: { playlist: @playlist } %>
       </button>
     </div>
   </div>

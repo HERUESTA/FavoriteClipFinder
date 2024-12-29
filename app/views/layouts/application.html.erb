@@ -58,7 +58,13 @@
     <div class="dropdown dropdown-end">
       <div tabindex="0" role="button" class="avatar m-1">
         <div class="w-12 rounded-full">
-          <%= image_tag(current_user.profile_image_url, alt: "プロフィール画像", class: "profile-image", width: "50", height: "50") if current_user.profile_image_url.present? %>
+          <%= image_tag(
+      current_user.profile_image_url.presence || asset_path("default_profile.png"),
+      alt: "プロフィール画像",
+      class: "profile-image",
+      width: "50",
+      height: "50"
+    ) %>
         </div>
       </div>
       <ul tabindex="0" class="dropdown-content menu bg-white rounded-box z-[1] w-52 p-2 shadow">
@@ -77,43 +83,33 @@
       </ul>
     </div>
     <% else %>
-    <%= button_to "ログイン", user_twitch_omniauth_authorize_path, data: { turbo: false }, class: "btn btn-secondary" %>
+    <%= button_to "ログイン", new_user_session_path, data: { turbo: false }, class: "btn btn-secondary" %>
     <% end %>
   </header>
 
   <div class="flex pt-16 min-h-screen">
     <!-- フォローリスト（サイドバー） -->
-    <!-- 'hidden sm:block' を追加することで、sm(640px)未満では非表示、640px以上で表示される -->
     <aside class="hidden sm:block w-60 bg-gray-custom pt-2 fixed top-16 bottom-0 left-0 overflow-y-auto z-40 border border-gray-300 shadow-md">
-      <h2 class="text-sm font-bold text-black mb-3 px-2">フォローしているチャンネル</h2>
-      <% if current_user.present? %>
-      <% if @followed_channels.present? %>
+      <h2 class="text-sm font-bold text-black mb-3 px-2">
+        <%= @follow_str%>チャンネル
+      </h2>
       <ul class="space-y-0">
         <% @followed_channels.each do |follow| %>
         <li class="flex items-center pt-2 px-2 hover:bg-gray-100 rounded cursor-pointer">
-          <%= link_to search_path(q: follow['broadcaster_name']), class: "flex items-center space-x-1 w-full" do %>
+          <%= link_to search_path(q: follow.display_name), class: "flex items-center space-x-1 w-full" do %>
           <!-- プロフィール画像 -->
-          <img src="<%= follow['profile_image_url'] %>" alt="<%= follow['broadcaster_name'] %>" class="w-10 h-10 rounded-full object-cover">
+          <img src="<%= follow.profile_image_url %>" alt="<%= follow.display_name %>" class="w-10 h-10 rounded-full object-cover">
           <!-- 名前 -->
           <div class="flex-1">
-            <p class="text-gray-800 text-xs truncate"><%= follow['broadcaster_name'] %></p>
+            <p class="text-gray-800 text-xs truncate"><%= follow.display_name %></p>
           </div>
           <% end %>
         </li>
         <% end %>
       </ul>
-      <% else %>
-      <p class="text-black px-2">フォローリストがありません。</p>
-      <% end %>
-      <% else %>
-      <div class="flex justify-center">
-        <%= button_to "ログイン", user_twitch_omniauth_authorize_path, data: { turbo: false }, class: "btn btn-secondary" %>
-      </div>
-      <% end %>
     </aside>
 
     <!-- メインコンテンツ -->
-    <!-- 左余白としてsm:ml-60を設定し、sm未満ではサイドバー分の余白は不要 -->
     <main class="flex-1 pt-6 p-1 sm:ml-60">
       <%= yield %>
       <!-- フラッシュメッセージ用のTurbo Frame -->

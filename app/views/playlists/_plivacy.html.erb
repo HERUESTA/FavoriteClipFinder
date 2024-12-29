@@ -14,9 +14,7 @@
     <%= render "playlists/like", playlist: playlist %>
   </div>
   <!-- 共有アイコン -->
-  <%= link_to "https://twitter.com/intent/tweet?text=#{CGI.escape("📺 Twitch: https://clips.twitch.tv/#{playlist&.clips&.first&.clip_id}\n#️⃣ ハッシュタグ: #TwitchClipFinder\n")}&url=#{CGI.escape(playlist_url(playlist))}", target: "_blank", rel: "noopener noreferrer", title: "Xでシェアする" do %>
-  <i class="fa-brands fa-twitter text-gray-500"></i>
-  <% end %>
+  <%= render partial: 'shared/x', locals: { playlist: playlist } %>
 
 </div>
 <% end %>

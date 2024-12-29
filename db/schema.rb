@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_18_125713) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_29_082343) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,6 +40,16 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_18_125713) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_uid", "clip_id"], name: "index_favorite_clips_on_user_uid_and_clip_id", unique: true
+  end
+
+  create_table "follows", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "streamer_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["streamer_id"], name: "index_follows_on_streamer_id"
+    t.index ["user_id", "streamer_id"], name: "index_follows_on_user_id_and_streamer_id", unique: true
+    t.index ["user_id"], name: "index_follows_on_user_id"
   end
 
   create_table "games", id: :serial, force: :cascade do |t|
@@ -105,6 +115,11 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_18_125713) do
     t.string "access_token"
     t.string "refresh_token"
     t.datetime "token_expires_at"
+    t.string "email", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token"
     t.index ["uid"], name: "index_users_on_uid", unique: true
   end
 
@@ -112,6 +127,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_18_125713) do
   add_foreign_key "clips", "streamers", primary_key: "streamer_id"
   add_foreign_key "favorite_clips", "clips"
   add_foreign_key "favorite_clips", "users", column: "user_uid", primary_key: "uid"
+  add_foreign_key "follows", "streamers"
+  add_foreign_key "follows", "users"
   add_foreign_key "likes", "playlists"
   add_foreign_key "playlist_clips", "clips"
   add_foreign_key "playlist_clips", "playlists"

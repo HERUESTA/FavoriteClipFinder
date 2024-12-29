@@ -24,9 +24,7 @@
         <div class="flex items-center space-x-1 gap-2">
           <!-- X共有ボタン -->
           <div class="shrink-0">
-            <%= link_to "https://twitter.com/intent/tweet?text=#{CGI.escape("📺 Twitch: https://clips.twitch.tv/#{playlist&.clips&.first&.clip_id}\n#️⃣ ハッシュタグ: #TwitchClipFinder\n")}&url=#{CGI.escape(playlist_url(playlist))}", target: "_blank", rel: "noopener noreferrer", title: "Xでシェアする" do %>
-            <i class="fa-brands fa-x-twitter text-md"></i>
-            <% end %>
+            <%= render partial: 'shared/x', locals: { playlist:   playlist } %>
           </div>
 
           <!-- いいねボタン部分 -->

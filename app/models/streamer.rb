@@ -1,5 +1,7 @@
 class Streamer < ApplicationRecord
   has_many :clips, dependent: :destroy
+  has_many :follows, dependent: :destroy
+  has_many :users, through: :follows
 
   validates :streamer_id, presence: true, uniqueness: true
   validates :streamer_name, presence: true, uniqueness: true

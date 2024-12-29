@@ -1,6 +1,11 @@
 ja:
   activerecord:
     attributes:
+      user:
+        user_name: "ユーザー名"
+        email: "メールアドレス"
+        password: "パスワード"
+        password_confirmation: "パスワード確認"
       playlist:
         visibility:
           public: "公開"
