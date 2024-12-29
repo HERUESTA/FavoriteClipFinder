@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
 
   # deviseのストロングパラメータを設定する
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:user_name])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [ :user_name ])
   end
 
   # フォローリストを取得するメソッド
