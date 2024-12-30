@@ -1,6 +1,6 @@
 class TopsController < ApplicationController
   # TOP画面に遷移
-  after_action :set_followed_channels, only: [ :index ]
+  before_action :set_followed_channels, only: [ :index ]
   def index
     if current_user.present?
       Rails.logger.debug "現在のユーザー: #{current_user}.inspect"
@@ -11,7 +11,7 @@ class TopsController < ApplicationController
     end
 
     # プレイリスト取得
-    @playlists = Playlist.where(visibility: "public").limit(20)
+    @playlists = Playlist.where(visibility: "public").order(created_at: :desc).limit(20)
     if current_user
       @my_playlists = Playlist.where(user_uid: current_user.uid)
     else
