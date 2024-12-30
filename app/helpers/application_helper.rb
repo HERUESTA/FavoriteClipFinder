@@ -1,11 +1,11 @@
 module ApplicationHelper
   def default_meta_tags
     {
-      site: "TwitchClipFinder",
+      site: "ClipFinder",
       title: "Twitchのクリップやプレイリストを共有できるサービス",
       reverse: true,
       charset: "utf-8",
-      description: "TwitchClipFinderでは他者が作成したクリップやプレイリストを共有することができます",
+      description: "ClipFinderでは他者が作成したクリップやプレイリストを共有することができます",
       keywords: "Twitch,クリップ,ゲーム,ストリーマー,プレイリスト",
       canonical: request.original_url,
       separator: "|",

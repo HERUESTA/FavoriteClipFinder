@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title><%= content_for(:title) || "TwitchClipFinder" %></title>
+  <title><%= content_for(:title) || "ClipFinder" %></title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -89,7 +89,7 @@
 
   <div class="flex flex-col pt-16 min-h-screen">
     <!-- フォローリスト（サイドバー） -->
-    <aside class="hidden sm:block w-60 bg-gray-custom pt-2 fixed top-16 left-0 overflow-y-auto z-40 border border-gray-300 shadow-md" style="height: calc(100vh - 5rem - 4px);">
+    <aside class="hidden sm:block w-60 bg-gray-custom pt-2 fixed top-16 left-0 overflow-y-auto z-40 border border-gray-300 shadow-md" style="height: calc(100vh - 6rem - 4px);">
       <!-- 100vhからフッターの高さ（4rem）を引いた値 -->
       <h2 class="text-sm font-bold text-black mb-3 px-4">
         <%= @follow_str %>チャンネル
@@ -121,14 +121,14 @@
   </div>
 
   <!-- フッター -->
-  <footer class="bg-purple-800 text-white p-4 fixed bottom-0 w-full z-50 h-16">
+  <footer class="bg-purple-800 text-white p-4 fixed bottom-0 w-full z-50 h-20 flex flex-col justify-center">
     <div class="flex justify-center space-x-8">
-      <a href="#" class="link link-hover">利用規約</a>
-      <a href="#" class="link link-hover">プライバシーポリシー</a>
-      <a href="#" class="link link-hover">お問い合わせ</a>
+      <a href="https://kiyac.app/termsOfService/nZ0bVGVKdi09iMwwIwo3" class="link link-hover">利用規約</a>
+      <a href="https://kiyac.app/privacypolicy/5YIRkSkxnBIkcXwt7Q2N" class="link link-hover">プライバシーポリシー</a>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdA7r8KGa1fNL9vEKE_K4TL2SPAqhs6OK-RzLnYJyPj52QI9g/viewform?usp=dialog" class="link link-hover">お問い合わせ</a>
       <a href="#" class="link link-hover">使い方画面</a>
     </div>
-    <p class="text-center mt-2">&copy; 2025 TwitchClipFinder</p>
+    <p class="text-center mt-2">&copy; 2025 ClipFinder</p>
   </footer>
 </body>
 
