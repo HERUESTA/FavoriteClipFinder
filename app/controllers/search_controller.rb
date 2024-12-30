@@ -12,7 +12,7 @@ class SearchController < ApplicationController
       @q = Clip.includes(:streamer, :game).ransack({})
     end
 
-    @clips = @q.result(distinct: true).page(params[:page]).per(60)
+    @clips = @q.result(distinct: true).order(created_at: :desc).page(params[:page]).per(60)
 
     # ログインしている場合のみプレイリストを渡す
     @playlists = user_signed_in? ? current_user.playlists : []

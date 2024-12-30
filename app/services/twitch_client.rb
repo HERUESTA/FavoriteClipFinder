@@ -216,27 +216,25 @@ class TwitchClient
   # 過去1日分のクリップを取得する
   def fetch_day_clips(broadcaster_id)
     clips = []
-    currentTime = Time.now
-    yesterday = currentTime.yesterday
     retry_count = 0
     params = {
       broadcaster_id: broadcaster_id,
       first: 100,
-      started_at: yesterday,
-      ended_at: currentTime
+      started_at: 1.day.ago.utc.iso8601,
+      ended_at: Time.now.utc.iso8601
     }
 
     begin
       # APIリクエストを送る
-      response = perform_request(params)
+      @response = perform_request(params)
 
-      if response.success?
-        data = response.body["data"]
+      if @response.success?
+        data = @response.body["data"]
         Rails.logger.debug "取得したクリップ数: #{data.size}"
 
         clips += data
       else
-        if response.status == 429 # レート制限
+        if @response.status == 429 # レート制限
           status_429
         else
           return
@@ -269,7 +267,7 @@ class TwitchClient
 
   # ステータスコードが429だった場合
   def status_429
-    reset_time = response.headers["Ratelimit-Reset"].to_i
+    reset_time = @response.headers["Ratelimit-Reset"].to_i
     sleep_time = reset_time - Time.now.to_i
     sleep(sleep_time) if sleep_time > 0
   end

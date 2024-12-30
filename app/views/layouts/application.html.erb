@@ -87,11 +87,12 @@
     <% end %>
   </header>
 
-  <div class="flex pt-16 min-h-screen">
+  <div class="flex flex-col pt-16 min-h-screen">
     <!-- フォローリスト（サイドバー） -->
-    <aside class="hidden sm:block w-60 bg-gray-custom pt-2 fixed top-16 bottom-0 left-0 overflow-y-auto z-40 border border-gray-300 shadow-md">
-      <h2 class="text-sm font-bold text-black mb-3 px-2">
-        <%= @follow_str%>チャンネル
+    <aside class="hidden sm:block w-60 bg-gray-custom pt-2 fixed top-16 left-0 overflow-y-auto z-40 border border-gray-300 shadow-md" style="height: calc(100vh - 5rem - 4px);">
+      <!-- 100vhからフッターの高さ（4rem）を引いた値 -->
+      <h2 class="text-sm font-bold text-black mb-3 px-4">
+        <%= @follow_str %>チャンネル
       </h2>
       <ul class="space-y-0">
         <% @followed_channels.each do |follow| %>
@@ -110,7 +111,7 @@
     </aside>
 
     <!-- メインコンテンツ -->
-    <main class="flex-1 pt-6 p-1 sm:ml-60">
+    <main class="flex-1 pt-6 p-4 sm:ml-60 flex-grow" style="padding-bottom: 80px;">
       <%= yield %>
       <!-- フラッシュメッセージ用のTurbo Frame -->
       <%= turbo_frame_tag "flash_messages" do %>
@@ -120,8 +121,14 @@
   </div>
 
   <!-- フッター -->
-  <footer class="bg-gray-800 text-white text-center p-4">
-    <p>&copy; 2024 TODOアプリ. All Rights Reserved.</p>
+  <footer class="bg-purple-800 text-white p-4 fixed bottom-0 w-full z-50 h-16">
+    <div class="flex justify-center space-x-8">
+      <a href="#" class="link link-hover">利用規約</a>
+      <a href="#" class="link link-hover">プライバシーポリシー</a>
+      <a href="#" class="link link-hover">お問い合わせ</a>
+      <a href="#" class="link link-hover">使い方画面</a>
+    </div>
+    <p class="text-center mt-2">&copy; 2025 TwitchClipFinder</p>
   </footer>
 </body>
 
