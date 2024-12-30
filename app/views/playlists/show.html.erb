@@ -10,7 +10,7 @@
   <!-- 動画プレイヤー -->
   <div class=" rounded-lg mt-2 w-full">
     <figure class="relative">
-      <iframe src="https://clips.twitch.tv/embed?clip=<%= @clip.clip_id %>&parent=<%= ENV['TWITCH_PARENT_URL'] %>" scrolling="no" allowfullscreen="true" width="400" class="w-full h-auto" style="max-width: 100%; height: 300px;" loading="lazy">
+      <iframe src="https://clips.twitch.tv/embed?clip=<%= @clip.clip_id %>&parent=<%= ENV['TWITCH_PARENT_URL'] %>&autoplay=true" scrolling="no" allowfullscreen="true" class="w-full h-auto" style="max-width: 100%; height: 300px;" loading="lazy">
       </iframe>
     </figure>
 
