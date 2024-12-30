@@ -10,3 +10,8 @@ scheduler:
       cron: "0 0 * * *"   # 毎日0時に実行
       class: FetchTwitchClipsJob
       queue: default
+
+    fetch_japanese_streamers_job:
+      cron: "0 */2 * * *" # 2時間おきに実行
+      class: FetchJapaneseStreamersJob
+      queue: default
