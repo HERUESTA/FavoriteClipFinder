@@ -93,12 +93,12 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # メール設定
-  config.action_mailer.default_url_options = { host: "https://twitchclipfinder.fly.dev" }
+  config.action_mailer.default_url_options = { host: "https://favoriteclipfinder.fly.dev" }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address:              "smtp.gmail.com",
     port:                 587,
-    domain:               "twitchclipfinder.fly.dev ",
+    domain:               "favoriteclipfinder.fly.dev ",
     user_name:            ENV["MAILER_SENDER"],
     password:             ENV["MAILER_PASSWORD"],
     authentication:       "plain",
