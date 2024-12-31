@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title><%= content_for(:title) || "FavoriteClipFinder" %></title>
+  <title><%= content_for(:title) || "FavotiteClipFinder" %></title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -19,6 +19,18 @@
   <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   <script src="https://kit.fontawesome.com/4025a67f93.js" crossorigin="anonymous"></script>
   <%= display_meta_tags(default_meta_tags) %>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7CN5DXHXZM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'G-7CN5DXHXZM');
+  </script>
 </head>
 
 <body class="bg-gray-100 flex flex-col min-h-screen">
