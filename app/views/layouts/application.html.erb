@@ -9,6 +9,7 @@
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
   <%= yield :head %>
+  <%= favicon_link_tag('favicon.ico') %>
 
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" href="/icon.png" type="image/png">
@@ -41,7 +42,7 @@
       <!-- ロゴ -->
       <div class="text-purple-500">
         <%= link_to root_path do %>
-        <%= image_tag "Icon.png", alt: "ロゴ", class: "h-8 w-8" %>
+        <%= image_tag "favicon.png", alt: "ロゴ", class: "h-8 w-8" %>
         <% end %>
       </div>
     </div>
