@@ -7,7 +7,7 @@ module ApplicationHelper
       title: playlist_title,
       reverse: true,
       charset: "utf-8",
-      description: "FavoriteClipFinderでは他者が作成したクリップやプレイリストを共有することができます",
+      description: "FavoriteClipFinderでは他者が作成したTwitchのクリップやプレイリストを共有することができます",
       keywords: "Twitch,クリップ,ゲーム,ストリーマー,プレイリスト",
       canonical: request.original_url,
       separator: "|",
