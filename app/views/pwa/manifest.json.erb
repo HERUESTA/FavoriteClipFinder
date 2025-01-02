@@ -1,22 +1,21 @@
 {
-  "name": "Myapp",
-  "icons": [
-    {
-      "src": "/icon.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    },
-    {
-      "src": "/icon.png",
-      "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "maskable"
-    }
-  ],
+  "name": "FavoriteClipFinder",
+  "short_name": "FavoriteClipFinder",
+  "description": "FavoriteClipFinderでは他者が作成したTwitchのクリップやプレイリストを共有することができます",
   "start_url": "/",
   "display": "standalone",
-  "scope": "/",
-  "description": "Myapp.",
-  "theme_color": "red",
-  "background_color": "red"
+  "background_color": "#9146FF",
+  "theme_color": "#9146FF",
+  "icons": [
+    {
+      "src": "<%= asset_path('icon-192x192.png') %>",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "<%= asset_path('icon-512x512.png') %>",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
