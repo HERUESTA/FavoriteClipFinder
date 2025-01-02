@@ -7,6 +7,6 @@ export default class extends Controller {
       setTimeout(() => {
         this.element.remove()
       }, 500) // フェードアウトのアニメーション時間と一致させる
-    }, 2000) // 2秒後にフェードアウト
+    }, 500) // 2秒後にフェードアウト
   }
 }

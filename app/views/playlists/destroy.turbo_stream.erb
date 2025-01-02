@@ -1,2 +1,7 @@
-<%= turbo_stream.prepend "flash_messages", partial: "layouts/flash_messages" %>
-<%= turbo_stream.remove @playlist %>
+<% if @playlist.destroyed? %>
+  <%= turbo_stream.prepend "flash_messages", partial: "layouts/flash_messages" %>
+  <%= turbo_stream.remove dom_id(@playlist) %>
+<% else %>
+  <%= turbo_stream.prepend "flash_messages", partial: "layouts/flash_messages" %>
+  <%= turbo_stream.remove dom_id(@clip) %>
+<% end %>

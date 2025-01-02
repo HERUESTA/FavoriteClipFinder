@@ -13,16 +13,17 @@ class PlaylistClipsController < ApplicationController
   end
 
   def destroy
-    clip = Clip.find(params[:clip_id])
-    playlist = Playlist.find(params[:id])
-    playlist.clips.destroy(clip)
-    if playlist.clips.empty?
-      playlist.destroy!
+    @clip = Clip.find(params[:clip_id])
+    @playlist = Playlist.find(params[:id])
+    @playlist.clips.destroy(@clip)
+    if @playlist.clips.empty?
+      @playlist.destroy!
       redirect_to playlists_path, notice: "クリップを全て削除したためプロフィール画面へ移動しました", status: :see_other
     else
       respond_to do |format|
         format.turbo_stream { flash.now[:notice] = "該当のクリップを削除しました" }
-        format.html { redirect_to edit_playlist_path(playlist), notice: "該当のクリップを削除しました", status: :see_other }
+        format.turbo_stream
+        format.html { redirect_to edit_playlist_path(@playlist), notice: "該当のクリップを削除しました", status: :see_other }
       end
     end
   end
