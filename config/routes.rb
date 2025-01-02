@@ -2,6 +2,7 @@ require "sidekiq/web"
 
 
 Rails.application.routes.draw do
+  get "static_pages/help"
   get "images/ogp"
   devise_for :users, controllers: {
     omniauth_callbacks: "users/omniauth_callbacks"
@@ -10,9 +11,13 @@ Rails.application.routes.draw do
   # root_path
   root "tops#index"
 
+  # 使い方画面ルート
+  get  "static_pages/help", to: "static_pages#help"
+
   # 検索ルート
   get "search", to: "search#index"
   get "search/playlist", to: "search#playlist"
+
 
   # autoCompleteルート
   resources :clips do

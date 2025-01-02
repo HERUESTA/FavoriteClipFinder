@@ -27,10 +27,12 @@ class PlaylistClipsController < ApplicationController
     end
   end
 
+  # 既存のプレイリストにクリップを追加する
   def add_clip_in_playlist
     playlist = Playlist.find_by(id: params[:playlist_id])
 
     clip = Clip.find(params[:clip_id])
+    Rails.logger.debug "クリップ： #{clip.inspect}"
     unless playlist.clips.include?(clip)
       playlist.clips << clip
       flash[:notice] = "#{playlist.title}にクリップを追加しました"
@@ -43,7 +45,9 @@ class PlaylistClipsController < ApplicationController
   private
 
   def save_clip_in_plalist(playlist)
+    Rails.logger.debug "プレイリスト： #{playlist.inspect}"
     clip = Clip.find_by(id: params[:clip_id])
+    Rails.logger.debug "クリップ： #{clip.inspect}"
     if playlist.clips << clip
       flash[:notice] = "#{playlist.title}にクリップを追加しました"
     else
