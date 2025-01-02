@@ -46,7 +46,7 @@ end
   }.freeze
 
   # 最新のクリップを取得するスコープ
-  scope :latest, ->(limit = 6) { order(created_at: :desc).limit(limit) }
+  scope :latest, ->(limit = 6) { order(clip_created_at: :desc).limit(limit) }
 
 
   # 特定のゲームの最新クリップを取得するスコープ

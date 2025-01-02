@@ -1,0 +1,72 @@
+<div class="container mx-auto p-4 sm:p-6">
+  <!-- Header Section -->
+  <div class="mb-6 sm:mb-8">
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2 sm:mb-4">FavoriteClipFinderについて</h1>
+    <p class="text-gray-600 text-sm sm:text-base">
+      FavoriteClipFinderでは他者が作成したTwitchのクリップやプレイリストを共有することができます<br>
+      また、自分自身でも作成して他者に共有することができます
+    </p>
+  </div>
+
+  <!-- What ClipNote Can Do Section -->
+  <div class="mb-6 sm:mb-8">
+    <h2 class="text-xl sm:text-2xl font-bold text-gray-800 border-b-2 border-purple-500 pb-2 mb-4">全ユーザーが行えること</h2>
+    <div class="space-y-6">
+      <!-- Item 1 -->
+      <div class="flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-4">
+        <!-- テキスト説明 -->
+        <div>
+          <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-1">クリップ検索</h3>
+          <p class="text-gray-600 text-sm sm:text-base">
+            配信者リストまたは、検索ボックスからクリップを検索することが可能です<br>
+            ※ただし、対応していない配信者やゲームも存在します<br>
+            Twitchで配信者をフォローしていないまたは非ログインユーザーの場合、<br>
+            フォローリストにはおすすめの配信者リストが表示されます<br>
+            ぜひそこからお気に入りの配信者を見つけてみてください
+          </p>
+          <%= image_tag("search.png", alt: "クリップ検索の例", class: "w-full sm:w-96 h-auto rounded-lg shadow-lg") %>
+        </div>
+      </div>
+      <!-- Item 2 -->
+      <div class="flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-4">
+        <div>
+          <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-1">プレイリスト閲覧</h3>
+          <p class="text-gray-600 text-sm sm:text-base">
+            公開設定の他人が作成したプレイリストを閲覧することができます<br>
+            面白かったプレイリストはX共有して、他の人と楽しみましょう!<br>
+            ※いいねはログインユーザーのみ可能です
+          </p>
+          <%= image_tag("watch_playlist.png", alt: "プレイリスト閲覧の例", class: "w-full sm:w-96 h-auto rounded-lg shadow-lg") %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- How to Use Section -->
+  <div>
+    <h2 class="text-xl sm:text-2xl font-bold text-gray-800 border-b-2 border-purple-500 pb-2 mb-4">ログインユーザーが行えること</h2>
+    <div>
+      <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-1">プレイリスト作成機能</h3>
+      <p class="text-gray-600 text-sm sm:text-base">
+        各クリップの保存ボタンを押下することで面白かったクリップをプレイリストとして保存しておくことが可能です。<br>
+        また、プレイリストの公開設定を変更することで他のユーザーに共有することも可能です。<br>
+      </p>
+      <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+        <%= image_tag("update_playlist.png", alt: "クリップ検索の例", class: "w-full sm:w-96 h-auto rounded-lg shadow-lg") %>
+        <%= image_tag("create_playlist.png", alt: "クリップ検索の例", class: "w-full sm:w-96 h-auto rounded-lg shadow-lg") %>
+      </div>
+    </div>
+    <div class="mt-6">
+      <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-1">プレイリスト編集機能</h3>
+      <p class="text-gray-600 text-sm sm:text-base">
+        プロフィール画面から、プレイリストの編集をすることが可能です。<br>
+        編集アイコンを押下することで、プレイリスト名・公開設定の変更、クリップの削除などができます。<br>
+        ※プレイリスト内のクリップを全て削除すると、自動的にプレイリストも削除されます
+      </p>
+      <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+        <%= image_tag("profile.png", alt: "クリップ検索の例", class: "w-full sm:w-96 h-auto rounded-lg shadow-lg") %>
+        <%= image_tag("edit_playlist.png", alt: "クリップ検索の例", class: "w-full sm:w-96 h-auto rounded-lg shadow-lg") %>
+      </div>
+    </div>
+  </div>
+</div>
