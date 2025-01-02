@@ -2,15 +2,14 @@
 <html>
 
 <head>
-  <title><%= content_for(:title) || "FavotiteClipFinder" %></title>
+  <title><%= content_for(:title) || "FavoriteClipFinder" %></title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <%= favicon_link_tag('favicon.ico') %>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
   <%= yield :head %>
-  <%= favicon_link_tag('favicon.ico') %>
-
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" href="/icon.png" type="image/png">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
