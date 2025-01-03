@@ -1,6 +1,6 @@
 module ApplicationHelper
   def default_meta_tags
-    playlist_img = @playlist&.clips&.first&.thumbnail_url || "ogp.jpg"
+    playlist_img = @playlist&.clips&.first&.thumbnail_url || asset_path("ogp.jpg")
     playlist_title = @playlist.present? ? @playlist.title : "Twitchのクリップのプレイリストを他者と共有するサイト"
     {
       site: "FavoriteClipFinder",
