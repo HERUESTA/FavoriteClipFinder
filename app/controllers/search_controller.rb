@@ -20,6 +20,6 @@ class SearchController < ApplicationController
 
   def playlist
     # プレイリスト取得
-    @playlists = Playlist.where(visibility: "public")
+    @playlists = Playlist.where(visibility: "public").includes(:user).order(created_at: :desc)
   end
 end

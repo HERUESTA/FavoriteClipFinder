@@ -1,13 +1,13 @@
 module ApplicationHelper
   def default_meta_tags
     playlist_img = @playlist.present? && @playlist.clips.present? ? @playlist.clips.first.thumbnail_url : "ogp.jpg"
-    playlist_title = @playlist.present? ? @playlist.title : "Twitchのクリップを他者と共有するサイト"
+    playlist_title = @playlist.present? ? @playlist.title : "Twitchのクリップのプレイリストを他者と共有するサイト"
     {
       site: "FavoriteClipFinder",
       title: playlist_title,
       reverse: true,
       charset: "utf-8",
-      description: "FavoriteClipFinderでは他者が作成したTwitchのクリップやプレイリストを共有することができます",
+      description: "FavoriteClipFinderでは他者や自分が作成したTwitchのクリップやプレイリストを共有することができます",
       keywords: "Twitch,クリップ,ゲーム,ストリーマー,プレイリスト",
       canonical: request.original_url,
       separator: "|",

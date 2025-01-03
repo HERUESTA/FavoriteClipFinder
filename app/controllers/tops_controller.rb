@@ -11,7 +11,11 @@ class TopsController < ApplicationController
     end
 
     # プレイリスト取得
-    @playlists = Playlist.where(visibility: "public").order(created_at: :desc).limit(20)
+    @playlists = Playlist
+                  .where(visibility: "public")
+                  .includes(:user) 
+                  .order(created_at: :desc)
+                  .limit(20)
     if current_user
       @my_playlists = Playlist.where(user_uid: current_user.uid)
     else
