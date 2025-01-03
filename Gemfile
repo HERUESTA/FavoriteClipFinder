@@ -77,6 +77,9 @@ group :development, :test do
 
   # Lint用
   gem "solargraph"
+
+  # テストカバレッジ用
+  gem "simplecov"
 end
 
 group :development do
