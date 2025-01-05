@@ -6,7 +6,7 @@
     <!-- Eメール -->
     <div>
       <%= f.label :email, "Eメール", class: "block text-sm font-medium text-gray-700" %>
-      <%= f.email_field :email, value: "email", autocomplete: "email", class: "bg-white input input-bordered w-full mt-1", placeholder: "general@example.com" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "bg-white input input-bordered w-full mt-1", placeholder: "general@example.com" %>
       <!-- Eメールのエラーがある場合 -->
       <% if resource.errors.include?(:email) %>
       <ul class="text-red-500 text-sm mt-2">
