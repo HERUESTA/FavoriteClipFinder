@@ -451,6 +451,15 @@
           null
         ]
       },
+      "/myapp/spec/factories/users.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          null,
+          null
+        ]
+      },
       "/myapp/config/routes.rb": {
         "lines": [
           1,
@@ -924,6 +933,15 @@
           null
         ]
       },
+      "/myapp/spec/models/user_spec.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          1,
+          null
+        ]
+      },
       "/myapp/spec/requests/images_spec.rb": {
         "lines": [
           null,
@@ -953,6 +971,6 @@
         ]
       }
     },
-    "timestamp": 1735921847
+    "timestamp": 1735922777
   }
 }
