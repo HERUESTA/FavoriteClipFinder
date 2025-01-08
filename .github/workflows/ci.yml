@@ -76,9 +76,9 @@ jobs:
           bundle exec rails db:create RAILS_ENV=test
           bundle exec rails db:migrate RAILS_ENV=test
     
-     - name: Check tables
-        run: |
-          psql -h 127.0.0.1 -U postgres -d favorite_clip_finder_test -c "\dt"
+      - name: Check tables
+          run: |
+            psql -h 127.0.0.1 -U postgres -d favorite_clip_finder_test -c "\dt"
 
       - name: Run rspec
         run: bundle exec rspec
