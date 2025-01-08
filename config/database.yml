@@ -15,11 +15,10 @@ development:
 test:
   <<: *default
   database: favorite_clip_finder_test
-  host: localhost
 
 
 production:
   <<: *default
   database: favorite_clip_finder_production
-  username: <%= ENV["MYAPP_DATABASE_USER"] %>
+  username: myapp
   password: <%= ENV["MYAPP_DATABASE_PASSWORD"] %>

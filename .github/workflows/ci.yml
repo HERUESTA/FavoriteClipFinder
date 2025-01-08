@@ -79,4 +79,6 @@ jobs:
           bundle exec rails db:migrate RAILS_ENV=test
     
       - name: Run rspec
+        env:
+          RAILS_ENV: test
         run: bundle exec rspec
