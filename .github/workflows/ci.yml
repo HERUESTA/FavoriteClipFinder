@@ -77,7 +77,6 @@ jobs:
           cp config/database.yml.ci config/database.yml
           bundle exec rails db:create RAILS_ENV=test
           bundle exec rails db:migrate RAILS_ENV=test
-          psql -h 127.0.0.1 -U postgres -d favorite_clip_finder_test -c "\dt"
     
       - name: Run rspec
         run: bundle exec rspec
