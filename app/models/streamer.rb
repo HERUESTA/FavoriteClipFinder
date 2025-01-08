@@ -1,4 +1,4 @@
-class Streamer < ApplicationRecord
+  class Streamer < ApplicationRecord
   has_many :clips, dependent: :destroy
   has_many :follows, dependent: :destroy
   has_many :users, through: :follows
@@ -17,4 +17,4 @@ class Streamer < ApplicationRecord
   def self.ransackable_associations(auth_object = nil)
     [ "clips", "game" ]
   end
-end
+  end

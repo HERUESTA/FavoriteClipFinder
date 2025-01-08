@@ -71,10 +71,13 @@ jobs:
           bundler-cache: true
 
       - name: Database setup
+        env:
+          PGPASSWORD: postgres
         run: |
           cp config/database.yml.ci config/database.yml
-          bundle exec rails db:create RAILS_ENV=test
-          bundle exec rails db:migrate RAILS_ENV=test
-
+          bundle exec rails db:prepare RAILS_ENV=test
+    
       - name: Run rspec
+        env:
+          RAILS_ENV: test
         run: bundle exec rspec

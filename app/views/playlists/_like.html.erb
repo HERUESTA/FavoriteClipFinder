@@ -1,4 +1,4 @@
-<% if playlist.like_by?(current_user) %>
+<% if playlist.liked_by?(current_user) %>
 <%= link_to playlist_likes_path(playlist), 
           data: { turbo_method: :delete, controller: "like", action: "click->like#disable" } do %>
 <i class="fas fa-heart text-sm text-purple-500" aria-hidden="true"></i>
