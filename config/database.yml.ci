@@ -3,5 +3,5 @@ test:
   encoding: utf8
   username: postgres
   password: postgres
-  host: 127.0.0.1
+  host: localhost
   database: favorite_clip_finder_test
