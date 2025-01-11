@@ -406,6 +406,34 @@
           null
         ]
       },
+      "/myapp/spec/factories/clips.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          1,
+          7,
+          7,
+          1,
+          7,
+          7,
+          7,
+          null,
+          null
+        ]
+      },
+      "/myapp/spec/factories/games.rb": {
+        "lines": [
+          1,
+          1,
+          6,
+          4,
+          6,
+          6,
+          null,
+          null
+        ]
+      },
       "/myapp/spec/factories/likes.rb": {
         "lines": [
           1,
@@ -424,6 +452,19 @@
           1,
           51,
           51,
+          null,
+          null
+        ]
+      },
+      "/myapp/spec/factories/streamers.rb": {
+        "lines": [
+          1,
+          1,
+          7,
+          7,
+          7,
+          7,
+          7,
           null,
           null
         ]
@@ -913,6 +954,109 @@
           null
         ]
       },
+      "/myapp/spec/models/clip_spec.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          1,
+          1,
+          null,
+          2,
+          2,
+          2,
+          2,
+          2,
+          null,
+          null,
+          2,
+          2,
+          2,
+          null,
+          1,
+          1,
+          1,
+          1,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "/myapp/app/models/clip.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          1,
+          1,
+          1,
+          null,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          null,
+          null,
+          null,
+          2,
+          null,
+          1,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "/myapp/spec/models/game_spec.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          1,
+          null
+        ]
+      },
+      "/myapp/app/models/game.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          1,
+          1,
+          1,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null
+        ]
+      },
       "/myapp/spec/models/like_spec.rb": {
         "lines": [
           1,
@@ -1077,6 +1221,39 @@
           null
         ]
       },
+      "/myapp/spec/models/streamer_spec.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          1,
+          null
+        ]
+      },
+      "/myapp/app/models/streamer.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          1,
+          null,
+          1,
+          1,
+          1,
+          1,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null
+        ]
+      },
       "/myapp/spec/models/user_spec.rb": {
         "lines": [
           1,
@@ -1119,6 +1296,6 @@
         ]
       }
     },
-    "timestamp": 1736354737
+    "timestamp": 1736573775
   }
 }
