@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_29_082343) do
+ActiveRecord::Schema[7.2].define(version: 2025_01_11_050842) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -21,17 +21,12 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_29_082343) do
     t.string "title"
     t.datetime "clip_created_at", precision: nil
     t.string "thumbnail_url"
-    t.integer "duration"
     t.integer "view_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "language"
     t.string "creator_name"
     t.index ["clip_created_at"], name: "index_clips_on_clip_created_at"
     t.index ["clip_id"], name: "index_clips_on_clip_id", unique: true
-    t.index ["game_id", "clip_created_at"], name: "index_clips_on_game_id_and_clip_created_at"
-    t.index ["game_id"], name: "index_clips_on_game_id"
-    t.index ["streamer_id"], name: "index_clips_on_streamer_id"
   end
 
   create_table "favorite_clips", force: :cascade do |t|
@@ -59,7 +54,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_29_082343) do
     t.datetime "updated_at", null: false
     t.string "game_id"
     t.index ["game_id"], name: "index_games_on_game_id", unique: true
-    t.index ["name"], name: "index_games_on_name", unique: true
   end
 
   create_table "likes", force: :cascade do |t|
@@ -100,7 +94,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_29_082343) do
     t.string "display_name"
     t.index "lower((display_name)::text)", name: "index_streamers_on_lower_display_name"
     t.index ["streamer_id"], name: "index_streamers_on_streamer_id", unique: true
-    t.index ["streamer_name"], name: "index_streamers_on_streamer_name"
   end
 
   create_table "users", force: :cascade do |t|
