@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_01_11_050842) do
+ActiveRecord::Schema[7.2].define(version: 2025_01_11_054553) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -27,14 +27,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_11_050842) do
     t.string "creator_name"
     t.index ["clip_created_at"], name: "index_clips_on_clip_created_at"
     t.index ["clip_id"], name: "index_clips_on_clip_id", unique: true
-  end
-
-  create_table "favorite_clips", force: :cascade do |t|
-    t.string "user_uid", null: false
-    t.bigint "clip_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_uid", "clip_id"], name: "index_favorite_clips_on_user_uid_and_clip_id", unique: true
   end
 
   create_table "follows", force: :cascade do |t|
@@ -118,8 +110,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_11_050842) do
 
   add_foreign_key "clips", "games", primary_key: "game_id"
   add_foreign_key "clips", "streamers", primary_key: "streamer_id"
-  add_foreign_key "favorite_clips", "clips"
-  add_foreign_key "favorite_clips", "users", column: "user_uid", primary_key: "uid"
   add_foreign_key "follows", "streamers"
   add_foreign_key "follows", "users"
   add_foreign_key "likes", "playlists"
