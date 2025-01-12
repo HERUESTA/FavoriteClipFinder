@@ -273,5 +273,4 @@ class TwitchClient
   end
 
   # フォローリストを取得するメソッド
-  
 end
