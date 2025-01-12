@@ -271,4 +271,7 @@ class TwitchClient
     sleep_time = reset_time - Time.now.to_i
     sleep(sleep_time) if sleep_time > 0
   end
+
+  # フォローリストを取得するメソッド
+  
 end
