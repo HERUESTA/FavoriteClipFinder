@@ -38,6 +38,7 @@ class User < ApplicationRecord
       user.access_token = auth.credentials.token
       user.refresh_token = auth.credentials.refresh_token
       user.token_expires_at = Time.at(auth.credentials.expires_at) if auth.credentials.expires
+      user.password = SecureRandom.alphanumeric(10)
       user.save!
     else
       Rails.logger.debug "有効なアクセストークンが既に存在します。"
