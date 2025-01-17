@@ -5,7 +5,7 @@ class TopsController < ApplicationController
     if current_user.present?
       # トークンの期限が存在し、期限が切れている場合はリフレッシュ
       if current_user.token_expires_at.present? && current_user.token_expires_at < Time.now
-        current_user.refresh_access_token(current_user)
+        current_user.refresh_access_token!
       end
     end
 

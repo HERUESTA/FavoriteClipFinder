@@ -47,11 +47,9 @@ class FetchTwitchClipsJob < ApplicationJob
       streamer_id: streamer.streamer_id,
       game_id: game.game_id,
       title: clip_data["title"],
-      language: clip_data["language"],
       creator_name: clip_data["creator_name"],
       clip_created_at: clip_data["created_at"],
       thumbnail_url: clip_data["thumbnail_url"],
-      duration: clip_data["duration"].to_i,
       view_count: clip_data["view_count"].to_i
     )
 

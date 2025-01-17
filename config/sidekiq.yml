@@ -11,8 +11,3 @@ scheduler:
       cron: "0 0 * * *"
       class: FetchTwitchClipsJob
       queue: default
-
-    fetch_japanese_streamers_job:
-      cron: "0 */2 * * *"
-      class: FetchJapaneseStreamersJob
-      queue: default
