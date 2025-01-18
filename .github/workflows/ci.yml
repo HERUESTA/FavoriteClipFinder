@@ -76,6 +76,12 @@ jobs:
         run: |
           cp config/database.yml.ci config/database.yml
           bundle exec rails db:prepare RAILS_ENV=test
+      
+      - name: Precompile assets for test
+        env:
+          RAILS_ENV: test
+        run: |
+          bundle exec rails assets:precompile
     
       - name: Run rspec
         env:
