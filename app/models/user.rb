@@ -50,7 +50,7 @@ class User < ApplicationRecord
     user
   end
 
-  # リフレッシュトークンの更新
+  # アクセストークンの更新
   def refresh_access_token!
     Api::TokenRefresher.new(self).call
   end

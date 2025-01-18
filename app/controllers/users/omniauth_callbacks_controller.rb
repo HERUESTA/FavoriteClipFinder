@@ -5,7 +5,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def twitch
     # OmniAuthから認証情報を取得
     @user = User.from_omniauth(request.env["omniauth.auth"])
-    code = params[:code] # 認証コード
 
       if @user.persisted?
         sign_in_and_redirect @user, event: :authentication

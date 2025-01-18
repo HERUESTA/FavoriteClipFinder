@@ -34,7 +34,7 @@ RSpec.describe "Tops", type: :system do
     let!(:valorant_clips) { create_list(:clip, 3, game_id: Clip::GAME_ID[:VALORANT]) }
     let!(:lol_clips) { create_list(:clip, 3, game_id: Clip::GAME_ID[:LOL]) }
 
-    context 'ユーザーがログインしていない場合' do
+    context 'TOP画面に遷移する場合' do
       it 'トップページにアクセスするとpublicのプレイリストのみが表示される' do
         visit root_path
         expect(page).to have_content(public_playlist.playlist.title)
@@ -48,6 +48,12 @@ RSpec.describe "Tops", type: :system do
         apex_clips.each do |clip|
           expect(page).to have_content(clip.title)
         end
+      end
+
+      it 'アイコンを押下すると、TOP画面に遷移する'  do
+        visit root_path
+        click_on "ロゴ"
+        expect(page).to have_current_path(root_path)
       end
     end
   end
