@@ -13,7 +13,12 @@ RSpec.describe "Tops", type: :system do
       clip = create(:clip)
       create(:playlist_clip, playlist: playlist, clip: clip)
     end
-    let!(:private_playlists) { create_list(:playlist, 3, visibility: 'private', user: user) }
+    # 非公開プレイリスト作成
+    let!(:private_playlist) do
+      playlist = create(:playlist, visibility: 'private', user: user)
+      clip = create(:clip)
+      create(:playlist_clip, playlist: playlist, clip: clip)
+    end
 
     # ゲームごとのクリップを生成
     let!(:game_apex) { create(:game, game_id: Clip::GAME_ID[:APEX]) }
@@ -35,14 +40,11 @@ RSpec.describe "Tops", type: :system do
         expect(page).to have_content(public_playlist.playlist.title)
         expect(page).to have_content(public_playlist.playlist.user.user_name)
 
-        private_playlists.each do |playlist|
-          expect(page).not_to have_content(playlist.title)
-        end
+        expect(page).not_to have_content(private_playlist.playlist.title)
       end
 
-      it '各ログインのクリップ一覧が表示されていること' do
+      it '各クリップ一覧が表示されていること' do
         visit root_path
-
         apex_clips.each do |clip|
           expect(page).to have_content(clip.title)
         end
