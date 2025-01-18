@@ -45,7 +45,7 @@
     </div>
 
     <%= form_with url: search_path, method: :get, local: true do %>
-    <div class="flex items-center border border-gray-300 rounded-full shadow-sm bg-white px-4 py-2">
+    <div class="flex items-center border border-gray-300 rounded-full px-4 py-2">
       <!-- 検索フィールド -->
       <div data-controller="autocomplete" data-autocomplete-url-value="/clips/search" role="combobox" class="flex-1 relative">
         <%= text_field_tag :q, params[:q], 
@@ -53,7 +53,7 @@
           class: "w-full bg-transparent py-1 px-2 text-gray-700 placeholder-gray-400",
           placeholder: "検索",
           required: "required" %>
-        <ul class="list-group bg-white absolute w-full md:text-sm max-w-max border border-gray-300 rounded-md shadow-lg z-10 mt-1" data-autocomplete-target="results"></ul>
+        <ul class="list-group bg-white absolute w-full md:text-sm max-w-max z-10 mt-1" data-autocomplete-target="results"></ul>
       </div>
       <!-- 検索アイコン -->
       <div class="ml-2">

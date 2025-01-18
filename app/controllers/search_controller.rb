@@ -1,30 +1,18 @@
 # app/controllers/search_controller.rb
 class SearchController < ApplicationController
   def index
-    # 検索フォームの値を取得
-    if params[:q].present?
-
-      # includeで関連テーブルを取得
-      @q = Clip.includes(:streamer, :game).ransack(
-        # 複数の検索条件をORで結合
+    q = params[:q]
+      q = Clip.includes(:streamer, :game).ransack(
         combinator: "or",
-        # ゲーム名を含む
-        game_name_cont: params[:q],
-        # 配信者名を含む
-        streamer_streamer_name_cont: params[:q],
-        # 配信者の表示名を含む
-        streamer_display_name_cont: params[:q]
+        game_name_cont: q,
+        streamer_streamer_name_cont: q,
+        streamer_display_name_cont: q
       )
-    else
-      # キーワードがない場合は全てのクリップを取得
-      @q = Clip.includes(:streamer, :game).ransack({})
-    end
-
-    # @qを使って、検索結果を取得
-    @clips = @q.result(distinct: true).order(clip_created_at: :desc).page(params[:page]).per(60)
+    @clips = q.result(distinct: true).order(clip_created_at: :desc).page(params[:page]).per(60)
 
     # ログインしている場合のみプレイリストを渡す
-    @playlists = user_signed_in? ? current_user.playlists : []
+    # 未ログインの場合は空の配列を渡す
+    @playlists = current_user&.playlists || []
   end
 
   def playlist
