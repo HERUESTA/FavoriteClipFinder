@@ -33,13 +33,13 @@
 
 <body class="bg-gray-100 flex flex-col min-h-screen">
   <!-- ナビゲーションヘッダー -->
-  <header class="navbar bg-white text-black px-4 py-2 flex justify-between items-center fixed top-0 left-0 right-0 z-50 shadow">
+  <header class="bg-white px-2 py-2 flex justify-between items-center fixed top-0 left-0 right-0 z-50">
     <!-- ロゴとリンク -->
     <div class="flex items-center space-x-4">
       <!-- ロゴ -->
-      <div class="text-purple-500">
+      <div>
         <%= link_to root_path do %>
-        <%= image_tag "favicon.png", alt: "ロゴ", class: "h-8 w-8" %>
+        <%= image_tag "favicon.png", alt: "ロゴ", class: "h-12 w-12" %>
         <% end %>
       </div>
     </div>
