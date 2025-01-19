@@ -5,8 +5,7 @@ class PlaylistsController < ApplicationController
   # 特定のアクション前にプレイリストを設定
   before_action :set_playlist, only: [ :update, :destroy ]
 
-  # 明示的に application レイアウトを使用
-  layout "application"
+  before_action :ensure_correct_user, only: [ :edit ]
 
   def index
     @page = params[:page]
@@ -67,5 +66,13 @@ class PlaylistsController < ApplicationController
   # ストロングパラメータの定義
   def playlist_params
     params.require(:playlist).permit(:title, :visibility, :id)
+  end
+
+  # プレイリストの作成者かどうかを確認するメソッド
+  def ensure_correct_user
+    @playlist = Playlist.find(params[:id])
+    unless @playlist.user_uid == current_user.uid
+      redirect_to root_path, alert: "このプレイリストを編集する権限がありません"
+    end
   end
 end
