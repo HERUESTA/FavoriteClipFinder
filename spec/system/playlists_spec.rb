@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Playlists", type: :system do
+RSpec.describe "Playlists", js: true, type: :system do
   include Warden::Test::Helpers
   before do
     driven_by(:rack_test)
@@ -61,7 +61,6 @@ RSpec.describe "Playlists", type: :system do
 
       let(:edit_playlist) do
         playlist = create(:playlist, visibility: 'public', user: other_user)
-        playlist.update(user_uid: other_user.uid)
         clip = create(:clip)
         create(:playlist_clip, playlist: playlist, clip: clip)
       end
@@ -102,44 +101,30 @@ RSpec.describe "Playlists", type: :system do
 
     describe 'プレイリスト削除' do
       before do
-        # OmniAuthでTwitter認証を偽装する
-        visit user_session_path
-        OmniAuth.config.test_mode = true
-        params = { provider: 'twitch',
-         uid: '123545',
-         info: { 
-         name: 'ユーザー',
-         email: 'example@example.com'
-        },
-        credentials: {
-          token: 'aaaa'
-        },}
-        OmniAuth.config.mock_auth[:twitch] = OmniAuth::AuthHash.new(params)
-        click_on 'Twitchでログイン'
-        @user = User.find_by(provider: 'twitch', uid: '123545')
+        login_as(user)
       end
-
+      
       let(:other_user) { create(:user) }
 
-      let(:my_playlist) do
-        playlist = create(:playlist, visibility: 'public', user: @user)
+      let!(:my_playlist) do
+        playlist = create(:playlist, visibility: 'public', user: user)
         clip = create(:clip)
         create(:playlist_clip, playlist: playlist, clip: clip)
       end
 
       let(:edit_playlist) do
         playlist = create(:playlist, visibility: 'public', user: other_user)
-        playlist.update(user_uid: other_user.uid)
         clip = create(:clip)
         create(:playlist_clip, playlist: playlist, clip: clip)
       end
       context 'プレイリストを削除する' do
         it 'プレイリストの削除に成功する' do
+          my_playlist
           visit playlists_path
+          find("label.btn.btn-ghost").click
           click_on "削除"
           expect(page).to have_content("#{my_playlist.playlist.title}を削除しました")
         end
-
       end
     end
   end

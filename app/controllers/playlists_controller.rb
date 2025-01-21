@@ -50,7 +50,7 @@ class PlaylistsController < ApplicationController
     @playlist.destroy!
     respond_to do |format|
       format.turbo_stream { flash.now[:notice] = "#{@playlist.title}を削除しました" }
-      format.html { redirect_to show_path, notice: "#{@playlist.title}を削除しました", status: :see_other }
+      format.html { redirect_to playlist_path, notice: "#{@playlist.title}を削除しました", status: :see_other }
     end
   end
 
