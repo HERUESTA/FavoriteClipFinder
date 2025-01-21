@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "Playlists", type: :system do
-  include LoginMacros
+  include Warden::Test::Helpers
   before do
     driven_by(:rack_test)
   end
@@ -33,17 +33,33 @@ RSpec.describe "Playlists", type: :system do
 
   describe 'ログイン後' do
     describe 'プレイリスト編集画面' do
-      before { login_as(user) }
+      before do
+        # OmniAuthでTwitter認証を偽装する
+        visit user_session_path
+        OmniAuth.config.test_mode = true
+        params = { provider: 'twitch',
+         uid: '123545',
+         info: { 
+         name: 'ユーザー',
+         email: 'example@example.com'
+        },
+        credentials: {
+          token: 'aaaa'
+        },}
+        OmniAuth.config.mock_auth[:twitch] = OmniAuth::AuthHash.new(params)
+        click_on 'Twitchでログイン'
+        @user = User.find_by(provider: 'twitch', uid: '123545')
+      end
 
-      let!(:other_user) { create(:user) }
+      let(:other_user) { create(:user) }
 
-      let!(:my_playlist) do
-        playlist = create(:playlist, visibility: 'public', user: user)
+      let(:my_playlist) do
+        playlist = create(:playlist, visibility: 'public', user: @user)
         clip = create(:clip)
         create(:playlist_clip, playlist: playlist, clip: clip)
       end
 
-      let!(:edit_playlist) do
+      let(:edit_playlist) do
         playlist = create(:playlist, visibility: 'public', user: other_user)
         playlist.update(user_uid: other_user.uid)
         clip = create(:clip)
@@ -52,7 +68,7 @@ RSpec.describe "Playlists", type: :system do
 
       context '他ユーザーのプレイリスト編集画面にアクセス' do
         it '編集ページへのアクセスが失敗する' do
-          visit edit_playlist_path(edit_playlist.id)
+          visit edit_playlist_path(edit_playlist.playlist.id)
           expect(page).to have_content("このプレイリストを編集する権限がありません")
         end
       end
@@ -81,6 +97,49 @@ RSpec.describe "Playlists", type: :system do
           click_button '変更'
           expect(page).to have_content("プレイリスト名が長すぎます。")
         end
+      end
+    end
+
+    describe 'プレイリスト削除' do
+      before do
+        # OmniAuthでTwitter認証を偽装する
+        visit user_session_path
+        OmniAuth.config.test_mode = true
+        params = { provider: 'twitch',
+         uid: '123545',
+         info: { 
+         name: 'ユーザー',
+         email: 'example@example.com'
+        },
+        credentials: {
+          token: 'aaaa'
+        },}
+        OmniAuth.config.mock_auth[:twitch] = OmniAuth::AuthHash.new(params)
+        click_on 'Twitchでログイン'
+        @user = User.find_by(provider: 'twitch', uid: '123545')
+      end
+
+      let(:other_user) { create(:user) }
+
+      let(:my_playlist) do
+        playlist = create(:playlist, visibility: 'public', user: @user)
+        clip = create(:clip)
+        create(:playlist_clip, playlist: playlist, clip: clip)
+      end
+
+      let(:edit_playlist) do
+        playlist = create(:playlist, visibility: 'public', user: other_user)
+        playlist.update(user_uid: other_user.uid)
+        clip = create(:clip)
+        create(:playlist_clip, playlist: playlist, clip: clip)
+      end
+      context 'プレイリストを削除する' do
+        it 'プレイリストの削除に成功する' do
+          visit playlists_path
+          click_on "削除"
+          expect(page).to have_content("#{my_playlist.playlist.title}を削除しました")
+        end
+
       end
     end
   end
