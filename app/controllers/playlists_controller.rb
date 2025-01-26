@@ -18,7 +18,7 @@ class PlaylistsController < ApplicationController
 
   def edit
     @playlist = Playlist.find(params[:id])
-    @clips = @playlist.clips.includes(:streamer)
+    @clips = @playlist.clips.preload(:streamer)
   end
 
   def show
