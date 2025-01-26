@@ -80,7 +80,6 @@ RSpec.describe "Searches", type: :system do
         playlist_like_two = create(:playlist, user: user3)
         create(:like, user: user, playlist: playlist_like_two)
         create(:like, user: user2, playlist: playlist_like_two)
-        create(:like, user: user3, playlist: playlist_like_two)
         create(:playlist_clip, playlist: playlist_like_two, clip: create(:clip))
       end
 
@@ -88,8 +87,6 @@ RSpec.describe "Searches", type: :system do
       let!(:playlist_1_likes_playlist) do
         playlist_like_one = create(:playlist, user: user4)
         create(:like, user: user, playlist: playlist_like_one)
-        create(:like, user: user2, playlist: playlist_like_one)
-        create(:like, user: user3, playlist: playlist_like_one)
         create(:playlist_clip, playlist: playlist_like_one, clip: create(:clip))
       end
 
@@ -101,10 +98,10 @@ RSpec.describe "Searches", type: :system do
 
       it 'いいね数が多い順にプレイリストが表示されること' do
         visit search_playlist_path
-        # いいね数順にぷれいりすとが表示されていること
-        expect(page).to have_content(playlist_3_likes_playlist.playlist.title)
-        expect(page).to have_content(playlist_2_likes_playlist.playlist.title)
-        expect(page).to have_content(playlist_1_likes_playlist.playlist.title)
+        # いいね数順にプレイリストが表示されていること
+        expect(page.text).to match(
+          /#{playlist_3_likes_playlist.playlist.title}[\s\S]*#{playlist_2_likes_playlist.playlist.title}[\s\S]*#{playlist_1_likes_playlist.playlist.title}/
+        )
       end
     end
   end

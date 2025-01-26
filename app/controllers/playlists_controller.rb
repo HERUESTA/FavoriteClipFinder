@@ -5,8 +5,7 @@ class PlaylistsController < ApplicationController
   # 特定のアクション前にプレイリストを設定
   before_action :set_playlist, only: [ :update, :destroy ]
 
-  # 明示的に application レイアウトを使用
-  layout "application"
+  before_action :ensure_correct_user, only: [ :edit ]
 
   def index
     @page = params[:page]
@@ -19,22 +18,18 @@ class PlaylistsController < ApplicationController
 
   def edit
     @playlist = Playlist.find(params[:id])
-    @clips = @playlist.clips.includes(:streamer)
+    @clips = @playlist.clips.preload(:streamer)
   end
 
   def show
     # プレイリスト内の全クリップを取得
     @playlist = Playlist.find(params[:id])
-    @clips = @playlist.clips.includes(:streamer)
+    confirm_privacy(@playlist)
+    @clips = @playlist.clips.preload(:streamer)
     # 自分の全てのプレイリストを取得する
-    if user_signed_in?
-      @playlists = Playlist.where(user_uid: current_user.uid)
-    else
-      @playlists = []
-    end
-
-    # 再生するクリップを特定（パラメータがなければ最初のクリップを使用）
-    @clip = params[:clip_id].present? ? @clips.find_by(id: params[:clip_id]) : @clips.first
+    @playlists = user_signed_in? ? Playlist.where(user_uid: current_user.uid) : []
+    # プレイリストの一番最初のクリップを再生
+    @clip = @clips.first
   end
 
   # プレイリストを更新
@@ -51,7 +46,7 @@ class PlaylistsController < ApplicationController
     @playlist.destroy!
     respond_to do |format|
       format.turbo_stream { flash.now[:notice] = "#{@playlist.title}を削除しました" }
-      format.html { redirect_to show_path, notice: "#{@playlist.title}を削除しました", status: :see_other }
+      format.html { redirect_to playlist_path, notice: "#{@playlist.title}を削除しました", status: :see_other }
     end
   end
 
@@ -67,5 +62,20 @@ class PlaylistsController < ApplicationController
   # ストロングパラメータの定義
   def playlist_params
     params.require(:playlist).permit(:title, :visibility, :id)
+  end
+
+  # プレイリストの作成者かどうかを確認するメソッド
+  def ensure_correct_user
+    @playlist = Playlist.find(params[:id])
+    unless @playlist.user_uid == current_user.uid
+      redirect_to root_path, alert: "このプレイリストを編集する権限がありません"
+    end
+  end
+
+  # プレイリストの公開状態を確認するメソッド
+  def confirm_privacy(playlist)
+    if playlist.nil? || playlist.visibility == "private" && current_user.uid != playlist.user_uid
+      redirect_to root_path, alert: "このプレイリストにはアクセスができません"
+    end
   end
 end

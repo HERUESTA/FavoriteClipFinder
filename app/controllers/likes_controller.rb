@@ -11,7 +11,7 @@ class LikesController < ApplicationController
       if like.save
         playlist.reload
         format.turbo_stream do
-          render turbo_stream: turbo_stream.update("playlist_#{playlist.id}_like", partial: "playlists/like", locals: { playlist: playlist })
+          render turbo_stream: turbo_stream.update("playlist_#{playlist.id}_like", partial: "shared/like", locals: { playlist: playlist })
         end
       else
         format.html { redirect_to request.referer, alert: "ログインしてください" }
@@ -26,7 +26,7 @@ class LikesController < ApplicationController
       if like.destroy
         playlist.reload
         format.turbo_stream do
-          render turbo_stream: turbo_stream.update("playlist_#{playlist.id}_like", partial: "playlists/like", locals: { playlist: playlist })
+          render turbo_stream: turbo_stream.update("playlist_#{playlist.id}_like", partial: "shared/like", locals: { playlist: playlist })
         end
       else
         format.html { redirect_to request.referer, alert: "ログインしてください" }

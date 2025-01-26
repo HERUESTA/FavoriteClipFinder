@@ -22,7 +22,7 @@ ja:
         playlist:
           attributes:
             title:
-              presence: "プレイリスト名は必須です。"
+              presence: "プレイリスト名を入力してください。"
               length: "プレイリスト名は1文字以上30文字以内で入力して下さい。"
       messages:
         required: "を入力してください。"

@@ -19,16 +19,20 @@
       </h3>
       <!-- 公開・非公開といいね・共有 -->
       <div class="flex items-center space-x-4 text-sm mt-2">
-        <div class="flex items-center space-x-4">
-          <!-- いいねボタン -->
-          <div id="playlist_<%= playlist.id %>_like">
-            <%= render "playlists/like", playlist: playlist %>
-          </div>
-          <!-- 共有アイコン -->
-          <%= render partial: 'shared/x', locals: { playlist: playlist } %>
-        </div>
+        <% if playlist.user_uid == current_user.uid %>
+        <%= render "plivacy", playlist: playlist %>
       </div>
     </div>
+    <%= render "ellipses", playlist: playlist %>
+    <% else %>
+    <div class="flex items-center space-x-4">
+      <!-- いいねボタン -->
+      <%= render partial: 'shared/like', locals: { playlist: playlist } %>
+      <!-- 共有アイコン -->
+      <%= render partial: 'shared/x', locals: { playlist: playlist } %>
+    </div>
+    <% end %>
+
   </div>
 </div>
 <% end %>

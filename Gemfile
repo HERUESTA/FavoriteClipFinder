@@ -40,6 +40,9 @@ gem "ransack"
 # カウンタキャッシュ
 gem "counter_culture", "~> 3.2"
 
+# decorator
+gem "draper"
+
 # Twitch関連
 gem "devise", "~> 4.9"
 gem "omniauth", "~> 2.1"
