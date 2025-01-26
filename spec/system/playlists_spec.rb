@@ -156,6 +156,5 @@ RSpec.describe "Playlists", js: true, type: :system do
         end
       end
     end
-
   end
 end

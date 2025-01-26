@@ -22,6 +22,8 @@ class PlaylistsController < ApplicationController
   end
 
   def show
+    # プレイリスト内の全クリップを取得
+    @playlist = Playlist.find(params[:id])
     confirm_privacy(@playlist)
     @clips = @playlist.clips.includes(:streamer)
     # 自分の全てのプレイリストを取得する
