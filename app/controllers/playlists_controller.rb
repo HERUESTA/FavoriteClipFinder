@@ -25,7 +25,7 @@ class PlaylistsController < ApplicationController
     # プレイリスト内の全クリップを取得
     @playlist = Playlist.find(params[:id])
     confirm_privacy(@playlist)
-    @clips = @playlist.clips.includes(:streamer)
+    @clips = @playlist.clips.preload(:streamer)
     # 自分の全てのプレイリストを取得する
     @playlists = user_signed_in? ? Playlist.where(user_uid: current_user.uid) : []
     # プレイリストの一番最初のクリップを再生
