@@ -62,7 +62,7 @@ RSpec.describe "Playlists", js: true, type: :system do
         it 'タイトルが未入力' do
           visit edit_playlist_path(my_playlist.playlist.id)
           find('button[title="編集"]').click
-          fill_in 'プレイリスト名', with: ''
+          fill_in 'playlist[title]', with: ''
           click_button '変更'
           expect(page).to have_content("プレイリスト名を入力してください。")
         end
@@ -70,7 +70,7 @@ RSpec.describe "Playlists", js: true, type: :system do
         it 'タイトルを入力' do
           visit edit_playlist_path(my_playlist.playlist.id)
           find('button[title="編集"]').click
-          fill_in 'プレイリスト名', with: 'title'
+          fill_in 'playlist[title]', with: 'title'
           click_button '変更'
           expect(page).to have_content("titleを更新しました")
         end
@@ -78,7 +78,7 @@ RSpec.describe "Playlists", js: true, type: :system do
         it 'タイトルが30文字以上' do
           visit edit_playlist_path(my_playlist.playlist.id)
           find('button[title="編集"]').click
-          fill_in 'プレイリスト名', with: 'a * 31'
+          fill_in 'playlist[title]', with: 'a' * 31
           click_button '変更'
           expect(page).to have_content("プレイリスト名が長すぎます。")
         end

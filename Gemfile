@@ -41,7 +41,7 @@ gem "ransack"
 gem "counter_culture", "~> 3.2"
 
 # decorator
-gem 'draper'
+gem "draper"
 
 # Twitch関連
 gem "devise", "~> 4.9"
