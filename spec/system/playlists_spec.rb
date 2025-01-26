@@ -133,7 +133,7 @@ RSpec.describe "Playlists", js: true, type: :system do
         end
 
         let(:private_playlist) do
-          playlist = create(:playlist, visibility: 'private', user: user)
+          playlist = create(:playlist, visibility: 'private', user: other_user)
           clip = create(:clip)
           create(:playlist_clip, playlist: playlist, clip: clip)
         end

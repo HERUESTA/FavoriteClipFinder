@@ -21,9 +21,7 @@
       <div class="flex items-center space-x-4 text-sm mt-2">
         <div class="flex items-center space-x-4">
           <!-- いいねボタン -->
-          <div id="playlist_<%= playlist.id %>_like">
-            <%= render "playlists/like", playlist: playlist %>
-          </div>
+          <%= render partial: 'shared/like', locals: { playlist: playlist } %>
           <!-- 共有アイコン -->
           <%= render partial: 'shared/x', locals: { playlist: playlist } %>
         </div>

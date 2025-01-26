@@ -26,11 +26,8 @@
           <div class="shrink-0">
             <%= render partial: 'shared/x', locals: { playlist: playlist } %>
           </div>
-
           <!-- いいねボタン部分 -->
-          <div class="shrink-0" id="playlist_<%= playlist.id %>_like">
-            <%= render "playlists/like", playlist: playlist %>
-          </div>
+          <%= render partial: 'shared/like', locals: { playlist: playlist } %>
         </div>
       </div>
       <!-- 作成者名を追加 -->

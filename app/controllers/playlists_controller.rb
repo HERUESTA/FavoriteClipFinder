@@ -27,14 +27,9 @@ class PlaylistsController < ApplicationController
     confirm_privacy(@playlist)
     @clips = @playlist.clips.includes(:streamer)
     # 自分の全てのプレイリストを取得する
-    if user_signed_in?
-      @playlists = Playlist.where(user_uid: current_user.uid)
-    else
-      @playlists = []
-    end
-
-    # 再生するクリップを特定（パラメータがなければ最初のクリップを使用）
-    @clip = params[:clip_id].present? ? @clips.find_by(id: params[:clip_id]) : @clips.first
+    @playlists = user_signed_in? ? Playlist.where(user_uid: current_user.uid) : []
+    # プレイリストの一番最初のクリップを再生
+    @clip = @clips.first
   end
 
   # プレイリストを更新

@@ -29,9 +29,7 @@
       <div class="flex items-center gap-4">
         <!-- いいねアイコン -->
         <% if @playlist.visibility == "public" %>
-        <div id="playlist_<%= @playlist.id %>_like">
-          <%= render "playlists/like", playlist: @playlist %>
-        </div>
+        <%= render "shared/like", playlist: @playlist %>
         <% end %>
 
         <!-- X共有アイコン -->
