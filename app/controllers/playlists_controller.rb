@@ -79,7 +79,7 @@ class PlaylistsController < ApplicationController
 
   # プレイリストの公開状態を確認するメソッド
   def confirm_privacy(playlist)
-    if playlist.nil? || playlist.visibility == "private"
+    if playlist.nil? || playlist.visibility == "private" && current_user.uid != playlist.user_uid
       redirect_to root_path, alert: "このプレイリストにはアクセスができません"
     end
   end
