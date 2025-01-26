@@ -22,8 +22,7 @@ class PlaylistsController < ApplicationController
   end
 
   def show
-    # プレイリスト内の全クリップを取得
-    @playlist = Playlist.find(params[:id])
+    confirm_privacy(@playlist)
     @clips = @playlist.clips.includes(:streamer)
     # 自分の全てのプレイリストを取得する
     if user_signed_in?
@@ -73,6 +72,13 @@ class PlaylistsController < ApplicationController
     @playlist = Playlist.find(params[:id])
     unless @playlist.user_uid == current_user.uid
       redirect_to root_path, alert: "このプレイリストを編集する権限がありません"
+    end
+  end
+
+  # プレイリストの公開状態を確認するメソッド
+  def confirm_privacy(playlist)
+    if playlist.nil? || playlist.visibility == "private"
+      redirect_to root_path, alert: "このプレイリストにはアクセスができません"
     end
   end
 end

@@ -34,27 +34,13 @@ RSpec.describe "Playlists", js: true, type: :system do
   describe 'ログイン後' do
     describe 'プレイリスト編集画面' do
       before do
-        # OmniAuthでTwitter認証を偽装する
-        visit user_session_path
-        OmniAuth.config.test_mode = true
-        params = { provider: 'twitch',
-         uid: '123545',
-         info: { 
-         name: 'ユーザー',
-         email: 'example@example.com'
-        },
-        credentials: {
-          token: 'aaaa'
-        },}
-        OmniAuth.config.mock_auth[:twitch] = OmniAuth::AuthHash.new(params)
-        click_on 'Twitchでログイン'
-        @user = User.find_by(provider: 'twitch', uid: '123545')
+        login_as(user)
       end
 
       let(:other_user) { create(:user) }
 
       let(:my_playlist) do
-        playlist = create(:playlist, visibility: 'public', user: @user)
+        playlist = create(:playlist, visibility: 'public', user: user)
         clip = create(:clip)
         create(:playlist_clip, playlist: playlist, clip: clip)
       end
@@ -103,7 +89,7 @@ RSpec.describe "Playlists", js: true, type: :system do
       before do
         login_as(user)
       end
-      
+
       let(:other_user) { create(:user) }
 
       let!(:my_playlist) do
@@ -126,6 +112,50 @@ RSpec.describe "Playlists", js: true, type: :system do
           expect(page).to have_content("#{my_playlist.playlist.title}を削除しました")
         end
       end
+
+      describe 'プレイリスト詳細' do
+        before do
+          login_as(user)
+        end
+
+        let(:other_user) { create(:user) }
+
+        let(:my_playlist) do
+          playlist = create(:playlist, visibility: 'public', user: user)
+          clip = create(:clip)
+          create(:playlist_clip, playlist: playlist, clip: clip)
+        end
+
+        let(:other_playlist) do
+          playlist = create(:playlist, visibility: 'public', user: user)
+          clip = create(:clip)
+          create(:playlist_clip, playlist: playlist, clip: clip)
+        end
+
+        let(:private_playlist) do
+          playlist = create(:playlist, visibility: 'private', user: user)
+          clip = create(:clip)
+          create(:playlist_clip, playlist: playlist, clip: clip)
+        end
+
+        context 'プレイリスト詳細画面に遷移する' do
+          it 'ログイン状態で遷移できる' do
+            visit playlist_path(my_playlist.playlist.id)
+            expect(current_path).to eq(playlist_path(my_playlist.playlist.id))
+          end
+
+          it '他のユーザーのプレイリストを閲覧できる' do
+            visit playlist_path(other_playlist.playlist.id)
+            expect(current_path).to eq(playlist_path(other_playlist.playlist.id))
+          end
+
+          it '非公開のプレイリストに遷移した時に、エラーメッセージを表示させる' do
+            visit playlist_path(private_playlist.playlist.id)
+            expect(page).to have_content("このプレイリストにはアクセスができません")
+          end
+        end
+      end
     end
+
   end
 end
