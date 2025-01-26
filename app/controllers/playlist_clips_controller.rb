@@ -16,7 +16,7 @@ class PlaylistClipsController < ApplicationController
     @clip = Clip.find(params[:clip_id])
     @playlist = Playlist.find(params[:id])
     @playlist.clips.destroy(@clip)
-    if @playlist.clips.exists?
+    if @playlist.clips.empty?
       @playlist.destroy!
       redirect_to playlists_path, notice: "クリップを全て削除したためプロフィール画面へ移動しました", status: :see_other
     else
@@ -30,6 +30,7 @@ class PlaylistClipsController < ApplicationController
   # 既存のプレイリストにクリップを追加する
   def add_clip_in_playlist
     playlist = Playlist.find_by(id: params[:playlist_id])
+
     clip = Clip.find(params[:clip_id])
     unless playlist.clips.include?(clip)
       playlist.clips << clip
@@ -44,6 +45,7 @@ class PlaylistClipsController < ApplicationController
 
   def save_clip_in_plalist(playlist)
     clip = Clip.find_by(id: params[:clip_id])
+    Rails.logger.debug "クリップ： #{clip.inspect}"
     if playlist.clips << clip
       flash[:notice] = "#{playlist.title}にクリップを追加しました"
     else
