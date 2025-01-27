@@ -7,7 +7,7 @@ class PlaylistClipsController < ApplicationController
     if playlist.save
       save_clip_in_plalist(playlist)
     else
-      flash[:error] = "プレイリストを作成できませんでした"
+      flash[:error] = t('playlist_clips.create.normal')
     end
     redirect_to request.referer
   end
@@ -18,11 +18,11 @@ class PlaylistClipsController < ApplicationController
     @playlist.clips.destroy(@clip)
     if @playlist.clips.empty?
       @playlist.destroy!
-      redirect_to playlists_path, notice: "クリップを全て削除したためプロフィール画面へ移動しました", status: :see_other
+      redirect_to playlists_path, notice: t('playlist_clips.destroy.all'), status: :see_other
     else
       respond_to do |format|
-        format.turbo_stream { flash.now[:notice] = "該当のクリップを削除しました" }
-        format.html { redirect_to edit_playlist_path(@playlist), notice: "該当のクリップを削除しました", status: :see_other }
+        format.turbo_stream { flash.now[:notice] = t('playlist_clips.destroy.one') }
+        format.html { redirect_to edit_playlist_path(@playlist), notice: t('playlist_clips.destroy.one'), status: :see_other }
       end
     end
   end
@@ -34,9 +34,9 @@ class PlaylistClipsController < ApplicationController
     clip = Clip.find(params[:clip_id])
     unless playlist.clips.include?(clip)
       playlist.clips << clip
-      flash[:notice] = "#{playlist.title}にクリップを追加しました"
+      flash[:notice] = t('playlist_clips.update.notice', title: playlist.title)
     else
-      flash[:error] = "#{playlist.title}にすでに該当のクリップが追加されています"
+      flash[:error] = t('playlist_clips.update.error', title: playlist.title)
     end
     redirect_to request.referer
   end
@@ -47,9 +47,9 @@ class PlaylistClipsController < ApplicationController
     clip = Clip.find_by(id: params[:clip_id])
     Rails.logger.debug "クリップ： #{clip.inspect}"
     if playlist.clips << clip
-      flash[:notice] = "#{playlist.title}にクリップを追加しました"
+      flash[:notice] = t('playlist_clips.create.notice', title: playlist.title)
     else
-      flash[:error] = "#{playlist.title}にクリップを追加できませんでした"
+      flash[:error] = t('playlist_clips.create.error', title: playlist.title)
     end
   end
 

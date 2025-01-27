@@ -37,7 +37,7 @@ class PlaylistsController < ApplicationController
     Rails.logger.debug "プレイリストの中身: #{@playlist.inspect}"
     @playlist.update(playlist_params)
       respond_to do |format|
-        format.html { redirect_to request.referer, notice: "#{@playlist.title}を更新しました" }
+        format.html { redirect_to request.referer, notice: t('playlists.updated', title: @playlist.title) }
       end
   end
 
@@ -45,8 +45,8 @@ class PlaylistsController < ApplicationController
   def destroy
     @playlist.destroy!
     respond_to do |format|
-      format.turbo_stream { flash.now[:notice] = "#{@playlist.title}を削除しました" }
-      format.html { redirect_to playlist_path, notice: "#{@playlist.title}を削除しました", status: :see_other }
+      format.turbo_stream { flash.now[:notice] = t('playlists.destroy', title: @playlist.title) }
+      format.html { redirect_to playlists_path, notice: t('playlists.destroy', title: @playlist.title), status: :see_other }
     end
   end
 
