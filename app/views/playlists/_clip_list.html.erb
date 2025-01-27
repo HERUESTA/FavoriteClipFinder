@@ -10,12 +10,12 @@
       <!-- 動画情報 -->
       <div class="ml-0 sm:ml-4 mt-2 sm:mt-0 flex-1 w-full sm:w-auto">
         <h3 class="text-base font-bold text-black"><%= clip.title %></h3>
-        <p class="text-sm text-gray-500"><%= clip.streamer.display_name %> · <%= clip.view_count %>回視聴</p>
+        <%= t('clip.display', streamer: clip.streamer.display_name, count: clip.view_count) %>
       </div>
       <!-- ゴミ箱マーク -->
       <div class="mt-2 sm:mt-0 w-full sm:w-auto text-right">
         <%= link_to playlist_clip_path(playlist, clip_id: clip.id),
-        data: { turbo_method: :delete, turbo_confirm: "本当に削除してもよろしいですか？" },  
+        data: { turbo_method: :delete, turbo_confirm: t('playlists.delete.confirm') },  
         class: "btn btn-ghost btn-sm text-error", title: "削除" do %>
         <i class="fa-solid fa-trash"></i>
         <% end %>

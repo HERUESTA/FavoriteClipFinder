@@ -9,7 +9,9 @@
       </div>
       <!-- ユーザー名 -->
       <div class="ml-4">
-        <h1 class="text-lg font-bold text-black"><%= current_user.user_name %></h1>
+        <h1 class="text-lg font-bold text-black">
+          <%= t('user.user_name', name: current_user.user_name) %>
+        </h1>
       </div>
     </div>
 

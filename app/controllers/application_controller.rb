@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
     if user_signed_in?
       # ログインしている場合は、そのユーザーのフォローリストを取得
       @followed_channels = current_user.follows.includes(:streamer).map(&:streamer)
-      @follow_str = "フォローしている"
+      @follow_str = "フォローしているチャンネル"
       # Twitch以外のログインユーザーの場合はランダムなフォローチャンネルを取得
       if @followed_channels.empty?
         get_random_followed_channel
@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
 
   # ランダムなフォローチャンネルを取得する
   def get_random_followed_channel
-    @follow_str = "あなたにおすすめの"
+    @follow_str = "あなたにおすすめのチャンネル"
     if Streamer.count > 0
       random_user = User.where(provider: "twitch").order("RANDOM()").first
       if random_user.present?

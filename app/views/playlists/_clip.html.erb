@@ -3,13 +3,13 @@
   <!-- 動画部分 -->
   <figure class="relative" data-controller="video">
     <img data-video-target="thumbnail" src="<%= clip.thumbnail_url.gsub('%{width}x%{height}', '1280x720') %>" alt="<%= clip.title %>" class="w-full h-auto cursor-pointer" style="height: 300px;" data-action="click->video#showVideo" loading="lazy" />
-    <iframe data-video-target="iframe" src="https://clips.twitch.tv/embed?clip=<%= clip.clip_id %>&parent=<%= ENV['TWITCH_PARENT_URL'] %>" scrolling="no" allowfullscreen="true" class="w-full h-auto" style="max-width: 100%; height: 300px; display: none;" loading="lazy"></iframe>
+    <iframe data-video-target="iframe" src="https://clips.twitch.tv/embed?clip=<%= clip.clip_id %>&parent=<%= ENV['TWITCH_PARENT_URL'].presence || 'localhost' %>" scrolling="no" allowfullscreen="true" class="w-full h-auto" style="max-width: 100%; height: 300px; display: none;" loading="lazy"></iframe>
   </figure>
 
   <div class="pl-2 w-full max-w-full">
     <!-- クリップタイトル -->
     <h2 class="text-lg font-bold mb-1 truncate">
-      <%= clip.title %>
+      <%= t('clip.title', title: clip.title) %>
     </h2>
 
     <div class="flex items-start">
@@ -20,13 +20,11 @@
       <div>
         <!-- 配信者名 -->
         <%= link_to clip.streamer.display_name, search_path(q: clip.streamer.display_name), data: { turbo_frame: "clips" }, class: "text-sm text-gray-600 mb-1" %>
-
         <!-- ゲーム名 -->
         <%= link_to clip.game.name, search_path(q: clip.game.name), data: { turbo_frame: "clips" }, class: "text-sm text-gray-500" %>
-
         <!-- クリップ作成者名 -->
         <p class="text-sm text-gray-600">
-          作成者: <%= clip.creator_name %>
+          <%= t('clip.creator_name', creator_name: clip.creator_name) %>
         </p>
       </div>
     </div>
@@ -36,7 +34,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor">
         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
       </svg>
-      <span>保存</span>
+      <span><%= t('keep') %></span>
     </label>
 
     <!-- モーダルのトグル用チェックボックス -->
@@ -45,7 +43,9 @@
     <!-- モーダル本体 -->
     <div class="modal">
       <div class="modal-box rounded-lg shadow-lg">
-        <h3 class="font-bold text-lg">動画の保存先</h3>
+        <h3 class="font-bold text-lg">
+          <%= t('keep_clip') %>
+        </h3>
         <!-- モーダル内のコンテンツ -->
         <div class="py-4">
           <!-- プレイリストのチェックボックスリスト -->
@@ -54,27 +54,21 @@
           <input type="hidden" name="clip_id" value="<%= clip.id %>" />
 
           <!-- プレイリストのチェックボックスをリスト表示 -->
+          <% if @playlists.present? %>
           <div class="form-control">
             <label class="label">
-              <span class="label-text">保存先のプレイリストを選択</span>
+              <span class="label-text">
+                <%= t('select_playlist') %>
+              </span>
             </label>
-            <% if @playlists.present? %>
             <% @playlists.each do |playlist| %>
             <label class="cursor-pointer label">
-              <input type="checkbox" name="watch_later" value="true" class="checkbox checkbox-secondly" checked />
-              <span class="label-text ml-2">後で見る</span>
               <input type="checkbox" name="playlist_ids[]" value="<%= playlist.id %>" class="checkbox checkbox-primary" />
               <span class="label-text ml-2"><%= playlist.name %></span>
             </label>
             <% end %>
-            <% else %>
-            <!-- プレイリストがない場合、「後で見る」を表示しチェック済みにする -->
-            <label class="cursor-pointer label">
-              <input type="checkbox" name="watch_later" value="true" class="checkbox checkbox-secondly" checked />
-              <span class="label-text ml-2">後で見る</span>
-            </label>
-            <% end %>
           </div>
+          <% end %>
 
           <!-- 「新しいプレイリストを作成」 -->
           <div class="mt-4">
@@ -82,14 +76,18 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>
-              ＋新しいプレイリストを作成
+              <%= t('create_playlist') %>
             </label>
           </div>
 
           <!-- 保存ボタン -->
           <div class="modal-action">
-            <button type="submit" class="btn btn-primary">保存</button>
-            <label for="playlist-modal-<%= clip.id %>" class="btn">キャンセル</label>
+            <button type="submit" class="btn btn-primary">
+              <%= t('keep') %>
+            </button>
+            <label for="playlist-modal-<%= clip.id %>" class="btn">
+              <%= t('cancel') %>
+            </label>
           </div>
           <% end %>
         </div>
@@ -101,25 +99,29 @@
   <input type="checkbox" id="new-playlist-modal" class="modal-toggle" />
   <div class="modal">
     <div class="modal-box rounded-lg shadow-lg">
-      <h3 class="font-bold text-lg">新しいプレイリストを作成</h3>
+      <h3 class="font-bold text-lg">
+        <%= t('create_playlist') %>
+      </h3>
       <%= form_with url: playlist_playlist_clip_index_path, method: :post do |f| %>
       <input type="hidden" name="search_query" value="<%= @search_query %>" />
       <div class="form-control mt-4">
         <label class="label">
-          <span class="label-text">タイトルを入力してください</span>
+          <span class="label-text">
+            <%= t('input_title') %>
+          </span>
         </label>
         <input type="text" name="playlist_name" placeholder="例: マイプレイリスト" class="input input-bordered" required />
       </div>
 
       <!-- 公開設定 -->
       <div class="form-control mt-4">
-        <%= form.label :visibility, "公開設定", class: "label-text block text-sm font-medium text-black" %>
-        <%= form.select :visibility, [["非公開", "private"], ["公開", "public"]], { selected: form.object.visibility }, class: "select select-bordered" %>
+        <%= f.label :visibility, "公開設定", class: "label-text block text-sm font-medium text-black" %>
+        <%= f.select :visibility, [["非公開", "private"], ["公開", "public"]], { selected: f.object.visibility }, class: "select select-bordered" %>
       </div>
 
       <div class="modal-action">
-        <label for="new-playlist-modal" class="btn">キャンセル</label>
-        <button type="submit" class="btn btn-primary">作成</button>
+        <label for="new-playlist-modal" class="btn"><%= t('cancel') %></label>
+        <button type="submit" class="btn btn-primary"><%= t('create') %></button>
       </div>
       <% end %>
     </div>

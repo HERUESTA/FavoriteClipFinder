@@ -8,14 +8,15 @@
   <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 right-0 bg-white z-10">
     <li class="flex items-center">
       <%= link_to edit_playlist_path(playlist), class: "flex w-full items-center hover:bg-purple-600 hover:text-white text-black rounded" do %>
-      <i class="fa fa-edit mr-2"></i> 編集
+      <i class="fa fa-edit mr-2"></i>
+      <%= t('edit') %>
       <% end %>
     </li>
     <li class="flex items-center">
       <%= link_to playlist_path(playlist), 
-        data: { turbo_method: :delete, turbo_frame: "_top", turbo_confirm: "本当に削除してもよろしいですか？" }, 
-        class: "flex w-full items-center hover:bg-purple-600 hover:text-white text-black rounded" do %>
-      <i class="fa fa-trash mr-2"></i> 削除
+        data: { turbo_method: :delete, turbo_frame: "_top", turbo_confirm: t('playlists.delete.confirm') },
+      class: "flex w-full items-center hover:bg-purple-600 hover:text-white text-black rounded" do %>
+      <i class="fa fa-trash mr-2"></i><%= t('destroy') %>
       <% end %>
     </li>
   </ul>

@@ -19,11 +19,11 @@
 <!-- タブ切り替え部分 -->
 <div class="mt-8 bg-gray-50 p-6 rounded-lg">
   <div role="tabs" class="flex border-b border-gray-200">
-    <%= link_to "マイライブラリ",
-      playlists_path(active_tab: "my_library"),
-      class: (@active_tab == 'my_library' ? "mr-8 pb-2 border-b-2 border-purple-500 text-black font-medium" : "mr-8 pb-2 border-b-2 border-transparent text-gray-600 hover:text-gray-800") %>
+    <%= link_to t('library'),
+  playlists_path(active_tab: "my_library"),
+  class: (@active_tab == 'my_library' ? "mr-8 pb-2 border-b-2 border-purple-500 text-black font-medium" : "mr-8 pb-2 border-b-2 border-transparent text-gray-600 hover:text-gray-800") %>
 
-    <%= link_to "いいねしたプレイリスト",
+    <%= link_to t('like_playlist'),
       playlists_path(active_tab: "liked_playlists"),
       class: (@active_tab == 'liked_playlists' ? "mr-8 pb-2 border-b-2 border-purple-500 text-black font-medium" : "mr-8 pb-2 border-b-2 border-transparent text-gray-600 hover:text-gray-800") %>
   </div>

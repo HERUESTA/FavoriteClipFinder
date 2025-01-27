@@ -1,12 +1,14 @@
 <% if playlist.visibility == "private" %>
 <div class="flex items-center space-x-1">
   <i class="fa-solid fa-lock text-gray-500"></i>
-  <span class="text-gray-500 text-xs">非公開</span>
+  <span class="text-gray-500 text-xs">
+    <%= t('activerecord.attributes.playlist.visibility.private') %>
+  </span>
 </div>
 <% elsif playlist.visibility == "public" %>
 <div class="flex items-center space-x-1">
   <i class="fa-solid fa-earth-americas text-gray-500"></i>
-  <span class="text-gray-500">公開</span>
+  <span class="text-gray-500"><%= t('activerecord.attributes.playlist.visibility.public') %></span>
 </div>
 <div class="flex items-center space-x-4">
   <!-- いいねボタン -->

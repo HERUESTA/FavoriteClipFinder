@@ -7,9 +7,20 @@ ja:
         password: "パスワード"
         password_confirmation: "パスワード確認"
       playlist:
+        title: "%{title}"
         visibility:
           public: "公開"
           private: "非公開"
+      streamer:
+        display_name: "%{name}"
+      game:
+        name: "%{name}"
+      clip:
+        streamer:
+          name: "%{name}"
+        title: "%{title}"
+        view_count: "視聴数"
+        creator_name: "クリップ作成者"
     errors:
       models:
         clip:
@@ -26,3 +37,78 @@ ja:
               length: "プレイリスト名は1文字以上30文字以内で入力して下さい。"
       messages:
         required: "を入力してください。"
+  playlists:
+    delete:
+      confirm: "本当に削除してもよろしいでしょうか？"
+    updated: "%{title}を更新しました"
+    destroy: "%{title}を削除しました"
+    name: "%{name}"
+    title: "%{title}"
+    count: "%{count}本のクリップ"
+  playlist_clips:
+    create:
+      normal: "プレイリストを作成できませんでした"
+      notice: "%{title}にクリップを追加しました"
+      error: "%{title}にクリップを追加できませんでした"
+    destroy: 
+      all: "クリップを全て削除したためプロフィール画面へ移動しました"
+      one: "該当のクリップを削除しました"
+    update:
+      notice: "%{title}にクリップを追加しました"
+      error: "%{title}にすでに該当のクリップが追加されています"
+  like:
+    login: "いいねするにはログインしてください"
+  clip:
+    name: "%{streamer}"
+    display: "%{streamer} · %{count}回視聴"
+    creator_name: "作成者：%{creator_name}"
+    title: "%{title}"
+  user:
+    user_name: "%{name}"
+  keep: "保存"
+  keep_clip: "動画の保存先"
+  keep_playlist: "クリップの保存先"
+  select_playlist: "保存先のプレイリストを選択"
+  create_playlist: "＋新しいプレイリストを作成"
+  input_title: "タイトルを入力してください"
+  cancel: "キャンセル"
+  create: "作成"
+  edit_playlist: "プレイリストの編集"
+  edit: "編集"
+  destroy: "削除"
+  library: "マイライブラリ"
+  like_playlist: "いいねしたプレイリスト"
+  search:
+    index:
+      word1: "現在のキーワードに該当するクリップが存在しておりません"
+      word2: "以下をお試しください："
+      word3: "検索内容を確認する"
+      word4: "別の検索ワードを試す"
+  no_exist_playlist: "プレイリストがないため、作成してください"
+  placeholder: "例：マイプレイリスト"
+  validate:
+    playlist: "プレイリスト名を入力してください。"
+    length: "プレイリスト名が長すぎます。"
+  static_page:
+    word1: "FavoriteClipFinderについて"
+    word2: "FavoriteClipFinderでは他者が作成したTwitchのクリップやプレイリストを共有することができます"
+    word3: "また、自分自身でも作成して他者に共有することができます"
+    word4: "全ユーザーが行えること"
+    word5: "クリップ検索"
+    word6: "配信者リストまたは、検索ボックスからクリップを検索することが可能です"
+    word7: "※ただし、対応していない配信者やゲームも存在します"
+    word8: "Twitchで配信者をフォローしていないまたは非ログインユーザーの場合、"
+    word9: "フォローリストにはおすすめの配信者リストが表示されます"
+    word10: "ぜひそこからお気に入りの配信者を見つけてみてください"
+    word11: "プレイリスト閲覧"
+    word12: "公開設定の他人が作成したプレイリストを閲覧することができます"
+    word13: "面白かったプレイリストはX共有して、他の人と楽しみましょう!"
+    word14: "※いいねはログインユーザーのみ可能です"
+    word15: "ログインユーザーが行えること"
+    word16: "プレイリスト作成機能"
+    word17: "各クリップの保存ボタンを押下することで面白かったクリップをプレイリストとして保存しておくことが可能です。"
+    word18: "また、プレイリストの公開設定を変更することで他のユーザーに共有することも可能です。"
+    word19: "プレイリスト編集機能"
+    word20: "プロフィール画面から、プレイリストの編集をすることが可能です。"
+    word21: "編集アイコンを押下することで、プレイリスト名・公開設定の変更、クリップの削除などができます。"
+    word22: "※プレイリスト内のクリップを全て削除すると、自動的にプレイリストも削除されます"
