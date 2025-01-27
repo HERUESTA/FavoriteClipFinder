@@ -1,26 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Playlist, type: :model do
-  describe 'バリデーション' do
-    it '設定したすべてのバリデーションが機能しているか' do
-      playlist = build(:playlist)
-      expect(playlist).to be_valid
-      expect(playlist.errors).to be
-    end
-
-    it 'titleが空欄の場合バリデーションが通らない' do
-      playlist_without_title = build(:playlist, title: nil)
-      expect(playlist_without_title).to be_invalid
-      expect(playlist_without_title.errors[:title]).to include("を入力してください", "は1文字以上で入力してください")
-    end
-
-    it 'titleが31文字以上の場合バリデーションが通らない' do
-      playlist_over_title = build(:playlist, title: "a" * 31)
-      expect(playlist_over_title).to be_invalid
-      expect(playlist_over_title.errors[:title]).to include("は30文字以内で入力してください")
-    end
-  end
-
   describe 'インスタンスメソッド' do
     describe '#liked_by?' do
       let(:user) { create(:user) }

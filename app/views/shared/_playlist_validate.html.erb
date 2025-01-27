@@ -1,19 +1,21 @@
 <div class="form-control mt-4">
   <label class="label">
-    <span class="label-text text-black">タイトルを入力してください</span>
+    <span class="label-text text-black">
+      <%= t('input_title') %>
+    </span>
   </label>
   <%= f.text_field :title,
-         placeholder: "例： マイプレイリスト",
+         placeholder: t('placeholder'),
          class: "mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 text-black", 
          required: "required",
          data: { form_validation_target: "input", action: "input->form-validation#validate" }%>
   <!-- 必須エラーメッセージ -->
   <div class="text-red-500 text-sm hidden mt-1" data-form-validation-target="errorMessage">
-    プレイリスト名を入力してください。
+    <%= t('validate.playlist') %>
   </div>
   <!-- 長さエラーメッセージ -->
   <div class="text-red-500 text-sm hidden mt-1" data-form-validation-target="lengthErrorMessage">
-    プレイリスト名が長すぎます。
+    <%= t('validate.length') %>
   </div>
   <div class="text-gray-500 text-sm mt-1" data-form-validation-target="charCount">
     0/30
