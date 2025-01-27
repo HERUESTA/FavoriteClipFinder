@@ -3,7 +3,7 @@
   <!-- 動画部分 -->
   <figure class="relative" data-controller="video">
     <img data-video-target="thumbnail" src="<%= clip.thumbnail_url.gsub('%{width}x%{height}', '1280x720') %>" alt="<%= clip.title %>" class="w-full h-auto cursor-pointer" style="height: 300px;" data-action="click->video#showVideo" loading="lazy" />
-    <iframe data-video-target="iframe" src="https://clips.twitch.tv/embed?clip=<%= clip.clip_id %>&parent=<%= ENV['TWITCH_PARENT_URL'] %>" scrolling="no" allowfullscreen="true" class="w-full h-auto" style="max-width: 100%; height: 300px; display: none;" loading="lazy"></iframe>
+    <iframe data-video-target="iframe" src="https://clips.twitch.tv/embed?clip=<%= clip.clip_id %>&parent=<%= ENV['TWITCH_PARENT_URL'].presence || 'localhost' %>" scrolling="no" allowfullscreen="true" class="w-full h-auto" style="max-width: 100%; height: 300px; display: none;" loading="lazy"></iframe>
   </figure>
 
   <div class="pl-2 w-full max-w-full">
@@ -54,21 +54,21 @@
           <input type="hidden" name="clip_id" value="<%= clip.id %>" />
 
           <!-- プレイリストのチェックボックスをリスト表示 -->
+          <% if @playlists.present? %>
           <div class="form-control">
             <label class="label">
               <span class="label-text">
                 <%= t('select_playlist') %>
               </span>
             </label>
-            <% if @playlists.present? %>
             <% @playlists.each do |playlist| %>
             <label class="cursor-pointer label">
-              <input type="checkbox" name="watch_later" value="true" class="checkbox checkbox-secondly" checked />
               <input type="checkbox" name="playlist_ids[]" value="<%= playlist.id %>" class="checkbox checkbox-primary" />
-              <span class="label-text ml-2"><%= t(playlist.name, name: playlist.name) %></span>
+              <span class="label-text ml-2"><%= playlist.name %></span>
             </label>
             <% end %>
           </div>
+          <% end %>
 
           <!-- 「新しいプレイリストを作成」 -->
           <div class="mt-4">
@@ -100,7 +100,8 @@
   <div class="modal">
     <div class="modal-box rounded-lg shadow-lg">
       <h3 class="font-bold text-lg">
-        <%= t('create_playlist') %></h3>
+        <%= t('create_playlist') %>
+      </h3>
       <%= form_with url: playlist_playlist_clip_index_path, method: :post do |f| %>
       <input type="hidden" name="search_query" value="<%= @search_query %>" />
       <div class="form-control mt-4">
@@ -114,8 +115,8 @@
 
       <!-- 公開設定 -->
       <div class="form-control mt-4">
-        <%= form.label :visibility, "公開設定", class: "label-text block text-sm font-medium text-black" %>
-        <%= form.select :visibility, [["非公開", "private"], ["公開", "public"]], { selected: form.object.visibility }, class: "select select-bordered" %>
+        <%= f.label :visibility, "公開設定", class: "label-text block text-sm font-medium text-black" %>
+        <%= f.select :visibility, [["非公開", "private"], ["公開", "public"]], { selected: f.object.visibility }, class: "select select-bordered" %>
       </div>
 
       <div class="modal-action">
