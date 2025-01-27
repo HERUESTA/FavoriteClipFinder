@@ -57,7 +57,7 @@
             <%= t('clip.title', title: @clip&.title) %>
           </h1>
           <!-- ゲーム名 -->
-          <%= link_to t('game.name', name: @clip&.game&.name), search_path(q: @clip&.game&.name),
+          <%= link_to t('activerecord.attributes.game.name', name: @clip&.game&.name), search_path(q: @clip&.game&.name),
             class: "text-xs lg:text-sm text-purple-500 hover:underline hover:decoration-purple-500 block truncate" %>
           <!-- 作成者情報 -->
           <p class="text-xs lg:text-sm text-gray-600 truncate">

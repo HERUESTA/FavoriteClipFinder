@@ -5,18 +5,18 @@
     <div class="flex flex-wrap justify-between items-center mb-4">
       <!-- プレイリストタイトル -->
       <h2 class="text-2xl sm:text-3xl font-bold tracking-wide text-black break-words w-full sm:w-auto mb-2 sm:mb-0">
-        <%= t(playlists.title, title: @playlist.title) %>
+        <%= t('playlists.title', title: @playlist.title) %>
       </h2>
       <!-- 公開・非公開 -->
       <div class="flex items-center space-x-2 text-sm bg-gray-100 p-2 rounded-lg">
         <% if @playlist.visibility == "private" %>
         <i class="fa-solid fa-lock text-gray-500"></i>
         <span class="text-gray-500">
-          <%= t('playlist.visibility.private') %>
+          <%= t('activerecord.attributes.playlist.visibility.private') %>
         </span>
         <% elsif @playlist.visibility == "public" %>
         <i class="fa-solid fa-earth-americas text-gray-500"></i>
-        <span class="text-gray-500"><%= t('playlist.visibility.public') %></span>
+        <span class="text-gray-500"><%= t('activerecord.attributes.playlist.visibility.public') %></span>
         <% end %>
       </div>
     </div>
