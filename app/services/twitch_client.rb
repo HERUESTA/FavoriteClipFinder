@@ -20,21 +20,43 @@ class TwitchClient
 
   # アクセストークンを取得またはキャッシュから読み込む
   def fetch_access_token
-    Rails.cache.fetch("twitch_access_token", expires_in: 50.minutes) do
-      uri = URI("https://id.twitch.tv/oauth2/token")
-      params = {
-        client_id: @client_id,
-        client_secret: @client_secret,
-        grant_type: "client_credentials"
-      }
-      response = Net::HTTP.post_form(uri, params)
-      data = JSON.parse(response.body)
-      data["access_token"]
+    response = @connection.get("/oauth2/token") do |req|
+      req.params["client_id"] = @client_id
+      req.params["client_sercret"] = @client_secret
+      req.params["grant_type"] = "client_credentials"
+      
+      if response.success?
+        data = JSON.parse(response.body)
+        data["access_token"]
+      end
+
     rescue StandardError => e
-      Rails.logger.error "Failed to fetch access token: #{e.message}"
+      Rails.logger.error "アクセストークンの取得に失敗しました: #{e.message}"
       nil
     end
   end
+
+    # フォロワー数を取得するメソッド
+    def fetch_follower_count(broadcaster_id)
+      response = @connection.get("channels/followers") do |req|
+        req.params["broadcaster_id"] = broadcaster_id
+        req.headers["Client-ID"] = @client_id
+        req.headers["Authorization"] = "Bearer #{@access_token}"
+      end
+  
+      if response.success?
+        total_followers = response.body["total"]
+        Rails.logger.debug "Total followers for broadcaster ID #{broadcaster_id}: #{total_followers}"
+        total_followers
+      else
+        Rails.logger.error "Failed to fetch follower count for broadcaster ID #{broadcaster_id}: #{response.body['message']}"
+        nil
+      end
+    rescue StandardError => e
+      Rails.logger.error "Error fetching follower count: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n")
+      nil
+    end
 
   # 登録者数4万人以上の日本配信者を取得
   def fetch_japanese_streamers(max_results: 50)
@@ -74,27 +96,7 @@ class TwitchClient
     []
   end
 
-  # フォロワー数を取得するメソッド
-  def fetch_follower_count(broadcaster_id)
-    response = @connection.get("channels/followers") do |req|
-      req.params["broadcaster_id"] = broadcaster_id
-      req.headers["Client-ID"] = @client_id
-      req.headers["Authorization"] = "Bearer #{@access_token}"
-    end
 
-    if response.success?
-      total_followers = response.body["total"]
-      Rails.logger.debug "Total followers for broadcaster ID #{broadcaster_id}: #{total_followers}"
-      total_followers
-    else
-      Rails.logger.error "Failed to fetch follower count for broadcaster ID #{broadcaster_id}: #{response.body['message']}"
-      nil
-    end
-  rescue StandardError => e
-    Rails.logger.error "Error fetching follower count: #{e.message}"
-    Rails.logger.error e.backtrace.join("\n")
-    nil
-  end
 
 
   # 配信者のクリップを取得するメソッド
