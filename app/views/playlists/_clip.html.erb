@@ -2,8 +2,8 @@
 <div class="clip-container p-2 relative rounded-lg border-b-4 border-gray-200 flex flex-col justify-between">
   <!-- 動画部分 -->
   <figure class="relative" data-controller="video">
-    <img data-video-target="thumbnail" src="<%= clip.thumbnail_url.gsub('%{width}x%{height}', '1280x720') %>" alt="<%= clip.title %>" class="w-full h-auto cursor-pointer" style="height: 300px;" data-action="click->video#showVideo" loading="lazy" />
-    <iframe data-video-target="iframe" src="https://clips.twitch.tv/embed?clip=<%= clip.clip_id %>&parent=<%= ENV['TWITCH_PARENT_URL'].presence || 'localhost' %>" scrolling="no" allowfullscreen="true" class="w-full h-auto" style="max-width: 100%; height: 300px; display: none;" loading="lazy"></iframe>
+    <img data-video-target="thumbnail" src="<%= clip.thumbnail_url.gsub('%{width}x%{height}', '1280x720') %>" alt="<%= clip.title %>" class="w-full h-auto cursor-pointer" style="height: 300px;" data-action="click->video#showVideo" />
+    <iframe data-video-target="iframe" src="https://clips.twitch.tv/embed?clip=<%= clip.clip_id %>&parent=<%= ENV['TWITCH_PARENT_URL'].presence || 'localhost' %>" scrolling="no" allowfullscreen="true" class="w-full h-auto" style="max-width: 100%; height: 300px; display: none;"></iframe>
   </figure>
 
   <div class="pl-2 w-full max-w-full">

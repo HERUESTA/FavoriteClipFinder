@@ -2,8 +2,8 @@
 <div class="clip-container py-4 relative rounded-lg flex flex-col justify-between">
   <!-- 動画部分 -->
   <figure class="relative" data-controller="video">
-    <img data-video-target="thumbnail" src="<%= clip.thumbnail_url.gsub('%{width}x%{height}', '1280x720') %>" alt="<%= clip.title %>" class="w-full h-auto cursor-pointer" style="height: 300px;" data-action="click->video#showVideo" loading="lazy" />
-    <iframe data-video-target="iframe" src="https://clips.twitch.tv/embed?clip=<%= clip.clip_id %>&parent=<%= ENV['TWITCH_PARENT_URL'] %>" scrolling="no" allowfullscreen="true" width="400" class="w-full h-auto" style="max-width: 100%; height: 300px; display: none;" loading="lazy">
+    <img data-video-target="thumbnail" src="<%= clip.thumbnail_url.gsub('%{width}x%{height}', '1280x720') %>" alt="<%= clip.title %>" class="w-full h-auto cursor-pointer" style="height: 300px;" data-action="click->video#showVideo" />
+    <iframe data-video-target="iframe" src="https://clips.twitch.tv/embed?clip=<%= clip.clip_id %>&parent=<%= ENV['TWITCH_PARENT_URL'] %>" scrolling="no" allowfullscreen="true" width="400" class="w-full h-auto" style="max-width: 100%; height: 300px; display: none;">
     </iframe>
   </figure>
 
