@@ -7,7 +7,7 @@ class SearchController < ApplicationController
         combinator: "or",
         game_name_start: params[:q],
         broadcaster_broadcaster_name_start: params[:q],
-        broadcaster_broadcaster_login_cont: params[:q]
+        broadcaster_broadcaster_login_start: params[:q]
       )
     end
     @clips = @q.result(distinct: true).order(clip_created_at: :desc).page(params[:page]).per(60)
