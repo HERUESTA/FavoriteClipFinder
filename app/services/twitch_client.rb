@@ -1,8 +1,3 @@
-require "faraday"
-require "json"
-require "net/http"
-require "uri"
-
 class TwitchClient
   BASE_URL = "https://api.twitch.tv/helix"
 
@@ -18,7 +13,7 @@ class TwitchClient
     end
   end
 
-  # アクセストークンを取得またはキャッシュから読み込む
+  # アクセストークンを取得
   def fetch_access_token
     response = @connection.post("oauth2/token") do |req|
       req.params["client_id"] = @client_id
