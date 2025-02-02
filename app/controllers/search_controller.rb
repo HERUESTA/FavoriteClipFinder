@@ -10,7 +10,7 @@ class SearchController < ApplicationController
         broadcaster_broadcaster_login_start: params[:q]
       )
     end
-    @clips = @q.result(distinct: true).order(clip_created_at: :desc).page(params[:page]).per(60)
+    @clips = @q.result(distinct: true).order(clip_created_at: :desc).page(params[:page]).per(30)
     # ログインしている場合のみプレイリストを渡す
     @playlists = user_signed_in? ? current_user.playlists : []
   end
