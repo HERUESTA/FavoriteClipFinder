@@ -1,4 +1,3 @@
-# app/controllers/search_controller.rb
 class SearchController < ApplicationController
   def index
     # 検索フォームの値を取得
@@ -6,8 +5,8 @@ class SearchController < ApplicationController
       @q = Clip.preload(:broadcaster, :game).ransack(
         combinator: "or",
         game_name_start: params[:q],
-        broadcaster_broadcaster_name_start: params[:q],
-        broadcaster_broadcaster_login_start: params[:q]
+        broadcaster_broadcaster_name_eq: params[:q],
+        broadcaster_broadcaster_login_eq: params[:q]
       )
     end
     @clips = @q.result(distinct: true).order(clip_created_at: :desc).page(params[:page]).per(30)
