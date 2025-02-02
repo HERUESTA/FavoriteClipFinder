@@ -107,15 +107,13 @@
       </h2>
       <ul class="space-y-0">
         <% @followed_channels.each do |follow| %>
-        <li class="flex items-center pt-2 px-2 hover:bg-gray-100 rounded cursor-pointer">
-          <%= link_to search_path(q: follow.broadcaster_login), class: "flex items-center space-x-1 w-full" do %>
+        <li class="flex items-center pt-2 px-2 hover:bg-gray-100 rounded cursor-pointer" onclick="window.location='<%= search_path(q: follow.broadcaster_login )%>'">
           <!-- プロフィール画像 -->
           <img src="<%= follow.profile_image_url %>" alt="<%= follow.broadcaster_login %>" class="w-10 h-10 rounded-full object-cover">
           <!-- 名前 -->
           <div class="flex-1">
             <p class="text-gray-800 text-xs truncate"><%= t('activerecord.attributes.broadcaster.broadcaster_login', name: follow.broadcaster_login) %></p>
           </div>
-          <% end %>
         </li>
         <% end %>
       </ul>
