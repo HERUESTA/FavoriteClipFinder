@@ -3,15 +3,12 @@ class SearchController < ApplicationController
   def index
     # 検索フォームの値を取得
     if params[:q].present?
-      @q = Clip.preload(:streamer, :game).ransack(
+      @q = Clip.preload(:broadcaster, :game).ransack(
         combinator: "or",
-        game_name_cont: params[:q],
-        streamer_streamer_name_cont: params[:q],
-        streamer_display_name_cont: params[:q]
+        game_name_start: params[:q],
+        broadcaster_broadcaster_name_start: params[:q],
+        broadcaster_broadcaster_login_cont: params[:q]
       )
-    else
-      # キーワードがない場合は全てのクリップを取得
-      @q = Clip.preload(:streamer, :game).ransack({})
     end
     @clips = @q.result(distinct: true).order(clip_created_at: :desc).page(params[:page]).per(60)
     # ログインしている場合のみプレイリストを渡す

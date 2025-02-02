@@ -10,13 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_01_11_054553) do
+ActiveRecord::Schema[7.2].define(version: 2025_02_02_023447) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "broadcasters", force: :cascade do |t|
+    t.string "broadcaster_id", null: false
+    t.string "broadcaster_name", null: false
+    t.string "profile_image_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "broadcaster_login"
+    t.index ["broadcaster_id"], name: "index_broadcasters_on_broadcaster_id", unique: true
+  end
+
   create_table "clips", force: :cascade do |t|
     t.string "clip_id", null: false
-    t.string "streamer_id", null: false
+    t.string "broadcaster_id", null: false
     t.string "game_id", null: false
     t.string "title"
     t.datetime "clip_created_at", precision: nil
@@ -31,11 +41,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_11_054553) do
 
   create_table "follows", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.bigint "streamer_id", null: false
+    t.bigint "broadcaster_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["streamer_id"], name: "index_follows_on_streamer_id"
-    t.index ["user_id", "streamer_id"], name: "index_follows_on_user_id_and_streamer_id", unique: true
+    t.index ["broadcaster_id"], name: "index_follows_on_broadcaster_id"
+    t.index ["user_id", "broadcaster_id"], name: "index_follows_on_user_id_and_broadcaster_id", unique: true
     t.index ["user_id"], name: "index_follows_on_user_id"
   end
 
@@ -77,17 +87,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_11_054553) do
     t.index ["user_uid"], name: "index_playlists_on_user_uid"
   end
 
-  create_table "streamers", force: :cascade do |t|
-    t.string "streamer_id", null: false
-    t.string "streamer_name", null: false
-    t.string "profile_image_url"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "display_name"
-    t.index "lower((display_name)::text)", name: "index_streamers_on_lower_display_name"
-    t.index ["streamer_id"], name: "index_streamers_on_streamer_id", unique: true
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "uid", default: "", null: false
     t.string "user_name"
@@ -108,9 +107,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_11_054553) do
     t.index ["uid"], name: "index_users_on_uid", unique: true
   end
 
+  add_foreign_key "clips", "broadcasters", primary_key: "broadcaster_id"
   add_foreign_key "clips", "games", primary_key: "game_id"
-  add_foreign_key "clips", "streamers", primary_key: "streamer_id"
-  add_foreign_key "follows", "streamers"
+  add_foreign_key "follows", "broadcasters"
   add_foreign_key "follows", "users"
   add_foreign_key "likes", "playlists"
   add_foreign_key "playlist_clips", "clips"

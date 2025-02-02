@@ -18,14 +18,14 @@ class PlaylistsController < ApplicationController
 
   def edit
     @playlist = Playlist.find(params[:id])
-    @clips = @playlist.clips.preload(:streamer)
+    @clips = @playlist.clips.preload(:broadcaster)
   end
 
   def show
     # プレイリスト内の全クリップを取得
     @playlist = Playlist.find(params[:id])
     confirm_privacy(@playlist)
-    @clips = @playlist.clips.preload(:streamer)
+    @clips = @playlist.clips.preload(:broadcaster)
     # 自分の全てのプレイリストを取得する
     @playlists = user_signed_in? ? Playlist.where(user_uid: current_user.uid) : []
     # 再生するクリップを特定（パラメータがなければ最初のクリップを使用）

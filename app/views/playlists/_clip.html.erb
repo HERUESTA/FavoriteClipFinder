@@ -14,12 +14,12 @@
 
     <div class="flex items-start">
       <!-- 配信者アイコンと名前 -->
-      <%= link_to search_path(q: clip.streamer.display_name), data: { turbo_frame: "clips" } do %>
-      <img src="<%= clip.streamer.profile_image_url ? clip.streamer.profile_image_url.gsub('{width}x{height}', '100x100') : 'default-avatar-url.jpg' %>" alt="<%= clip.streamer.display_name %>" class="w-10 h-10 rounded-full object-cover mr-4" loading="lazy" />
+      <%= link_to search_path(q: clip.broadcaster_login), data: { turbo_frame: "clips" } do %>
+      <img src="<%= clip.broadcaster.profile_image_url ? clip.broadcaster.profile_image_url.gsub('{width}x{height}', '100x100') : 'default-avatar-url.jpg' %>" alt="<%= clip.broadcaster.broadcaster_login %>" class="w-10 h-10 rounded-full object-cover mr-4" loading="lazy" />
       <% end %>
       <div>
         <!-- 配信者名 -->
-        <%= link_to clip.streamer.display_name, search_path(q: clip.streamer.display_name), data: { turbo_frame: "clips" }, class: "text-sm text-gray-600 mb-1" %>
+        <%= link_to clip.broadcaster.broadcaster_login, search_path(q: clip.broadcaster.broadcaster_login), data: { turbo_frame: "clips" }, class: "text-sm text-gray-600 mb-1" %>
         <!-- ゲーム名 -->
         <%= link_to clip.game.name, search_path(q: clip.game.name), data: { turbo_frame: "clips" }, class: "text-sm text-gray-500" %>
         <!-- クリップ作成者名 -->

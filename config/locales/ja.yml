@@ -11,12 +11,12 @@ ja:
         visibility:
           public: "公開"
           private: "非公開"
-      streamer:
-        display_name: "%{name}"
+      broadcaster:
+        broadcaster_login: "%{name}"
       game:
         name: "%{name}"
       clip:
-        streamer:
+        broadcaster:
           name: "%{name}"
         title: "%{title}"
         view_count: "視聴数"
@@ -25,7 +25,7 @@ ja:
       models:
         clip:
           attributes:
-            streamer:
+            broadcaster:
               required: "ストリーマーは必須です。"
             game:
               required: "ゲームは必須です。"
@@ -59,8 +59,8 @@ ja:
   like:
     login: "いいねするにはログインしてください"
   clip:
-    name: "%{streamer}"
-    display: "%{streamer} · %{count}回視聴"
+    name: "%{broadcaster}"
+    display: "%{broadcaster} · %{count}回視聴"
     creator_name: "作成者：%{creator_name}"
     title: "%{title}"
   user:

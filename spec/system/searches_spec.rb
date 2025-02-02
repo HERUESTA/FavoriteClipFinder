@@ -9,9 +9,9 @@ RSpec.describe "Searches", type: :system do
     context '検索フォームに値を入力した場合' do
       let!(:game) { create(:game) }
       let!(:game_clip) { create(:clip, game: game) }
-      let!(:streamer) { create(:streamer) }
-      let!(:streamer_clip) { create(:clip, streamer: streamer) }
-      let!(:streamer_display_name_clip) { create(:clip, streamer: streamer) }
+      let!(:broadcaster) { create(:broadcaster) }
+      let!(:broadcaster_clip) { create(:clip, broadcaster: broadcaster) }
+      let!(:broadcaster_display_name_clip) { create(:clip, broadcaster: broadcaster) }
 
       it 'ゲーム名を入力した場合ゲーム名のクリップが表示されること' do
         visit search_path
@@ -22,16 +22,16 @@ RSpec.describe "Searches", type: :system do
 
       it '配信者名を入力した場合配信者名のクリップが表示されること' do
         visit search_path
-        fill_in 'q', with: streamer.streamer_name
+        fill_in 'q', with: broadcaster.broadcaster_name
         find('button[type="submit"]').click
-        expect(page).to have_content(streamer_clip.title)
+        expect(page).to have_content(broadcaster_clip.title)
       end
 
       it '配信者の表示名を入力した場合配信者名のクリップが表示されること' do
         visit search_path
-        fill_in 'q', with: streamer.display_name
+        fill_in 'q', with: broadcaster.broadcaster_login
         find('button[type="submit"]').click
-        expect(page).to have_content(streamer_display_name_clip.title)
+        expect(page).to have_content(broadcaster_display_name_clip.title)
       end
 
       it '検索フォームに不当な値を入力した場合、エラー画面が表示されること' do

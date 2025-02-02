@@ -1,7 +1,7 @@
 class Follow < ApplicationRecord
   belongs_to :user
-  belongs_to :streamer
+  belongs_to :broadcaster
 
   # ユーザーと配信者の組み合わせが一意であることをバリデート
-  validates :user_id, uniqueness: { scope: :streamer_id }
+  validates :user_id, uniqueness: { scope: :broadcaster_id }
 end
