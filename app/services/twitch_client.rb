@@ -15,40 +15,21 @@ class TwitchClient
 
   # アクセストークンを取得
   def fetch_access_token
-    response = @connection.post("oauth2/token") do |req|
-      req.params["client_id"] = @client_id
-      req.params["client_secret"] = @client_secret
-      req.params["grant_type"] = "client_credentials"
-      if response.success?
-        data = JSON.parse(response.body)
-        data["access_token"]
-      else
-        Rails.logger.error "アクセストークンの取得に失敗しました： HTTPステータス #{response.status}"
-        nil
-      end
-    rescue StandardError => e
-      Rails.logger.error "アクセストークンの取得に失敗しました: #{e.message}"
-      nil
+    Rails.cache.fetch("twitch_access_token", expires_in: 50.minutes) do
+      uri = URI("https://id.twitch.tv/oauth2/token")
+      params = {
+        client_id:     @client_id,
+        client_secret: @client_secret,
+        grant_type:    "client_credentials"
+      }
+      response = Net::HTTP.post_form(uri, params)
+      data = JSON.parse(response.body)
+      data["access_token"]
     end
+  rescue StandardError => e
+    Rails.logger.error "Failed to fetch access token: #{e.message}"
+    nil
   end
-
-    # アクセストークンを取得またはキャッシュから読み込む
-    def fetch_access_token
-      Rails.cache.fetch("twitch_access_token", expires_in: 50.minutes) do
-        uri = URI("https://id.twitch.tv/oauth2/token")
-        params = {
-          client_id: @client_id,
-          client_secret: @client_secret,
-          grant_type: "client_credentials"
-        }
-        response = Net::HTTP.post_form(uri, params)
-        data = JSON.parse(response.body)
-        data["access_token"]
-      rescue StandardError => e
-        Rails.logger.error "Failed to fetch access token: #{e.message}"
-        nil
-      end
-    end
 
   # フォロワー数を取得するメソッド
   def fetch_follower_count(broadcaster_id)
