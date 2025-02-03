@@ -3,7 +3,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   skip_before_action :verify_authenticity_token, only: [ :twitch ]
 
   def twitch
-    # OmniAuthから認証情報を取得
     @user = User.from_omniauth(request.env["omniauth.auth"])
 
       if @user.persisted?

@@ -11,10 +11,7 @@ class FetchTwitchClipsJob < ApplicationJob
 
   def get_clips(broadcaster)
     @client = TwitchClient.new
-    # クリップを取得
     clips = @client.fetch_clips(broadcaster.broadcaster_id, 200)
-
-    # クリップを保存
     save_clips(clips, broadcaster)
   end
 
