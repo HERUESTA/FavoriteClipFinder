@@ -1,6 +1,5 @@
 <% if playlist.present? %>
 <div class="p-4" id="<%= dom_id(playlist) %>">
-  <!-- プレイリストへのリンク -->
   <%= link_to playlist_path(playlist), class: "block" do %>
   <div class="rounded-lg p-2 relative group">
     <%= link_to playlist_path(playlist), class: "block relative" do %>
@@ -9,15 +8,11 @@
   </div>
   <% end %>
 
-  <!-- タイトル、アイコン、三点リーダーを横並びに配置 -->
   <div class="flex items-center justify-between mt-4 z-50">
-    <!-- 左側のタイトルとアイコン -->
     <div>
-      <!-- プレイリストタイトル -->
       <h3 class="text-lg font-bold text-black">
         <%= playlist.title %>
       </h3>
-      <!-- 公開・非公開といいね・共有 -->
       <div class="flex items-center space-x-4 text-sm mt-2">
         <% if playlist.user_uid == current_user.uid %>
         <%= render "plivacy", playlist: playlist %>
@@ -26,9 +21,7 @@
     <%= render "ellipses", playlist: playlist %>
     <% else %>
     <div class="flex items-center space-x-4">
-      <!-- いいねボタン -->
       <%= render partial: 'shared/like', locals: { playlist: playlist } %>
-      <!-- 共有アイコン -->
       <%= render partial: 'shared/x', locals: { playlist: playlist } %>
     </div>
     <% end %>

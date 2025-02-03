@@ -1,32 +1,21 @@
 <div class="bg-white text-base-content p-6 rounded-lg max-w-screen-lg mx-auto min-h-screen shadow flex flex-col">
-  <!-- ヘッダー -->
   <div class="flex items-center justify-between mb-6">
-    <!-- プロフィール画像とユーザー名 -->
     <div class="flex items-center">
-      <!-- プロフィール画像 -->
       <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-300">
         <img src="<%= current_user.profile_image_url.presence || asset_path('default_profile.png') %>" alt="<%= current_user.user_name %>" class="w-full h-full object-cover" />
       </div>
-      <!-- ユーザー名 -->
       <div class="ml-4">
         <h1 class="text-lg font-bold text-black">
           <%= t('user.user_name', name: current_user.user_name) %>
         </h1>
       </div>
     </div>
-
-    <!-- プロフィールへ戻るボタン -->
     <%= link_to "プロフィールへ戻る", playlists_path, class: "bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-600 transition" %>
   </div>
 
-  <!-- プレイリストのクリップ編集 -->
   <% if @playlist.present? %>
   <%= render partial: "edit_playlist_clips", locals: { playlist: @playlist } %>
-
-  <!-- クリップリスト -->
   <%= render partial: "clip_list", locals: { clips: @clips, playlist: @playlist } %>
-
-  <!-- モーダル画面 -->
   <%= render partial: "edit_modal", locals: { playlist: @playlist } %>
   <% end %>
 </div>

@@ -18,18 +18,14 @@
       <img src="<%= clip.broadcaster.profile_image_url ? clip.broadcaster.profile_image_url.gsub('{width}x{height}', '100x100') : 'default-avatar-url.jpg' %>" alt="<%= clip.broadcaster.broadcaster_login %>" class="w-10 h-10 rounded-full object-cover mr-4" loading="lazy" />
       <% end %>
       <div>
-        <!-- 配信者名 -->
         <%= link_to clip.broadcaster.broadcaster_login, search_path(q: clip.broadcaster.broadcaster_login), data: { turbo_frame: "clips" }, class: "text-sm text-gray-600 mb-1" %>
-        <!-- ゲーム名 -->
         <%= link_to clip.game.name, search_path(q: clip.game.name), data: { turbo_frame: "clips" }, class: "text-sm text-gray-500" %>
-        <!-- クリップ作成者名 -->
         <p class="text-sm text-gray-600">
           <%= t('clip.creator_name', creator_name: clip.creator_name) %>
         </p>
       </div>
     </div>
 
-    <!-- 保存ボタン -->
     <label for="playlist-modal-<%= clip.id %>" class="btn btn-primary bg-purple-600 hover:bg-purple-700 text-white border-none flex items-center px-3 py-1 rounded transition-colors duration-200 cursor-pointer">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor">
         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
@@ -37,23 +33,18 @@
       <span><%= t('keep') %></span>
     </label>
 
-    <!-- モーダルのトグル用チェックボックス -->
     <input type="checkbox" id="playlist-modal-<%= clip.id %>" class="modal-toggle" />
 
-    <!-- モーダル本体 -->
     <div class="modal">
       <div class="modal-box rounded-lg shadow-lg">
         <h3 class="font-bold text-lg">
           <%= t('keep_clip') %>
         </h3>
-        <!-- モーダル内のコンテンツ -->
         <div class="py-4">
-          <!-- プレイリストのチェックボックスリスト -->
           <%= form_with url: playlist_playlist_clip_index_path, method: :post do |f| %>
           <input type="hidden" name="search_query" value="<%= @search_query %>" />
           <input type="hidden" name="clip_id" value="<%= clip.id %>" />
 
-          <!-- プレイリストのチェックボックスをリスト表示 -->
           <% if @playlists.present? %>
           <div class="form-control">
             <label class="label">
@@ -80,7 +71,6 @@
             </label>
           </div>
 
-          <!-- 保存ボタン -->
           <div class="modal-action">
             <button type="submit" class="btn btn-primary">
               <%= t('keep') %>
@@ -113,7 +103,6 @@
         <input type="text" name="playlist_name" placeholder="例: マイプレイリスト" class="input input-bordered" required />
       </div>
 
-      <!-- 公開設定 -->
       <div class="form-control mt-4">
         <%= f.label :visibility, "公開設定", class: "label-text block text-sm font-medium text-black" %>
         <%= f.select :visibility, [["非公開", "private"], ["公開", "public"]], { selected: f.object.visibility }, class: "select select-bordered" %>

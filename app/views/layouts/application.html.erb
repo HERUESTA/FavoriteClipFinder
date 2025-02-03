@@ -17,7 +17,7 @@
   <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   <script src="https://kit.fontawesome.com/4025a67f93.js" crossorigin="anonymous" defer></script>
   <%= display_meta_tags(default_meta_tags) %>
-  <!-- Google tag (gtag.js) -->
+  <!-- Googleアナリティクス -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-GN9LLGTV5J" defer></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -32,76 +32,12 @@
 </head>
 
 <body class="bg-gray-100 flex flex-col min-h-screen">
-  <!-- ナビゲーションヘッダー -->
-  <header class="bg-white px-2 py-2 flex justify-between items-center fixed top-0 left-0 right-0 z-50">
-    <!-- ロゴとリンク -->
-    <div class="flex items-center space-x-4">
-      <!-- ロゴ -->
-      <div>
-        <%= link_to root_path do %>
-        <%= image_tag "favicon.png", alt: "ロゴ", class: "h-12 w-12" %>
-        <% end %>
-      </div>
-    </div>
-
-    <%= form_with url: search_path, method: :get, local: true do %>
-    <div class="flex items-center border border-gray-300 rounded-full shadow-sm bg-white px-4 py-2">
-      <!-- 検索フィールド -->
-      <div data-controller="autocomplete" data-autocomplete-url-value="/clips/search" role="combobox" class="flex-1 relative">
-        <%= text_field_tag :q, params[:q], 
-          data: { autocomplete_target: 'input' },
-          class: "w-full bg-transparent py-1 px-2 text-gray-700 placeholder-gray-400",
-          placeholder: "検索",
-          required: "required" %>
-        <ul class="list-group bg-white absolute w-full md:text-sm max-w-max border border-gray-300 rounded-md shadow-lg z-10 mt-1" data-autocomplete-target="results"></ul>
-      </div>
-      <!-- 検索アイコン -->
-      <div class="ml-2">
-        <button type="submit">
-          <i class="fa-brands fa-searchengin"></i>
-        </button>
-      </div>
-    </div>
-    <% end %>
-
-    <!-- ログイン or プロフィール -->
-    <% if user_signed_in? %>
-    <div class="dropdown dropdown-end">
-      <div tabindex="0" role="button" class="avatar m-1">
-        <div class="w-12 rounded-full">
-          <%= image_tag(
-      current_user.profile_image_url.presence || asset_path("default_profile.png"),
-      alt: "プロフィール画像",
-      class: "profile-image",
-      width: "50",
-      height: "50"
-    ) %>
-        </div>
-      </div>
-      <ul tabindex="0" class="dropdown-content menu bg-white rounded-box z-[1] w-52 p-2 shadow">
-        <li class="flex text-gray-700 hover:bg-purple-700 px-2 py-1">
-          <%= link_to playlists_path, class: "flex items-center" do %>
-          <i class="fa-regular fa-user mr-2"></i>
-          プロフィール
-          <% end %>
-        </li>
-        <li class="flex text-gray-700 hover:bg-purple-700 px-2 py-1">
-          <%= button_to destroy_user_session_path, method: :delete, class: "text-white-500 no-button-style" do %>
-          <i class=" fa-solid fa-right-from-bracket"></i>
-          ログアウト
-          <% end %>
-        </li>
-      </ul>
-    </div>
-    <% else %>
-    <%= link_to "ログイン", new_user_session_path, data: { turbo: false }, class: "btn btn-secondary" %>
-    <% end %>
-  </header>
+  <!-- ヘッダー -->
+  <%= render "shared/header"%>
 
   <div class="flex flex-col pt-16 min-h-screen">
     <!-- フォローリスト（サイドバー） -->
     <aside class="hidden sm:block w-60 bg-gray-custom pt-2 fixed top-16 left-0 overflow-y-auto z-40 border border-gray-300 shadow-md" style="height: calc(100vh - 6rem - 4px);">
-      <!-- 100vhからフッターの高さ（4rem）を引いた値 -->
       <h2 class="text-sm font-bold text-black mb-3 px-4">
         <%= @follow_str %>
       </h2>
@@ -132,15 +68,7 @@
   </div>
 
   <!-- フッター -->
-  <footer class="bg-purple-800 text-white p-4 fixed bottom-0 w-full z-50 h-20 flex flex-col justify-center">
-    <div class="flex justify-center space-x-8">
-      <a href="https://kiyac.app/termsOfService/nZ0bVGVKdi09iMwwIwo3" class="link link-hover">利用規約</a>
-      <a href="https://kiyac.app/privacypolicy/5YIRkSkxnBIkcXwt7Q2N" class="link link-hover">プライバシーポリシー</a>
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdA7r8KGa1fNL9vEKE_K4TL2SPAqhs6OK-RzLnYJyPj52QI9g/viewform?usp=dialog" class="link link-hover">お問い合わせ</a>
-      <%= link_to "使い方画面", static_pages_help_path, class: "link link-hover" %>
-    </div>
-    <p class="text-center mt-2">&copy; 2024 FavoriteClipFinder</p>
-  </footer>
+  <%= render "shared/footer" %>
 </body>
 
 </html>

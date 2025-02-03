@@ -1,6 +1,5 @@
 <!-- 単一のクリップカード -->
 <div class="clip-container py-4 relative rounded-lg flex flex-col justify-between">
-  <!-- 動画部分 -->
   <figure class="relative" data-controller="video">
     <img data-video-target="thumbnail" src="<%= clip.thumbnail_url.gsub('%{width}x%{height}', '1280x720') %>" alt="<%= clip.title %>" class="w-full h-auto cursor-pointer" style="height: 300px;" data-action="click->video#showVideo" />
     <iframe data-video-target=" iframe" src="https://clips.twitch.tv/embed?clip=<%= clip.clip_id %>&parent=<%= ENV['TWITCH_PARENT_URL'] %>" scrolling="no" allowfullscreen="true" width="400" class="w-full h-auto" style="max-width: 100%; height: 300px; display: none;" loading="lazy">
@@ -8,35 +7,29 @@
   </figure>
 
   <div class="w-full max-w-full">
-    <!-- クリップタイトル -->
     <h2 class="text-sm font-bold mb-1 truncate text-black">
       <%= t('activerecord.attributes.clip.title', title: clip.title) %>
     </h2>
 
     <div class="flex items-start justify-between w-full">
       <div class="flex items-start space-x-4">
-        <!-- 配信者アイコンと名前 -->
         <%= link_to search_path(q: clip.broadcaster.broadcaster_login) do %>
         <img src="<%= clip.broadcaster.profile_image_url ? clip.broadcaster.profile_image_url.gsub('{width}x{height}', '100x100') : 'default-avatar-url.jpg' %>" alt="<%= clip.broadcaster.broadcaster_login %>" class="w-10 h-10 rounded-full object-cover mr-4" loading="lazy" />
         <% end %>
 
         <div>
-          <!-- 配信者名 -->
           <%= link_to t('clip.name', broadcaster: clip.broadcaster.broadcaster_login), search_path(q: clip.broadcaster.broadcaster_login),  
         class: "text-xs lg:text-sm text-black hover:underline hover:decoration-purple-500 block truncate" %>
 
-          <!-- ゲーム名 -->
           <%= link_to t('activerecord.attributes.game.name', name: clip.game.name), search_path(q: clip.game.name), 
         class: "text-xs lg:text-sm text-purple-500 hover:underline hover:decoration-purple-500 block truncate" %>
 
-          <!-- クリップ作成者名 -->
           <p class="text-sm text-gray-600">
             <%= t('clip.creator_name', creator_name: clip.creator_name) %>
           </p>
         </div>
       </div>
 
-      <!-- 保存ボタン -->
       <% if user_signed_in? %>
       <label for="playlist-modal-<%= clip.id %>" class="bg-gray text-purple-600 inline-flex items-center px-4 py-2 text-sm rounded transition-colors duration-200 cursor-pointer hover:bg-gray-200">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -48,6 +41,5 @@
       </label>
       <% end %>
     </div>
-    <!-- プレイリスト作成モーダル -->
     <%= render "shared/create_playlist_modal", clip: clip, playlists: playlists%>
   </div>

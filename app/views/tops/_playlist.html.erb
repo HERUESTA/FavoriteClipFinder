@@ -1,7 +1,6 @@
 <!-- プレイリストセクション -->
 <div>
   <div class="flex items-center justify-between mb-4 pb-2">
-    <!-- 見出し部分に下線を追加 -->
     <h2 class="text-lg font-bold text-gray-800">
       <%= link_to 'プレイリスト', search_playlists_path, class: "text-purple-800 hover:underline text-xl pl-3" %>
     </h2>
@@ -13,24 +12,17 @@
       <%= link_to playlist_path(playlist), class: "block relative" do %>
       <%= render "shared/playlist_card", playlist: playlist %>
       <% end %>
-      <!-- タイトルとハートアイコン -->
       <div class="flex items-center justify-between mt-2">
-        <!-- タイトル -->
         <p class="text-md font-bold truncate text-black">
           <%= truncate(playlist.title, length: 10, omission: '...') %>
         </p>
-
-        <!-- Xボタンといいねボタン -->
         <div class="flex items-center space-x-1 gap-2">
-          <!-- X共有ボタン -->
           <div class="shrink-0">
             <%= render partial: 'shared/x', locals: { playlist: playlist } %>
           </div>
-          <!-- いいねボタン部分 -->
           <%= render partial: 'shared/like', locals: { playlist: playlist } %>
         </div>
       </div>
-      <!-- 作成者名を追加 -->
       <p class="text-sm text-gray-600 mt-1">作成者: <%= playlist.user.user_name %></p>
     </div>
     <% end %>
