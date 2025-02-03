@@ -16,7 +16,7 @@ Rails.application.routes.draw do
 
   # 検索ルート
   get "search", to: "search#index"
-  get "search/playlist", to: "search#playlist"
+  get "search/playlists", to: "search#playlists"
 
 
   # autoCompleteルート

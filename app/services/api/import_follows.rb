@@ -5,29 +5,24 @@ module Api
     end
 
     def call
-      # ユーザーのTwitch IDを取得
       twitch_user_id = fetch_twitch_user_id
       unless twitch_user_id
         Rails.logger.error "TwitchユーザーIDの取得に失敗しました。"
         return
       end
 
-      # フォローリストを取得
       follows = fetch_follow_list(twitch_user_id)
       unless follows
         Rails.logger.error "フォローリストの取得に失敗しました。"
         return
       end
 
-      # 配信者ごとの詳細情報を補完
       follows.each do |followed_user|
-        # 必要なデータの存在を確認
         if followed_user["broadcaster_id"].blank?
           Rails.logger.error "不完全なデータをスキップしました: #{followed_user.inspect}"
           next
         end
 
-        # 配信者の詳細情報を取得
         user_details = fetch_broadcaster_details(followed_user["broadcaster_id"])
 
         if user_details.nil?
@@ -35,10 +30,8 @@ module Api
           next
         end
 
-        # 配信者テーブルに配信者が存在するか確認
         broadcaster = Broadcaster.find_or_initialize_by(broadcaster_id: followed_user["broadcaster_id"])
 
-        # 配信者が存在しない場合は登録
         if broadcaster.new_record?
           broadcaster.broadcaster_login = user_details["login"]
           broadcaster.broadcaster_name = user_details["broadcaster_name"]
@@ -52,7 +45,6 @@ module Api
           end
         end
 
-        # フォロー関係を保存
         follow_record = Follow.find_or_initialize_by(user_id: @user.id, broadcaster: broadcaster)
         if follow_record.new_record?
           follow_record.created_at = Time.current
@@ -67,7 +59,6 @@ module Api
 
     private
 
-    # TwitchユーザーIDを取得
     def fetch_twitch_user_id
       response = Faraday.get("https://api.twitch.tv/helix/users") do |req|
         req.params["id"] = [ @user.uid ]
@@ -92,17 +83,14 @@ module Api
       nil
     end
 
-    # フォローリストを取得（ページネーション対応）
     def fetch_follow_list(twitch_user_id)
       followed_channels = []
 
-      # 初期パラメータ設定
       params = {
         user_id: twitch_user_id,
         first: 100
       }
 
-      # リクエストヘッダー設定
       headers = {
         "Authorization" => "Bearer #{@user.access_token}",
         "Client-Id" => ENV["TWITCH_CLIENT_ID"],
@@ -110,7 +98,6 @@ module Api
       }
 
       loop do
-        # APIリクエストの送信
         response = twitch_connection.get("helix/channels/followed") do |req|
           req.params = params
           req.headers = headers
@@ -167,7 +154,6 @@ module Api
       nil
     end
 
-    # Faradayを定義する
     def twitch_connection
       @twitch_connection ||= Faraday.new(url: "https://api.twitch.tv") do |conn|
         conn.request :url_encoded

@@ -2,16 +2,11 @@
   <!-- プレイリストセクション -->
   <%= render partial: "playlist", locals: { playlists: @playlists } %>
 
-  <!-- GTAセクション -->
   <%= render partial: "clip", locals: { clips: @GTA_clips, search_query: @search_query, playlists: @my_playlists, search_name: "Grand Theft Auto V" } %>
-  <!-- APEXセクション -->
   <%= render partial: "clip", locals: { clips: @Apex_clips, search_query: @search_query, playlists: @my_playlists, search_name: "Apex Legends" } %>
-  <!-- VALORANTセクション -->
   <%= render partial: "clip", locals: { clips: @VALORANT_clips, search_query: @search_query, playlists: @my_playlists, search_name: "VALORANT" } %>
-  <!-- LOLセクション -->
   <%= render partial: "clip", locals: { clips: @LOL_clips, search_query: @search_query, playlists: @my_playlists, search_name: "League of Legends" } %>
 
-  <!-- ストリートファイターセクション -->
   <div>
     <div class="flex items-center justify-between">
       <%= link_to 'Street Fighter 6', search_path(q: 'Street Fighter 6'), class: "text-xl font-bold text-purple-800 hover:underline" %>

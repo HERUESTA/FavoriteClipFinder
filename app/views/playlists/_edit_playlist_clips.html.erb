@@ -1,13 +1,10 @@
 <div class="mb-6">
   <!-- プレイリストタイトルセクション -->
   <div class="p-4 rounded-lg bg-gray-50">
-    <!-- タイトルと公開・非公開の配置 -->
     <div class="flex flex-wrap justify-between items-center mb-4">
-      <!-- プレイリストタイトル -->
       <h2 class="text-2xl sm:text-3xl font-bold tracking-wide text-black break-words w-full sm:w-auto mb-2 sm:mb-0">
         <%= t('playlists.title', title: @playlist.title) %>
       </h2>
-      <!-- 公開・非公開 -->
       <div class="flex items-center space-x-2 text-sm bg-gray-100 p-2 rounded-lg">
         <% if @playlist.visibility == "private" %>
         <i class="fa-solid fa-lock text-gray-500"></i>
@@ -22,13 +19,11 @@
     </div>
     <!-- 編集アイコンと共有アイコン -->
     <div class="flex flex-wrap items-center space-x-4 mt-2 sm:mt-0">
-      <!-- 編集アイコン -->
       <button class="btn btn-circle btn-outline text-gray-700 hover:bg-purple-700 hover:text-white transition" title="編集">
         <label for="edit-modal-<%= @playlist.id %>">
           <i class="fa-regular fa-pen-to-square text-lg sm:text-xl"></i>
         </label>
       </button>
-      <!-- 共有アイコン -->
       <button class="btn btn-circle btn-outline text-gray-700 hover:bg-purple-700 hover:text-white transition" title="共有">
         <%= render partial: 'shared/x', locals: { playlist: @playlist } %>
       </button>

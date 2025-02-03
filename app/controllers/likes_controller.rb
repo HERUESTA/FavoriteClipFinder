@@ -1,9 +1,7 @@
 class LikesController < ApplicationController
+  before_action :authenticate_user!
+
   def create
-    unless current_user
-      redirect_to request.referer, alert: t("like.login")
-      return
-    end
     playlist = Playlist.preload(:likes).find(params[:playlist_id])
     like = current_user.likes.new(playlist_id: playlist.id)
 

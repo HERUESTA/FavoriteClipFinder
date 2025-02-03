@@ -14,9 +14,8 @@
       </iframe>
     </figure>
 
-    <!-- アイコン群 -->
     <div class="flex items-center justify-between px-1 pt-2 py-2 border-b border-gray-300">
-      <!-- 左側: 配信者情報 -->
+      <!-- 配信者情報 -->
       <div class="flex items-center gap-2">
         <%= link_to search_path(q: @clip&.broadcaster&.broadcaster_login), class: "flex-shrink-0" do %>
         <img src="<%= @clip&.broadcaster&.profile_image_url.gsub('{width}x{height}', '100x100') %>" alt="<%= @clip&.broadcaster&.broadcaster_login %>" class="w-10 h-10 rounded-full object-cover" loading="lazy" />
@@ -24,18 +23,11 @@
         <%= link_to @clip.broadcaster.broadcaster_login, search_path(q: @clip.broadcaster.broadcaster_login),  
         class: "text-xs lg:text-sm text-black hover:underline hover:decoration-purple-500 block truncate" %>
       </div>
-
-      <!-- 右側: アイコン -->
       <div class="flex items-center gap-4">
-        <!-- いいねアイコン -->
         <% if @playlist.visibility == "public" %>
         <%= render "shared/like", playlist: @playlist %>
         <% end %>
-
-        <!-- X共有アイコン -->
         <%= render partial: 'shared/x', locals: { playlist: @playlist } %>
-
-        <!-- 保存ボタン -->
         <% if user_signed_in? %>
         <label for="playlist-modal-<%= @clip.id %>" class="text-gray-500 hover:text-purple-500 cursor-pointer flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -56,10 +48,8 @@
           <h1 class="text-sm lg:text-base font-bold text-black truncate">
             <%= t('clip.title', title: @clip&.title) %>
           </h1>
-          <!-- ゲーム名 -->
           <%= link_to t('activerecord.attributes.game.name', name: @clip&.game&.name), search_path(q: @clip&.game&.name),
             class: "text-xs lg:text-sm text-purple-500 hover:underline hover:decoration-purple-500 block truncate" %>
-          <!-- 作成者情報 -->
           <p class="text-xs lg:text-sm text-gray-600 truncate">
             <%= t('clip.creator_name', creator_name: @clip&.creator_name) %>
           </p>
@@ -88,7 +78,5 @@
       <% end %>
     </ul>
   </div>
-
-  <!-- プレイリスト作成モーダル -->
   <%= render "shared/create_playlist_modal", clip: @clip, playlists: @playlists%>
 </div>

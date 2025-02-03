@@ -91,13 +91,13 @@ RSpec.describe "Searches", type: :system do
       end
 
       it '公開プレイリストのみが表示されること' do
-        visit search_playlist_path
+        visit search_playlists_path
         expect(page).to have_content(public_playlist.playlist.title)
         expect(page).not_to have_content(private_playlist.playlist.title)
       end
 
       it 'いいね数が多い順にプレイリストが表示されること' do
-        visit search_playlist_path
+        visit search_playlists_path
         # いいね数順にプレイリストが表示されていること
         expect(page.text).to match(
           /#{playlist_3_likes_playlist.playlist.title}[\s\S]*#{playlist_2_likes_playlist.playlist.title}[\s\S]*#{playlist_1_likes_playlist.playlist.title}/

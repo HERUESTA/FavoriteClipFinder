@@ -8,21 +8,16 @@
       <h3 class="font-bold text-lg text-black">
         <%= t('edit_playlist') %>
       </h3>
-      <!-- 「X」ボタン -->
       <label for="edit-modal-<%= playlist.id %>" class="btn btn-sm btn-circle">✕</label>
     </div>
-    <!-- モーダルボディ -->
     <div class="p-6 space-y-6" data-controller="form-validation">
       <%= form_with(model: playlist, url: playlist_path(playlist), method: :patch, data: { turbo: false }) do |f| %>
       <!-- プレイリスト画像 -->
       <%= image_tag playlist.clips.first.thumbnail_url, alt: "サムネイル", class: "rounded-lg w-full h-32 object-cover" %>
-
-      <!-- プレイリスト名 -->
       <!-- プレイリストのバリデーション設定 -->
       <div class="form-control mt-4">
         <%= render partial: "shared/playlist_validate", locals: { f: f } %>
       </div>
-      <!-- モーダルフッター内にフォームの送信ボタンを配置 -->
       <div class="flex justify-end space-x-2 mt-4">
         <%= f.submit "変更", 
             class: "btn bg-purple-600 hover:bg-purple-700 text-white border-none", 
