@@ -12,22 +12,17 @@ class Clip < ApplicationRecord
   validates :creator_name, presence: true
 
 
-  # 最新のクリップを取得するスコープ
   scope :latest, ->(limit = 6) { order(clip_created_at: :desc).limit(limit) }
-  # 特定のゲームの最新クリップを取得するスコープ
-  scope :for_game, ->(game_id, limit = 6) { where(game_id: game_id).latest(limit).preload(:game, :broadcaster) }
+  scope :for_game, ->(game_id, limit = 6) { where(game_id: game_id).latest(limit).eager_load(:game, :broadcaster) }
 
-  # Ransackで検索可能な属性を定義
   def self.ransackable_attributes(auth_object = nil)
     %w[clip_id title creator_name created_at clip_created_at duration view_count]
   end
 
-  # ransackで検索可能な関連付けを定義
   def self.ransackable_associations(auth_object = nil)
     %w[broadcaster game]
   end
 
-  # ゲームIDを定数として定義
   GAME_ID = {
     GTA: 32982,
     APEX: 511224,

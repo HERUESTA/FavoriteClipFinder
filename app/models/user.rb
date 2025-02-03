@@ -1,5 +1,4 @@
 class User < ApplicationRecord
-  # アソシエーション
   has_many :playlists, foreign_key: "user_uid", primary_key: "uid", dependent: :destroy
   has_many :favorite_clips, foreign_key: "user_uid", primary_key: "uid", dependent: :destroy
   has_many :favorited_clips, through: :favorite_clips, source: :clip
@@ -32,7 +31,6 @@ class User < ApplicationRecord
       u.password = SecureRandom.alphanumeric(10)
     end
 
-    # トークンが切れた際、トークン情報を保存
     if user.access_token.nil? || user.token_expires_at.nil? || user.token_expires_at < Time.current
       Rails.logger.debug "トークンが無効または期限切れ、再取得を行います。"
       user.access_token = auth.credentials.token
@@ -44,18 +42,15 @@ class User < ApplicationRecord
       Rails.logger.debug "有効なアクセストークンが既に存在します。"
     end
 
-    # フォローリストの取り込み
     user.import_follows
 
     user
   end
 
-  # アクセストークンの更新
   def refresh_access_token!
     Api::TokenRefresher.new(self).call
   end
 
-  # フォローリストの取り込み
   def import_follows
     Api::ImportFollows.new(self).call
   end
