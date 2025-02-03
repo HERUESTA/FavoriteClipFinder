@@ -1,7 +1,6 @@
 class PlaylistClipsController < ApplicationController
   before_action :authenticate_user!
 
-
   def create
     playlist = Playlist.new(playlist_params)
     if playlist.save
@@ -27,7 +26,9 @@ class PlaylistClipsController < ApplicationController
     end
   end
 
-  # 既存のプレイリストにクリップを追加する
+  # 既存のプレイリストにクリップを保存する
+  # updateアクションに飛べないのでこちらのメソッドで代替する
+  # (playlistIDを特定することができないため)
   def add_clip_in_playlist
     playlist = Playlist.find_by(id: params[:playlist_id])
 
@@ -45,7 +46,6 @@ class PlaylistClipsController < ApplicationController
 
   def save_clip_in_plalist(playlist)
     clip = Clip.find_by(id: params[:clip_id])
-    Rails.logger.debug "クリップ： #{clip.inspect}"
     if playlist.clips << clip
       flash[:notice] = t("playlist_clips.create.notice", title: playlist.title)
     else
@@ -53,7 +53,6 @@ class PlaylistClipsController < ApplicationController
     end
   end
 
-  # ストロングパラメーターの定義
   def playlist_params
     params.permit(:title, :visibility, :user_uid)
   end

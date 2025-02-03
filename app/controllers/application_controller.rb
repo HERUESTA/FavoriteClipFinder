@@ -1,21 +1,21 @@
 class ApplicationController < ActionController::Base
-  before_action :configure_permitted_parameters, if: :devise_controller?
-  before_action :set_followed_channels
-  before_action :set_search
+  before_action :setting_strong_parameters_devise, if: :devise_controller?
+  before_action :get_followed_channels
+  before_action :set_ransack_object
+
+  NO_FOLLOW_BROADCASTER = 0
+  PER_PAGE = 5
 
   protected
 
-  # deviseのストロングパラメータを設定する
-  def configure_permitted_parameters
+  def setting_strong_parameters_devise
     devise_parameter_sanitizer.permit(:sign_up, keys: [ :user_name ])
   end
 
-  def set_followed_channels
+  def get_followed_channels
     if user_signed_in?
-      # ログインしている場合は、そのユーザーのフォローリストを取得
       @followed_channels = current_user.follows.preload(:broadcaster).map(&:broadcaster)
       @follow_str = "フォローしているチャンネル"
-      # Twitch以外のログインユーザーの場合はランダムなフォローチャンネルを取得
       if @followed_channels.empty?
         get_random_followed_channel
       end
@@ -25,10 +25,9 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # ランダムなフォローチャンネルを取得する
   def get_random_followed_channel
     @follow_str = "あなたにおすすめのチャンネル"
-    if Broadcaster.count > 0
+    if Broadcaster.count > NO_FOLLOW_BROADCASTER
       random_user = User.where(provider: "twitch").order("RANDOM()").first
       if random_user.present?
         @followed_channels = random_user.follows.preload(:broadcaster).map(&:broadcaster)
@@ -36,9 +35,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # ransackのオブジェクトを生成する
-  def set_search
+  # Headerでsearch_form_forを使用しているため
+  # 全てのアクションでRansack::Searchオブジェクトを生成するようにする
+  def set_ransack_object
     @q = Clip.preload(:broadcaster, :game).ransack(params[:q])
-    @clips= @q.result(distinct: true).page(params[:page]).per(5)
+    @clips= @q.result(distinct: true).page(params[:page]).per(PER_PAGE)
   end
 end
