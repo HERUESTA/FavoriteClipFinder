@@ -1,5 +1,8 @@
 class TwitchClient
   BASE_URL = "https://api.twitch.tv/helix"
+  MAX = 50
+  MAX_CLIP_COUNT = 100
+  MINIMAM_CLIP_COUNT = 0
 
   def initialize
     @client_id = ENV["TWITCH_CLIENT_ID"]
@@ -13,7 +16,6 @@ class TwitchClient
     end
   end
 
-  # アクセストークンを取得
   def fetch_access_token
     Rails.cache.fetch("twitch_access_token", expires_in: 50.minutes) do
       uri = URI("https://id.twitch.tv/oauth2/token")
@@ -31,7 +33,6 @@ class TwitchClient
     nil
   end
 
-  # フォロワー数を取得するメソッド
   def fetch_follower_count(broadcaster_id)
     response = @connection.get("channels/followers") do |req|
       req.params["broadcaster_id"] = broadcaster_id
@@ -53,17 +54,16 @@ class TwitchClient
     nil
   end
 
-  # 登録者数4万人以上の日本配信者を取得
-  def fetch_japanese_broadcasters(max_results: 50)
+  def fetch_japanese_broadcasters(max_results: MAX)
     broadcasters = []
     pagination = nil
 
     loop do
       remaining = max_results - broadcasters.size
-      break if remaining <= 0
+      break if remaining <= MINIMAM_CLIP_COUNT
 
       params = {
-        first: [ remaining, 100 ].min,  # 最大100件ずつ取得
+        first: [ remaining, MAX_CLIP_COUNT ].min,  # 最大100件ずつ取得
         language: "ja"
       }
       params[:after] = pagination if pagination
@@ -91,24 +91,16 @@ class TwitchClient
     []
   end
 
-
-
-
-  # 配信者のクリップを取得するメソッド
   def fetch_clips(broadcaster_id, max_results)
-    # 配信者のクリップを検索
     clip = Clip.find_by(broadcaster_id: broadcaster_id)
 
-    # クリップがない場合、200のクリップを取得する
     if clip.nil?
       fetch_all_clips(broadcaster_id, max_results)
-    # クリップがある場合、過去1日分のクリップを取得する
     else
       fetch_day_clips(broadcaster_id)
     end
   end
 
-  # ゲーム情報を取得するメソッド
   def fetch_game(game_id)
     response = @connection.get("games") do |req|
       req.params["id"] = game_id
@@ -131,7 +123,6 @@ class TwitchClient
     nil
   end
 
-  # ユーザープロフィールを取得するメソッド
   def fetch_user_profile(user_id)
     response = @connection.get("users") do |req|
       req.params["id"] = user_id
@@ -153,16 +144,15 @@ class TwitchClient
 
   private
 
-  # 200のクリップを取得する
-  def fetch_all_clips(broadcaster_id, max_results)
+  def fetch_200_clips(broadcaster_id, max_results)
     clips = []
     pagination = nil
-    total_clips = 0
+    total_clips = MINIMAM_CLIP_COUNT
     retry_count = 0
-    while (remaining = max_results - total_clips) > 0
+    while (remaining = max_results - total_clips) > MINIMAM_CLIP_COUNT
       params = {
         broadcaster_id: broadcaster_id,
-        first: [ remaining, 100 ].min
+        first: [ remaining, MAX_CLIP_COUNT ].min
       }
       params[:after] = pagination if pagination
 
@@ -210,7 +200,6 @@ class TwitchClient
     clips
   end
 
-  # 過去1日分のクリップを取得する
   def fetch_day_clips(broadcaster_id)
     clips = []
     retry_count = 0
@@ -222,7 +211,6 @@ class TwitchClient
     }
 
     begin
-      # APIリクエストを送る
       @response = perform_request(params)
 
       if @response.success?
@@ -254,7 +242,6 @@ class TwitchClient
     clips
   end
 
-  # APIリクエストを送る
   def perform_request(params)
     @connection.get("clips", params) do |req|
       req.headers["Client-ID"] = @client_id
@@ -262,7 +249,6 @@ class TwitchClient
     end
   end
 
-  # ステータスコードが429だった場合
   def status_429
     reset_time = @response.headers["Ratelimit-Reset"].to_i
     sleep_time = reset_time - Time.now.to_i
