@@ -15,10 +15,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
-  <script src="https://kit.fontawesome.com/4025a67f93.js" crossorigin="anonymous"></script>
+  <script src="https://kit.fontawesome.com/4025a67f93.js" crossorigin="anonymous" defer></script>
   <%= display_meta_tags(default_meta_tags) %>
   <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GN9LLGTV5J"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GN9LLGTV5J" defer></script>
   <script>
     window.dataLayer = window.dataLayer || [];
 
@@ -108,12 +108,12 @@
       <ul class="space-y-0">
         <% @followed_channels.each do |follow| %>
         <li class="flex items-center pt-2 px-2 hover:bg-gray-100 rounded cursor-pointer">
-          <%= link_to search_path(q: follow.display_name), class: "flex items-center space-x-1 w-full" do %>
+          <%= link_to search_path(q: follow.broadcaster_login), class: "flex items-center space-x-1 w-full" do %>
           <!-- プロフィール画像 -->
-          <img src="<%= follow.profile_image_url %>" alt="<%= follow.display_name %>" class="w-10 h-10 rounded-full object-cover">
+          <img src="<%= follow.profile_image_url %>" alt="<%= follow.broadcaster_login %>" class="w-10 h-10 rounded-full object-cover">
           <!-- 名前 -->
           <div class="flex-1">
-            <p class="text-gray-800 text-xs truncate"><%= t('activerecord.attributes.streamer.display_name', name: follow.display_name) %></p>
+            <p class="text-gray-800 text-xs truncate"><%= t('activerecord.attributes.broadcaster.broadcaster_login', name: follow.broadcaster_login) %></p>
           </div>
           <% end %>
         </li>

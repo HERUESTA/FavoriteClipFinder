@@ -29,6 +29,15 @@ Rails.application.configure do
   # Do not fall back to assets pipeline if a precompiled asset is missed.
   config.assets.compile = false
 
+  # フィンガープリント付きファイル名を利用する
+  config.assets.digest = true
+
+  # 静的アセットのキャッシュヘッダーを設定する
+  config.public_file_server.headers = {
+    "Cache-Control" => "public, max-age=#{1.year.to_i}, immutable",
+    "Expires" => 1.year.from_now.httpdate
+  }
+
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
 

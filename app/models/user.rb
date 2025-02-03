@@ -6,7 +6,7 @@ class User < ApplicationRecord
   has_many :likes, foreign_key: "user_uid", primary_key: "uid", dependent: :destroy
   has_many :liked_playlists, through: :likes, source: :playlist
   has_many :follows, dependent: :destroy
-  has_many :streamers, through: :follows
+  has_many :broadcasters, through: :follows
 
   devise :database_authenticatable, :registerable, :recoverable, :rememberable,
          :omniauthable, omniauth_providers: [ :twitch ]

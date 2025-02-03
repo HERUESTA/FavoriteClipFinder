@@ -2,26 +2,26 @@ class FetchTwitchClipsJob < ApplicationJob
   queue_as :default
 
   def perform
-    Streamer.order(:id).find_each(batch_size: 500) do |streamer|
-      get_clips(streamer)
+    Broadcaster.order(:id).find_each(batch_size: 500) do |broadcaster|
+      get_clips(broadcaster)
     end
   end
 
   private
 
-  def get_clips(streamer)
+  def get_clips(broadcaster)
     @client = TwitchClient.new
     # クリップを取得
-    clips = @client.fetch_clips(streamer.streamer_id, 200)
+    clips = @client.fetch_clips(broadcaster.broadcaster_id, 200)
 
     # クリップを保存
-    save_clips(clips, streamer)
+    save_clips(clips, broadcaster)
   end
 
-  def save_clips(clips, streamer)
+  def save_clips(clips, broadcaster)
     Clip.transaction do
       clips.each do |clip_data|
-        save_clip(clip_data, streamer)
+        save_clip(clip_data, broadcaster)
       end
     end
   rescue StandardError => e
@@ -29,7 +29,7 @@ class FetchTwitchClipsJob < ApplicationJob
     Rails.logger.error e.backtrace.join("\n")
   end
 
-  def save_clip(clip_data, streamer)
+  def save_clip(clip_data, broadcaster)
     game = Game.find_or_create_by(game_id: clip_data["game_id"]) do |g|
       game_data = @client.fetch_game(clip_data["game_id"])
       if game_data
@@ -44,7 +44,7 @@ class FetchTwitchClipsJob < ApplicationJob
 
     clip = Clip.find_or_initialize_by(clip_id: clip_data["id"])
     clip.assign_attributes(
-      streamer_id: streamer.streamer_id,
+      broadcaster_id: broadcaster.broadcaster_id,
       game_id: game.game_id,
       title: clip_data["title"],
       creator_name: clip_data["creator_name"],

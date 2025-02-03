@@ -28,7 +28,7 @@ module Api
         end
 
         # 配信者の詳細情報を取得
-        user_details = fetch_streamer_details(followed_user["broadcaster_id"])
+        user_details = fetch_broadcaster_details(followed_user["broadcaster_id"])
 
         if user_details.nil?
           Rails.logger.error "配信者情報の取得に失敗しました: #{followed_user['broadcaster_id']}"
@@ -36,29 +36,29 @@ module Api
         end
 
         # 配信者テーブルに配信者が存在するか確認
-        streamer = Streamer.find_or_initialize_by(streamer_id: followed_user["broadcaster_id"])
+        broadcaster = Broadcaster.find_or_initialize_by(broadcaster_id: followed_user["broadcaster_id"])
 
         # 配信者が存在しない場合は登録
-        if streamer.new_record?
-          streamer.streamer_name = user_details["login"]
-          streamer.display_name = user_details["display_name"]
-          streamer.profile_image_url = user_details["profile_image_url"]
+        if broadcaster.new_record?
+          broadcaster.broadcaster_login = user_details["login"]
+          broadcaster.broadcaster_name = user_details["broadcaster_name"]
+          broadcaster.profile_image_url = user_details["profile_image_url"]
 
-          if streamer.save
-            Rails.logger.debug "新しい配信者を登録しました: #{streamer.display_name} (ID: #{streamer.streamer_id})"
+          if broadcaster.save
+            Rails.logger.debug "新しい配信者を登録しました: #{broadcaster.broadcaster_login} (ID: #{broadcaster.broadcaster_id})"
           else
-            Rails.logger.error "配信者の登録に失敗しました: #{followed_user['broadcaster_id']} - エラー: #{streamer.errors.full_messages.join(', ')}"
+            Rails.logger.error "配信者の登録に失敗しました: #{followed_user['broadcaster_id']} - エラー: #{broadcaster.errors.full_messages.join(', ')}"
             next
           end
         end
 
         # フォロー関係を保存
-        follow_record = Follow.find_or_initialize_by(user_id: @user.id, streamer: streamer)
+        follow_record = Follow.find_or_initialize_by(user_id: @user.id, broadcaster: broadcaster)
         if follow_record.new_record?
           follow_record.created_at = Time.current
           follow_record.updated_at = Time.current
           follow_record.save!
-          Rails.logger.debug "ユーザー#{@user.name}が配信者#{streamer.streamer_name}をフォローしました。"
+          Rails.logger.debug "ユーザー#{@user.name}が配信者#{broadcaster.broadcaster_name}をフォローしました。"
         end
       end
 
@@ -148,7 +148,7 @@ module Api
       nil
     end
 
-    def fetch_streamer_details(broadcaster_id)
+    def fetch_broadcaster_details(broadcaster_id)
       response = twitch_connection.get("helix/users") do |req|
         req.params["id"] = broadcaster_id
         req.headers["Authorization"] = "Bearer #{@user.access_token}"

@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :clip do
-    association :streamer
+    association :broadcaster
     association :game
     sequence(:clip_id) { |n| "clip_id_#{n}" }
     title { "title" }

@@ -1,8 +1,3 @@
-require "faraday"
-require "json"
-require "net/http"
-require "uri"
-
 class TwitchClient
   BASE_URL = "https://api.twitch.tv/helix"
 
@@ -18,60 +13,22 @@ class TwitchClient
     end
   end
 
-  # アクセストークンを取得またはキャッシュから読み込む
+  # アクセストークンを取得
   def fetch_access_token
     Rails.cache.fetch("twitch_access_token", expires_in: 50.minutes) do
       uri = URI("https://id.twitch.tv/oauth2/token")
       params = {
-        client_id: @client_id,
+        client_id:     @client_id,
         client_secret: @client_secret,
-        grant_type: "client_credentials"
+        grant_type:    "client_credentials"
       }
       response = Net::HTTP.post_form(uri, params)
       data = JSON.parse(response.body)
       data["access_token"]
-    rescue StandardError => e
-      Rails.logger.error "Failed to fetch access token: #{e.message}"
-      nil
     end
-  end
-
-  # 登録者数4万人以上の日本配信者を取得
-  def fetch_japanese_streamers(max_results: 50)
-    streamers = []
-    pagination = nil
-
-    loop do
-      remaining = max_results - streamers.size
-      break if remaining <= 0
-
-      params = {
-        first: [ remaining, 100 ].min,  # 最大100件ずつ取得
-        language: "ja"
-      }
-      params[:after] = pagination if pagination
-
-      response = @connection.get("streams", params) do |req|
-        req.headers["Client-ID"] = @client_id
-        req.headers["Authorization"] = "Bearer #{@access_token}"
-      end
-
-      if response.success?
-        data = response.body["data"]
-        streamers += data
-        pagination = response.body["pagination"]["cursor"]
-        break if pagination.nil? || data.empty?
-      else
-        Rails.logger.error "Twitch API Error: #{response.status} - #{response.body['message']}"
-        break
-      end
-    end
-
-    streamers.first(max_results)
   rescue StandardError => e
-    Rails.logger.error "TwitchClient Error: #{e.message}"
-    Rails.logger.error e.backtrace.join("\n")
-    []
+    Rails.logger.error "Failed to fetch access token: #{e.message}"
+    nil
   end
 
   # フォロワー数を取得するメソッド
@@ -96,11 +53,51 @@ class TwitchClient
     nil
   end
 
+  # 登録者数4万人以上の日本配信者を取得
+  def fetch_japanese_broadcasters(max_results: 50)
+    broadcasters = []
+    pagination = nil
+
+    loop do
+      remaining = max_results - broadcasters.size
+      break if remaining <= 0
+
+      params = {
+        first: [ remaining, 100 ].min,  # 最大100件ずつ取得
+        language: "ja"
+      }
+      params[:after] = pagination if pagination
+
+      response = @connection.get("streams", params) do |req|
+        req.headers["Client-ID"] = @client_id
+        req.headers["Authorization"] = "Bearer #{@access_token}"
+      end
+
+      if response.success?
+        data = response.body["data"]
+        broadcasters += data
+        pagination = response.body["pagination"]["cursor"]
+        break if pagination.nil? || data.empty?
+      else
+        Rails.logger.error "Twitch API Error: #{response.status} - #{response.body['message']}"
+        break
+      end
+    end
+
+    broadcasters.first(max_results)
+  rescue StandardError => e
+    Rails.logger.error "TwitchClient Error: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    []
+  end
+
+
+
 
   # 配信者のクリップを取得するメソッド
   def fetch_clips(broadcaster_id, max_results)
     # 配信者のクリップを検索
-    clip = Clip.find_by(streamer_id: broadcaster_id)
+    clip = Clip.find_by(broadcaster_id: broadcaster_id)
 
     # クリップがない場合、200のクリップを取得する
     if clip.nil?

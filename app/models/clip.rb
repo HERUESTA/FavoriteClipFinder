@@ -1,5 +1,5 @@
 class Clip < ApplicationRecord
-  belongs_to :streamer, foreign_key: :streamer_id, primary_key: :streamer_id
+  belongs_to :broadcaster, foreign_key: :broadcaster_id, primary_key: :broadcaster_id
   belongs_to :game, foreign_key: :game_id, primary_key: :game_id
   has_many :playlist_clips, dependent: :destroy
   has_many :playlists, through: :playlist_clips
@@ -15,7 +15,7 @@ class Clip < ApplicationRecord
   # 最新のクリップを取得するスコープ
   scope :latest, ->(limit = 6) { order(clip_created_at: :desc).limit(limit) }
   # 特定のゲームの最新クリップを取得するスコープ
-  scope :for_game, ->(game_id, limit = 6) { where(game_id: game_id).latest(limit).preload(:game, :streamer) }
+  scope :for_game, ->(game_id, limit = 6) { where(game_id: game_id).latest(limit).preload(:game, :broadcaster) }
 
   # Ransackで検索可能な属性を定義
   def self.ransackable_attributes(auth_object = nil)
@@ -24,7 +24,7 @@ class Clip < ApplicationRecord
 
   # ransackで検索可能な関連付けを定義
   def self.ransackable_associations(auth_object = nil)
-    %w[streamer game]
+    %w[broadcaster game]
   end
 
   # ゲームIDを定数として定義
