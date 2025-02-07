@@ -1,4 +1,5 @@
 class TopsController < ApplicationController
+  skip_before_action :authenticate_user!
   PER_PAGE = 20
   def index
     if current_user.present?

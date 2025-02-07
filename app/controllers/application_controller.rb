@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   before_action :setting_strong_parameters_devise, if: :devise_controller?
   before_action :get_followed_channels
   before_action :set_ransack_object
+  before_action :authenticate_user!
 
   NO_FOLLOW_BROADCASTER = 0
   PER_PAGE = 5

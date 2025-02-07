@@ -1,4 +1,5 @@
 class SearchController < ApplicationController
+  skip_before_action :authenticate_user!, only: [ :index, :playlists ]
   PER_PAGE = 30
   def index
     @q = Clip.preload(:broadcaster, :game).ransack(

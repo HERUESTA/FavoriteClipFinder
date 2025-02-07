@@ -1,6 +1,5 @@
-# app/controllers/playlists_controller.rb
 class PlaylistsController < ApplicationController
-  before_action :authenticate_user!, only: [ :edit, :index, :update, :destroy ]
+  skip_before_action :authenticate_user!, only: [ :show ]
   before_action :search_current_user_playlist, only: [ :update, :destroy ]
   before_action :ensure_correct_user, only: [ :edit ]
 

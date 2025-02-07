@@ -1,5 +1,5 @@
 class ClipsController < ApplicationController
-  before_action :set_search, except: :search
+  before_action :set_ransack_object, except: :search
 
   def search
     broadcaster_results = Broadcaster.where("broadcaster_name ILIKE ?", "%#{params[:q]}%")
