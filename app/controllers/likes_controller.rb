@@ -31,4 +31,15 @@ class LikesController < ApplicationController
       end
     end
   end
+
+  private
+
+  # 未ログイン状態でいいねをした場合ログイン画面に飛ばしたくないため、
+  # deviseのメソッドをオーバーライドして独自定義する
+  # root_pathか現在いるpathに飛ばすようにする
+  def authenticate_user!
+    unless current_user
+      redirect_to request.referer || root_path, alert: "いいねするにはログインしてください"
+    end
+  end
 end

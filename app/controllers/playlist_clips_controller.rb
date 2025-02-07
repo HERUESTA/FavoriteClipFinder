@@ -1,6 +1,4 @@
 class PlaylistClipsController < ApplicationController
-  before_action :authenticate_user!
-
   def create
     playlist = Playlist.new(playlist_params)
     if playlist.save
