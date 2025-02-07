@@ -33,7 +33,29 @@ https://favoriteclipfinder.com
 名前・メールアドレス・パスワード・確認用パスワードを入力してユーザー登録を行うことができます。
 Twitchアカウントを用いて、Twitchログインを行うことも可能です。
 
-# 配信者検索機能
+# 🎮配信者・ゲーム名検索機能
+[![Image from Gyazo](https://i.gyazo.com/82cfbd3d86201390231e5151693b3709.gif)](https://gyazo.com/82cfbd3d86201390231e5151693b3709)
+配信者リストやゲーム名から直感的にクリップ検索を行うことができます。
+Twitchと同じ操作感のため、違和感なく使用することができます。
+
+# 🎵プレイリスト作成機能
+[![Image from Gyazo](https://i.gyazo.com/295eed5a4a525c4570a4da3d91e8e65c.gif)](https://gyazo.com/295eed5a4a525c4570a4da3d91e8e65c)
+気に入ったクリップがあれば、保存ボタンを押下してプレイリストを作成することが可能です。
+「公開」「非公開」が選べるので好きな公開範囲で作成することができます。「公開」のプレイリストはTOPページで他のユーザーからも閲覧が可能になります。
+
+# 技術構成について
+## 使用技術
+| カテゴリ | 技術内容 |
+| インフラ | Fly.io |
+| サーバーサイド | Ruby on Rails7.2 | 
+| フロントエンド | Ruby on Rails ・ JavaScript |
+| CSSフレームワーク | Tailwindcss + DaisyUI |
+| WebAPI | TwitchAPI |
+| データベースサーバー | PostgreSQL17 |
+| バージョン管理ツール | GitHub |
+
+## ER図
+<iframe width="560" height="315" src='https://dbdiagram.io/e/66efc1bca0828f8aa6a1c1b1/67a61d16263d6cf9a06705fa'> </iframe>
 
 
 
