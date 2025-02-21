@@ -56,7 +56,8 @@ Twitchと同じ操作感のため、違和感なく使用することができ�
 | バージョン管理ツール | GitHub |
 
 ## ER図
-![image](https://github.com/user-attachments/assets/6d08e6bd-60d2-4919-97bf-b433c81cc42c)
+<img width="1003" alt="image" src="https://github.com/user-attachments/assets/d1f11a57-efdb-464d-876f-3cb3b24d404b" />
+
 
 
 
