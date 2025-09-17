@@ -34,7 +34,7 @@ module Api
 
         if broadcaster.new_record?
           broadcaster.broadcaster_login = user_details["login"]
-          broadcaster.broadcaster_name = user_details["broadcaster_name"]
+          broadcaster.broadcaster_name = user_details["display_name"] || user_details["broadcaster_name"]
           broadcaster.profile_image_url = user_details["profile_image_url"]
 
           if broadcaster.save
@@ -50,7 +50,7 @@ module Api
           follow_record.created_at = Time.current
           follow_record.updated_at = Time.current
           follow_record.save!
-          Rails.logger.debug "ユーザー#{@user.name}が配信者#{broadcaster.broadcaster_name}をフォローしました。"
+          Rails.logger.debug "ユーザー#{@user.user_name}が配信者#{broadcaster.broadcaster_name}をフォローしました。"
         end
       end
 
