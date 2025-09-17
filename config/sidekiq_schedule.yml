@@ -1,6 +1,10 @@
 scheduler:
   schedule:
     fetch_twitch_clips_job:
-      cron: "0 0 * * *"
+      cron: "0 */3 * * *"
       class: FetchTwitchClipsJob
+      queue: default
+    fetch_japanese_broadcasters_job:
+      cron: "30 */3 * * *"
+      class: FetchJapaneseBroadcastersJob
       queue: default

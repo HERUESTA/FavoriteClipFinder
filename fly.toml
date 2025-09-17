@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for favoriteclipfinder on 2024-09-28T20:54:03+09:00
+# fly.toml app configuration file generated for favoriteclipfinder on 2025-09-17T12:39:06+09:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -10,19 +10,13 @@ console_command = '/rails/bin/rails console'
 [build]
   dockerfile = './Dockerfile'
 
-[processes]
-  app = "bin/rails server"
-  worker = "bundle exec sidekiq" 
-
-[processes_options]
-  [processes_options.app]
-    auto_stop_machines = false
-  [processes_options.worker]
-    auto_stop_machines = false
-
 [deploy]
-  strategy = "immediate"
+  strategy = 'immediate'
   release_command = "bin/rails db:migrate"
+
+[processes]
+  app = 'bin/rails server'
+  worker = 'bundle exec sidekiq'
 
 [http_service]
   internal_port = 3000
@@ -31,16 +25,9 @@ console_command = '/rails/bin/rails console'
   auto_start_machines = true
   min_machines_running = 0
   processes = ['app']
-  grace_period = "20s"
-  interval = "10s"
-  timeout = "2s"
-  method = "get"
-  path = "/health_check"
-  protocol = "http"
-  restart_limit = 0
 
 [[vm]]
   size = 'shared-cpu-1x'
-  memory = 512
+  memory = '512mb'
   cpu_kind = 'shared'
   cpus = 1
