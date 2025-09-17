@@ -12,7 +12,7 @@ console_command = '/rails/bin/rails console'
 
 [deploy]
   strategy = 'immediate'
-  release_command = "DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bin/rails db:schema:load"
+  release_command = "bin/rails db:migrate"
 
 [processes]
   app = 'bin/rails server'
