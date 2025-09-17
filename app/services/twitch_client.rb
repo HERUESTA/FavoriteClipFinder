@@ -95,7 +95,7 @@ class TwitchClient
     clip = Clip.find_by(broadcaster_id: broadcaster_id)
 
     if clip.nil?
-      fetch_all_clips(broadcaster_id, max_results)
+      fetch_200_clips(broadcaster_id, max_results)
     else
       fetch_day_clips(broadcaster_id)
     end
