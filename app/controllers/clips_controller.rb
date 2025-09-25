@@ -1,4 +1,5 @@
 class ClipsController < ApplicationController
+  skip_before_action :authenticate_user!, only: [:search]
   before_action :set_ransack_object, except: :search
 
   def search
