@@ -1,42 +1,34 @@
-
-name: dependabot-review
+# Dependabot が作成した PR に対してレビュー依頼コメントを投稿するワークフロー
+name: Dependabot Review Comment
 
 on:
   pull_request:
-    types: [opened]
-    branches: [main]
-  workflow_dispatch:
-    inputs:
-      pr_number:
-        description: 'PR番号'
-        required: true
+    types: [opened, ready_for_review, reopened]
 
 jobs:
-  claude-code-review:
-    # Only run for bot PRs (dependabot, renovate)
-    if: |
-      github.event.pull_request.user.login == 'dependabot[bot]' ||
-      github.event_name == 'workflow_dispatch'
+  post-review-comment:
+    if: github.actor == 'dependabot[bot]' # Dependabotのみ対象
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     permissions:
       contents: read
       pull-requests: write
-      issues: write
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      # 1. GitHub App トークンの生成
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 # v2.2.0
         with:
-          persist-credentials: false
-      - name: Request Claude Code Review
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
-        with:
-          script: |
-            const pull_request_number = context.payload.pull_request?.number
-              || parseInt(context.payload.inputs?.pr_number);
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: pull_request_number,
-              body: '@claude レビューして'
-            });
+          # 前のステップで作成した GitHub App の App ID
+          app-id: ${{ vars.GH_APP_ID }}
+          # 前のステップで作成した GitHub App の Private Key
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      # 2. コメントの投稿
+      - name: Post review request comment
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} \
+            --body "@claude /review-dependabot-pr"
