@@ -19,7 +19,7 @@ jobs:
         uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 # v2.2.0
         with:
           # 前のステップで作成した GitHub App の App ID
-          app-id: ${{ vars.GH_APP_ID }}
+          app-id: ${{ vars.APP_ID }}
           # 前のステップで作成した GitHub App の Private Key
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
 
