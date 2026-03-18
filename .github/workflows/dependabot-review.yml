@@ -7,7 +7,6 @@ on:
 
 jobs:
   post-review-comment:
-    if: github.actor == 'dependabot[bot]' # Dependabotのみ対象
     runs-on: ubuntu-latest
     permissions:
       contents: read
