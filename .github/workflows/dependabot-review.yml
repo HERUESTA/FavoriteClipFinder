@@ -33,7 +33,7 @@ jobs:
         with:
           script: |
             const pull_request_number = context.payload.pull_request?.number
-              || parseInt(context.inputs.pr_number);
+              || parseInt(context.payload.inputs?.pr_number);
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
