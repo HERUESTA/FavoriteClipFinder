@@ -4,7 +4,7 @@ name: dependabot-review
 on:
   pull_request:
     types: [opened]
-    branches: [develop]
+    branches: [main]
   workflow_dispatch:
     inputs:
       pr_number:
