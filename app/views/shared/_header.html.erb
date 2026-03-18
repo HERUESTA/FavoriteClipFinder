@@ -1,0 +1,62 @@
+  <header class="bg-white px-2 py-2 flex justify-between items-center fixed top-0 left-0 right-0 z-50">
+    <div class="flex items-center space-x-4">
+      <div>
+        <%= link_to root_path do %>
+        <%= image_tag "favicon.png", alt: "ロゴ", class: "h-12 w-12" %>
+        <% end %>
+      </div>
+    </div>
+
+    <%= form_with url: search_path, method: :get, local: true do %>
+    <div class="flex items-center border border-gray-300 rounded-full shadow-sm bg-white px-4 py-2">
+      <!-- 検索フィールド -->
+      <div data-controller="autocomplete" data-autocomplete-url-value="/clips/search" role="combobox" class="flex-1 relative">
+        <%= text_field_tag :q, params[:q], 
+          data: { autocomplete_target: 'input' },
+          class: "w-full bg-transparent py-1 px-2 text-gray-700 placeholder-gray-400",
+          placeholder: "検索",
+          required: "required" %>
+        <ul class="list-group bg-white absolute w-full md:text-sm max-w-max border border-gray-300 rounded-md shadow-lg z-10 mt-1" data-autocomplete-target="results"></ul>
+      </div>
+      <!-- 検索アイコン -->
+      <div class="ml-2">
+        <button type="submit">
+          <i class="fa-brands fa-searchengin"></i>
+        </button>
+      </div>
+    </div>
+    <% end %>
+
+    <!-- ログイン or プロフィール -->
+    <% if user_signed_in? %>
+    <div class="dropdown dropdown-end">
+      <div tabindex="0" role="button" class="avatar m-1">
+        <div class="w-12 rounded-full">
+          <%= image_tag(
+      current_user.profile_image_url.presence || asset_path("default_profile.png"),
+      alt: "プロフィール画像",
+      class: "profile-image",
+      width: "50",
+      height: "50"
+    ) %>
+        </div>
+      </div>
+      <ul tabindex="0" class="dropdown-content menu bg-white rounded-box z-[1] w-52 p-2 shadow">
+        <li class="flex text-gray-700 hover:bg-purple-700 px-2 py-1">
+          <%= link_to playlists_path, class: "flex items-center" do %>
+          <i class="fa-regular fa-user mr-2"></i>
+          プロフィール
+          <% end %>
+        </li>
+        <li class="flex text-gray-700 hover:bg-purple-700 px-2 py-1">
+          <%= button_to destroy_user_session_path, method: :delete, class: "text-white-500 no-button-style" do %>
+          <i class=" fa-solid fa-right-from-bracket"></i>
+          ログアウト
+          <% end %>
+        </li>
+      </ul>
+    </div>
+    <% else %>
+    <%= link_to "ログイン", new_user_session_path, data: { turbo: false }, class: "btn btn-secondary" %>
+    <% end %>
+  </header>

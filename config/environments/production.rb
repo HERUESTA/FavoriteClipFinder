@@ -29,6 +29,15 @@ Rails.application.configure do
   # Do not fall back to assets pipeline if a precompiled asset is missed.
   config.assets.compile = false
 
+  # フィンガープリント付きファイル名を利用する
+  config.assets.digest = true
+
+  # 静的アセットのキャッシュヘッダーを設定する
+  config.public_file_server.headers = {
+    "Cache-Control" => "public, max-age=#{1.year.to_i}, immutable",
+    "Expires" => 1.year.from_now.httpdate
+  }
+
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
 
@@ -92,11 +101,16 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  # Enable DNS rebinding protection and other `Host` header attacks.
-  # config.hosts = [
-  #   "example.com",     # Allow requests from example.com
-  #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
-  # ]
-  # Skip DNS rebinding protection for the default health check endpoint.
-  # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+  # メール設定
+  config.action_mailer.default_url_options = { host: "https://favoriteclipfinder.com" }
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address:              "smtp.gmail.com",
+    port:                 587,
+    domain:               "favoriteclipfinder.com",
+    user_name:            ENV["MAILER_SENDER"],
+    password:             ENV["MAILER_PASSWORD"],
+    authentication:       "plain",
+    enable_starttls_auto: true
+  }
 end

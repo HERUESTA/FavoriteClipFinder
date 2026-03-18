@@ -40,6 +40,9 @@ gem "ransack"
 # カウンタキャッシュ
 gem "counter_culture", "~> 3.2"
 
+# decorator
+gem "draper"
+
 # Twitch関連
 gem "devise", "~> 4.9"
 gem "omniauth", "~> 2.1"
@@ -48,6 +51,12 @@ gem "omniauth-twitch", "~> 1.2"
 gem "omniauth-rails_csrf_protection"
 gem "rack-cors", require: "rack/cors"
 gem "faraday", "~> 2.0"
+
+# 動的OGP用gem
+gem "mini_magick"
+
+# SEO対策
+gem "meta-tags"
 
 # ページネーション
 gem "kaminari"
@@ -71,6 +80,9 @@ group :development, :test do
 
   # Lint用
   gem "solargraph"
+
+  # テストカバレッジ用
+  gem "simplecov"
 end
 
 group :development do
@@ -84,4 +96,5 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+  gem "webdrivers"
 end

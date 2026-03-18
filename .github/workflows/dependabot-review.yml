@@ -1,0 +1,33 @@
+# Dependabot が作成した PR に対してレビュー依頼コメントを投稿するワークフロー
+name: Dependabot Review Comment
+
+on:
+  pull_request:
+    types: [opened, ready_for_review, reopened]
+
+jobs:
+  post-review-comment:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      # 1. GitHub App トークンの生成
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 # v2.2.0
+        with:
+          # 前のステップで作成した GitHub App の App ID
+          app-id: ${{ vars.APP_ID }}
+          # 前のステップで作成した GitHub App の Private Key
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      # 2. コメントの投稿
+      - name: Post review request comment
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} \
+            --body "@claude /review-dependabot-pr"

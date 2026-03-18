@@ -33,3 +33,6 @@ application.register("tabs", TabsController)
 
 import VideoController from "./video_controller"
 application.register("video", VideoController)
+
+import { Autocomplete } from 'stimulus-autocomplete'
+application.register('autocomplete', Autocomplete)

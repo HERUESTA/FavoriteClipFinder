@@ -1,10 +1,8 @@
-require "faraday"
-require "json"
-require "net/http"
-require "uri"
-
 class TwitchClient
   BASE_URL = "https://api.twitch.tv/helix"
+  MAX = 50
+  MAX_CLIP_COUNT = 100
+  MINIMAM_CLIP_COUNT = 0
 
   def initialize
     @client_id = ENV["TWITCH_CLIENT_ID"]
@@ -18,63 +16,23 @@ class TwitchClient
     end
   end
 
-  # アクセストークンを取得またはキャッシュから読み込む
   def fetch_access_token
     Rails.cache.fetch("twitch_access_token", expires_in: 50.minutes) do
       uri = URI("https://id.twitch.tv/oauth2/token")
       params = {
-        client_id: @client_id,
+        client_id:     @client_id,
         client_secret: @client_secret,
-        grant_type: "client_credentials"
+        grant_type:    "client_credentials"
       }
       response = Net::HTTP.post_form(uri, params)
       data = JSON.parse(response.body)
       data["access_token"]
-    rescue StandardError => e
-      Rails.logger.error "Failed to fetch access token: #{e.message}"
-      nil
     end
-  end
-
-  # 登録者数4万人以上の日本配信者を取得
-  def fetch_japanese_streamers(max_results: 50)
-    streamers = []
-    pagination = nil
-
-    loop do
-      remaining = max_results - streamers.size
-      break if remaining <= 0
-
-      params = {
-        first: [ remaining, 100 ].min,  # 最大100件ずつ取得
-        language: "ja"
-      }
-      params[:after] = pagination if pagination
-
-      response = @connection.get("streams", params) do |req|
-        req.headers["Client-ID"] = @client_id
-        req.headers["Authorization"] = "Bearer #{@access_token}"
-      end
-
-      if response.success?
-        data = response.body["data"]
-        streamers += data
-        pagination = response.body["pagination"]["cursor"]
-        break if pagination.nil? || data.empty?
-      else
-        Rails.logger.error "Twitch API Error: #{response.status} - #{response.body['message']}"
-        break
-      end
-    end
-
-    streamers.first(max_results)
   rescue StandardError => e
-    Rails.logger.error "TwitchClient Error: #{e.message}"
-    Rails.logger.error e.backtrace.join("\n")
-    []
+    Rails.logger.error "Failed to fetch access token: #{e.message}"
+    nil
   end
 
-  # フォロワー数を取得するメソッド
   def fetch_follower_count(broadcaster_id)
     response = @connection.get("channels/followers") do |req|
       req.params["broadcaster_id"] = broadcaster_id
@@ -96,22 +54,53 @@ class TwitchClient
     nil
   end
 
+  def fetch_japanese_broadcasters(max_results: MAX)
+    broadcasters = []
+    pagination = nil
 
-  # 配信者のクリップを取得するメソッド
+    loop do
+      remaining = max_results - broadcasters.size
+      break if remaining <= MINIMAM_CLIP_COUNT
+
+      params = {
+        first: [ remaining, MAX_CLIP_COUNT ].min,  # 最大100件ずつ取得
+        language: "ja"
+      }
+      params[:after] = pagination if pagination
+
+      response = @connection.get("streams", params) do |req|
+        req.headers["Client-ID"] = @client_id
+        req.headers["Authorization"] = "Bearer #{@access_token}"
+      end
+
+      if response.success?
+        data = response.body["data"]
+        broadcasters += data
+        pagination = response.body["pagination"]["cursor"]
+        break if pagination.nil? || data.empty?
+      else
+        Rails.logger.error "Twitch API Error: #{response.status} - #{response.body['message']}"
+        break
+      end
+    end
+
+    broadcasters.first(max_results)
+  rescue StandardError => e
+    Rails.logger.error "TwitchClient Error: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    []
+  end
+
   def fetch_clips(broadcaster_id, max_results)
-    # 配信者のクリップを検索
-    clip = Clip.find_by(streamer_id: broadcaster_id)
+    clip = Clip.find_by(broadcaster_id: broadcaster_id)
 
-    # クリップがない場合、200のクリップを取得する
     if clip.nil?
-      fetch_all_clips(broadcaster_id, max_results)
-    # クリップがある場合、過去1日分のクリップを取得する
+      fetch_200_clips(broadcaster_id, max_results)
     else
       fetch_day_clips(broadcaster_id)
     end
   end
 
-  # ゲーム情報を取得するメソッド
   def fetch_game(game_id)
     response = @connection.get("games") do |req|
       req.params["id"] = game_id
@@ -134,7 +123,6 @@ class TwitchClient
     nil
   end
 
-  # ユーザープロフィールを取得するメソッド
   def fetch_user_profile(user_id)
     response = @connection.get("users") do |req|
       req.params["id"] = user_id
@@ -156,16 +144,15 @@ class TwitchClient
 
   private
 
-  # 200のクリップを取得する
-  def fetch_all_clips(broadcaster_id, max_results)
+  def fetch_200_clips(broadcaster_id, max_results)
     clips = []
     pagination = nil
-    total_clips = 0
+    total_clips = MINIMAM_CLIP_COUNT
     retry_count = 0
-    while (remaining = max_results - total_clips) > 0
+    while (remaining = max_results - total_clips) > MINIMAM_CLIP_COUNT
       params = {
         broadcaster_id: broadcaster_id,
-        first: [ remaining, 100 ].min
+        first: [ remaining, MAX_CLIP_COUNT ].min
       }
       params[:after] = pagination if pagination
 
@@ -213,30 +200,26 @@ class TwitchClient
     clips
   end
 
-  # 過去1日分のクリップを取得する
   def fetch_day_clips(broadcaster_id)
     clips = []
-    currentTime = Time.now
-    yesterday = currentTime.yesterday
     retry_count = 0
     params = {
       broadcaster_id: broadcaster_id,
       first: 100,
-      started_at: yesterday,
-      ended_at: currentTime
+      started_at: 1.day.ago.utc.iso8601,
+      ended_at: Time.now.utc.iso8601
     }
 
     begin
-      # APIリクエストを送る
-      response = perform_request(params)
+      @response = perform_request(params)
 
-      if response.success?
-        data = response.body["data"]
+      if @response.success?
+        data = @response.body["data"]
         Rails.logger.debug "取得したクリップ数: #{data.size}"
 
         clips += data
       else
-        if response.status == 429 # レート制限
+        if @response.status == 429 # レート制限
           status_429
         else
           return
@@ -259,7 +242,6 @@ class TwitchClient
     clips
   end
 
-  # APIリクエストを送る
   def perform_request(params)
     @connection.get("clips", params) do |req|
       req.headers["Client-ID"] = @client_id
@@ -267,9 +249,8 @@ class TwitchClient
     end
   end
 
-  # ステータスコードが429だった場合
   def status_429
-    reset_time = response.headers["Ratelimit-Reset"].to_i
+    reset_time = @response.headers["Ratelimit-Reset"].to_i
     sleep_time = reset_time - Time.now.to_i
     sleep(sleep_time) if sleep_time > 0
   end

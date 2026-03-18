@@ -1,0 +1,30 @@
+<!-- プレイリストセクション -->
+<div>
+  <div class="flex items-center justify-between mb-4 pb-2">
+    <h2 class="text-lg font-bold text-gray-800">
+      <%= link_to 'プレイリスト', search_playlists_path, class: "text-purple-800 hover:underline text-xl pl-3" %>
+    </h2>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-6">
+    <% @playlists.each do |playlist| %>
+    <div class="rounded-lg p-2 relative group">
+      <%= link_to playlist_path(playlist), class: "block relative" do %>
+      <%= render "shared/playlist_card", playlist: playlist %>
+      <% end %>
+      <div class="flex items-center justify-between mt-2">
+        <p class="text-md font-bold truncate text-black">
+          <%= truncate(playlist.title, length: 10, omission: '...') %>
+        </p>
+        <div class="flex items-center space-x-1 gap-2">
+          <div class="shrink-0">
+            <%= render partial: 'shared/x', locals: { playlist: playlist } %>
+          </div>
+          <%= render partial: 'shared/like', locals: { playlist: playlist } %>
+        </div>
+      </div>
+      <p class="text-sm text-gray-600 mt-1">作成者: <%= playlist.user.user_name %></p>
+    </div>
+    <% end %>
+  </div>
+</div>
