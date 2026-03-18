@@ -37,3 +37,8 @@ jobs:
         uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          allowed_bots: github-actions[bot]
+          custom_instructions: |
+            **For Pull Request Reviews (MANDATORY STEPS)**:
+              * STEP 1: Determine PR type and read the corresponding guideline file:
+                - Library/dependency updates (renovate/dependabot) → `.github/workflows/claude-review/review-guideline-library-dependency-updates.md`
