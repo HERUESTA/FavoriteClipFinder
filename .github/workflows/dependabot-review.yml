@@ -5,6 +5,11 @@ on:
   pull_request:
     types: [opened]
     branches: [develop]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR番号'
+        required: true
 
 jobs:
   claude-code-review:
