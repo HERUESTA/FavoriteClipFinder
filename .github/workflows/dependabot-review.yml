@@ -1,0 +1,93 @@
+# Dependabot PRにラベルが付与された際にClaude Codeが自動レビューを行うワークフロー
+# - dependabotラベルが貼られたPRに対して、Claudeが変更内容を分析
+# - テーブル形式のコメントをPRに投稿
+# - PRのdescriptionを更新
+name: Dependabot Review by Claude
+
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  dependabot-review:
+    # 「dependabot」ラベルが付与された場合のみ実行
+    if: github.event.label.name == 'dependabot'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Run Claude Code for Dependabot Review
+        id: claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            このPRはDependabotによる依存関係の更新PRです。
+            以下の手順で分析を行い、結果を出力してください。
+
+            ## 1. 変更内容の分析
+            - Gemfile / Gemfile.lock の差分を確認してください
+            - 更新されたgemの一覧を特定してください
+            - 各gemについて、バージョンの変更内容（パッチ/マイナー/メジャー）を判定してください
+
+            ## 2. PRコメントの投稿
+            以下のテーブル形式でPRにコメントを投稿してください。
+            gh CLIを使用してコメントを投稿してください。
+
+            コメントの形式:
+            ```
+            ## 🤖 Dependabot PR レビュー by Claude
+
+            | 対象 | バージョン | コメント |
+            | :--- | :---: | :--- |
+            | faraday | 4.10.1 | パッチバージョン。問題なし |
+
+            ### 総合評価
+            （全体的なリスク評価と推奨アクションを記載）
+            ```
+
+            テーブルのルール:
+            - 「対象」にはgem名を記載
+            - 「バージョン」には更新後のバージョンを記載
+            - 「コメント」には以下の観点を含めた簡潔な一文を記載:
+              - バージョン変更の種別（パッチ/マイナー/メジャー）と問題の有無
+              - セキュリティ修正が含まれる場合はその旨を明記
+              - 破壊的変更（Breaking Changes）がある場合は警告を明記
+              - 例: 「パッチバージョン。問題なし」「マイナーバージョン。新機能追加あり、要確認」「メジャーバージョン。破壊的変更あり、要注意」
+
+            ## 3. PRのdescriptionの更新
+            gh CLIを使用してPRのbodyを更新してください。
+            以下の形式でdescriptionを更新してください:
+
+            ```
+            ## Dependabot 依存関係更新
+
+            ### 更新内容
+            | 対象 | バージョン | コメント |
+            | :--- | :---: | :--- |
+            | gem名 | y.y.y | パッチバージョン。問題なし |
+
+            ### レビューサマリー
+            （Claudeによる分析サマリー）
+
+            ---
+            _このdescriptionは Claude Code によって自動生成されました_
+            ```
+
+            重要:
+            - 日本語で回答してください
+            - gh CLIコマンドを使用してGitHub APIを操作してください
+            - PRのdescription更新には `gh pr edit` コマンドを使用してください
+            - コメント投稿には `gh pr comment` コマンドを使用してください
+          claude_args: |
+            --max-turns 15
+            --allowedTools "Bash(git diff:*),Bash(git log:*),Bash(cat:*),Bash(grep:*),Bash(gh pr comment:*),Bash(gh pr edit:*),Bash(gh pr view:*),Bash(curl:*),Read,Glob"
