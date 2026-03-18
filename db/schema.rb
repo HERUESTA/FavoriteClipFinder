@@ -10,45 +10,36 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_02_02_042907) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_15_101228) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "broadcasters", force: :cascade do |t|
-    t.string "broadcaster_id", null: false
-    t.string "broadcaster_name", null: false
-    t.string "profile_image_url"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "broadcaster_login"
-    t.index ["broadcaster_id"], name: "index_broadcasters_on_broadcaster_id", unique: true
-  end
-
   create_table "clips", force: :cascade do |t|
     t.string "clip_id", null: false
-    t.string "broadcaster_id", null: false
+    t.string "streamer_id", null: false
     t.string "game_id", null: false
     t.string "title"
     t.datetime "clip_created_at", precision: nil
     t.string "thumbnail_url"
+    t.integer "duration"
     t.integer "view_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "language"
     t.string "creator_name"
-    t.index ["broadcaster_id"], name: "index_clips_on_broadcaster_id"
     t.index ["clip_created_at"], name: "index_clips_on_clip_created_at"
     t.index ["clip_id"], name: "index_clips_on_clip_id", unique: true
+    t.index ["game_id", "clip_created_at"], name: "index_clips_on_game_id_and_clip_created_at"
     t.index ["game_id"], name: "index_clips_on_game_id"
+    t.index ["streamer_id"], name: "index_clips_on_streamer_id"
   end
 
-  create_table "follows", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "broadcaster_id", null: false
+  create_table "favorite_clips", force: :cascade do |t|
+    t.string "user_uid", null: false
+    t.bigint "clip_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["broadcaster_id"], name: "index_follows_on_broadcaster_id"
-    t.index ["user_id", "broadcaster_id"], name: "index_follows_on_user_id_and_broadcaster_id", unique: true
-    t.index ["user_id"], name: "index_follows_on_user_id"
+    t.index ["user_uid", "clip_id"], name: "index_favorite_clips_on_user_uid_and_clip_id", unique: true
   end
 
   create_table "games", id: :serial, force: :cascade do |t|
@@ -58,6 +49,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_02_042907) do
     t.datetime "updated_at", null: false
     t.string "game_id"
     t.index ["game_id"], name: "index_games_on_game_id", unique: true
+    t.index ["name"], name: "index_games_on_name", unique: true
   end
 
   create_table "likes", force: :cascade do |t|
@@ -85,8 +77,21 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_02_042907) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "visibility", default: "private", null: false
+    t.boolean "is_watch_later", default: false, null: false
     t.integer "likes_count", default: 0, null: false
     t.index ["user_uid"], name: "index_playlists_on_user_uid"
+  end
+
+  create_table "streamers", force: :cascade do |t|
+    t.string "streamer_id", null: false
+    t.string "streamer_name", null: false
+    t.string "profile_image_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "display_name"
+    t.index "lower((display_name)::text)", name: "index_streamers_on_lower_display_name"
+    t.index ["streamer_id"], name: "index_streamers_on_streamer_id", unique: true
+    t.index ["streamer_name"], name: "index_streamers_on_streamer_name"
   end
 
   create_table "users", force: :cascade do |t|
@@ -101,18 +106,13 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_02_042907) do
     t.string "access_token"
     t.string "refresh_token"
     t.datetime "token_expires_at"
-    t.string "email", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token"
     t.index ["uid"], name: "index_users_on_uid", unique: true
   end
 
-  add_foreign_key "clips", "broadcasters", primary_key: "broadcaster_id"
   add_foreign_key "clips", "games", primary_key: "game_id"
-  add_foreign_key "follows", "broadcasters"
-  add_foreign_key "follows", "users"
+  add_foreign_key "clips", "streamers", primary_key: "streamer_id"
+  add_foreign_key "favorite_clips", "clips"
+  add_foreign_key "favorite_clips", "users", column: "user_uid", primary_key: "uid"
   add_foreign_key "likes", "playlists"
   add_foreign_key "playlist_clips", "clips"
   add_foreign_key "playlist_clips", "playlists"

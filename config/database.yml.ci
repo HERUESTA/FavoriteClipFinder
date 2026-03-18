@@ -4,4 +4,4 @@ test:
   username: postgres
   password: postgres
   host: 127.0.0.1
-  database: favorite_clip_finder_test
+  database: myapp_test

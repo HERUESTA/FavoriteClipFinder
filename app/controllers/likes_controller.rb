@@ -1,7 +1,9 @@
 class LikesController < ApplicationController
-  before_action :authenticate_user!
-
   def create
+    unless current_user
+      redirect_to root_path, alert: "いいねするにはログインしてください"
+      return
+    end
     playlist = Playlist.preload(:likes).find(params[:playlist_id])
     like = current_user.likes.new(playlist_id: playlist.id)
 
@@ -9,10 +11,10 @@ class LikesController < ApplicationController
       if like.save
         playlist.reload
         format.turbo_stream do
-          render turbo_stream: turbo_stream.update("playlist_#{playlist.id}_like", partial: "shared/like", locals: { playlist: playlist })
+          render turbo_stream: turbo_stream.update("playlist_#{playlist.id}_like", partial: "playlists/like", locals: { playlist: playlist })
         end
       else
-        format.html { redirect_to request.referer, alert: "ログインしてください" }
+        format.html { redirect_to root_path, alert: "ログインしてください" }
       end
     end
   end
@@ -24,22 +26,11 @@ class LikesController < ApplicationController
       if like.destroy
         playlist.reload
         format.turbo_stream do
-          render turbo_stream: turbo_stream.update("playlist_#{playlist.id}_like", partial: "shared/like", locals: { playlist: playlist })
+          render turbo_stream: turbo_stream.update("playlist_#{playlist.id}_like", partial: "playlists/like", locals: { playlist: playlist })
         end
       else
-        format.html { redirect_to request.referer, alert: "ログインしてください" }
+        format.html { redirect_to root_path, alert: "ログインしてください" }
       end
-    end
-  end
-
-  private
-
-  # 未ログイン状態でいいねをした場合ログイン画面に飛ばしたくないため、
-  # deviseのメソッドをオーバーライドして独自定義する
-  # root_pathか現在いるpathに飛ばすようにする
-  def authenticate_user!
-    unless current_user
-      redirect_to request.referer || root_path, alert: "いいねするにはログインしてください"
     end
   end
 end

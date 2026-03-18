@@ -2,63 +2,101 @@
 <html>
 
 <head>
-  <title><%= content_for(:title) || "FavoriteClipFinder" %></title>
+  <title><%= content_for(:title) || "Myapp" %></title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <%= favicon_link_tag('favicon.ico') %>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
+
   <%= yield :head %>
-  <link rel="manifest" href="<%= pwa_manifest_path(format: :json) %>">
-  <link rel="apple-touch-icon" href="/icon.png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/icon.png" type="image/png">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icon.png">
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
-  <script src="https://kit.fontawesome.com/4025a67f93.js" crossorigin="anonymous" defer></script>
-  <%= display_meta_tags(default_meta_tags) %>
-  <!-- Googleアナリティクス -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GN9LLGTV5J" defer></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-    gtag('js', new Date());
-
-    gtag('config', 'G-GN9LLGTV5J');
-  </script>
+  <script src="https://kit.fontawesome.com/4025a67f93.js" crossorigin="anonymous"></script>
 </head>
 
 <body class="bg-gray-100 flex flex-col min-h-screen">
-  <!-- ヘッダー -->
-  <%= render "shared/header"%>
+  <!-- ナビゲーションヘッダー -->
+  <header class="navbar bg-[#f7f7f8] text-black px-4 py-2 flex justify-between items-center fixed top-0 left-0 right-0 z-50 shadow">
+    <!-- ロゴとリンク -->
+    <div class="flex items-center space-x-4">
+      <!-- ロゴ -->
+      <div class="text-purple-500">
+        <%= link_to root_path do %>
+        <%= image_tag "Icon.png", alt: "ロゴ", class: "h-8 w-8" %>
+        <% end %>
+      </div>
+    </div>
 
-  <div class="flex flex-col pt-16 min-h-screen">
+    <!-- 検索ボックス -->
+    <form action="/search" method="get" data-turbo-frame="clips">
+      <div class="flex items-center gap-2">
+        <input type="text" name="q" placeholder="検索" class="input input-bordered w-[300px] text-gray-900 bg-white border-gray-600" autocomplete="off" value="<%= params[:q] %>" style="background-color: white !important;">
+        <button type="submit">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4">
+            <path fill-rule="evenodd" d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+    </form>
+
+    <!-- ログイン -->
+    <% if user_signed_in? %>
+    <div class="dropdown dropdown-end">
+      <div tabindex="0" role="button" class="avatar m-1">
+        <div class="w-12 rounded-full">
+          <%= image_tag(current_user.profile_image_url, alt: "プロフィール画像", class: "profile-image", width: "50", height: "50") if current_user.profile_image_url.present? %>
+        </div>
+      </div>
+      <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+        <li><%= link_to 'プロフィール', playlists_path %></li>
+        <li>
+          <%= button_to "ログアウト", destroy_user_session_path, method: :delete, class: "text-white-500 no-button-style" %>
+        </li>
+      </ul>
+    </div>
+    <% else %>
+    <%= button_to "ログイン", user_twitch_omniauth_authorize_path, data: { turbo: false }, class: "btn btn-secondary" %>
+    <% end %>
+  </header>
+
+  <!-- フォローリストとメインコンテンツのレイアウト -->
+  <div class="flex pt-16 min-h-screen">
     <!-- フォローリスト（サイドバー） -->
-    <aside class="hidden sm:block w-60 bg-gray-custom pt-2 fixed top-16 left-0 overflow-y-auto z-40 border border-gray-300 shadow-md" style="height: calc(100vh - 6rem - 4px);">
-      <h2 class="text-sm font-bold text-black mb-3 px-4">
-        <%= @follow_str %>
-      </h2>
+    <aside class="w-60 bg-gray-custom pt-2 fixed top-16 bottom-0 left-0 overflow-y-auto z-40 border border-gray-300 shadow-md">
+      <h2 class="text-sm font-bold text-black mb-3">フォローしているチャンネル</h2>
+      <% if current_user.present? %>
+      <% if @followed_channels.present? %>
       <ul class="space-y-0">
         <% @followed_channels.each do |follow| %>
-        <li class="flex items-center pt-2 px-2 hover:bg-gray-100 rounded cursor-pointer">
-          <%= link_to search_path(q: follow.broadcaster_login), class: "flex items-center space-x-1 w-full" do %>
+        <li class="flex items-center pt-2 hover:bg-gray-100 rounded cursor-pointer">
+          <%= link_to search_path(q: follow['broadcaster_name']), class: "flex items-center space-x-1 w-full" do %>
           <!-- プロフィール画像 -->
-          <img src="<%= follow.profile_image_url %>" alt="<%= follow.broadcaster_login %>" class="w-10 h-10 rounded-full object-cover">
+          <img src="<%= follow['profile_image_url'] %>" alt="<%= follow['broadcaster_name'] %>" class="w-10 h-10 rounded-full object-cover">
           <!-- 名前 -->
           <div class="flex-1">
-            <p class="text-gray-800 text-xs truncate"><%= t('activerecord.attributes.broadcaster.broadcaster_login', name: follow.broadcaster_login) %></p>
+            <p class="text-gray-800 text-xs truncate"><%= follow['broadcaster_name'] %></p>
           </div>
           <% end %>
         </li>
         <% end %>
       </ul>
+      <% else %>
+      <p class="text-black">フォローリストがありません。</p>
+      <% end %>
+      <% else %>
+      <div class="flex justify-center">
+        <%= button_to "ログイン", user_twitch_omniauth_authorize_path, data: { turbo: false }, class: "btn btn-secondary" %>
+      </div>
+      <% end %>
     </aside>
 
     <!-- メインコンテンツ -->
-    <main class="flex-1 pt-6 p-4 sm:ml-60 flex-grow" style="padding-bottom: 80px;">
+    <main class="flex-1 ml-60 pt-6 p-1">
       <%= yield %>
       <!-- フラッシュメッセージ用のTurbo Frame -->
       <%= turbo_frame_tag "flash_messages" do %>
@@ -68,7 +106,9 @@
   </div>
 
   <!-- フッター -->
-  <%= render "shared/footer" %>
+  <footer class="bg-gray-800 text-white text-center p-4">
+    <p>&copy; 2024 TODOアプリ. All Rights Reserved.</p>
+  </footer>
 </body>
 
 </html>

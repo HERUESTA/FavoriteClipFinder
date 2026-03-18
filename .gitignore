@@ -34,7 +34,4 @@
 /app/assets/builds/*
 !/app/assets/builds/.keep
 
-# Ingnore rspec coverage files
-/coverage/*
-
 /node_modules

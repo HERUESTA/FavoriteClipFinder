@@ -2,42 +2,36 @@ require "sidekiq/web"
 
 
 Rails.application.routes.draw do
-  get "static_pages/help"
-  get "images/ogp"
-  devise_for :users, controllers: {
-    omniauth_callbacks: "users/omniauth_callbacks"
-  }
+    # Devise のルート
+    devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
 
   # root_path
-  root "tops#index"
+  root "top#index"
 
-  # 使い方画面ルート
-  get  "static_pages/help", to: "static_pages#help"
+  # 配信者ID検索用ルート
+  get "streamers/show", to: "streamers#show"
+
+  # ゲームID検索用ルート
+  get "games/show", to: "games#show"
 
   # 検索ルート
   get "search", to: "search#index"
-  get "search/playlists", to: "search#playlists"
-
-
-  # autoCompleteルート
-  resources :clips do
-    get :search, on: :collection
-  end
+  get "search/playlist", to: "search#playlist"
 
   # プレイリストクリップ用ルート
   resources :playlist_clips
-  # IDを必要とせず、プレイリストにクリップを追加できるアクションを追加する
-  post "add_clip_in_playlist", to: "playlist_clips#add_clip_in_playlist"
 
   # プレイリストのルート
   resources :playlists do
     resource :likes, only: %i[create destroy]
   end
 
+  # マイページ用ルート
+  get "show", to: "users#show"
+
   # CI/CD用route
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # PWA用route
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 

@@ -3,11 +3,10 @@
 :queues:
   - default
   - critical
-  - mailer
 
 scheduler:
   schedule:
     fetch_twitch_clips_job:
-      cron: "0 0 * * *"
+      cron: "0 0 * * *"   # 毎日0時に実行
       class: FetchTwitchClipsJob
       queue: default

@@ -1,0 +1,29 @@
+<div class="space-y-8">
+  <!-- プレイリストセクション -->
+  <%= render partial: "playlist", locals: { playlists: @playlists } %>
+
+  <!-- GTAセクション -->
+  <%= render partial: "clip", locals: { clips: @GTA_clips, search_query: @search_query, playlists: @playlists, search_name: "Grand Theft Auto V" } %>
+  <!-- APEXセクション -->
+  <%= render partial: "clip", locals: { clips: @Apex_clips, search_query: @search_query, playlists: @playlists, search_name: "Apex Legends" } %>
+  <!-- VALORANTセクション -->
+  <%= render partial: "clip", locals: { clips: @VALORANT_clips, search_query: @search_query, playlists: @playlists, search_name: "VALORANT" } %>
+  <!-- LOLセクション -->
+  <%= render partial: "clip", locals: { clips: @LOL_clips, search_query: @search_query, playlists: @playlists, search_name: "League of Legends" } %>
+
+  <!-- ストリートファイターセクション -->
+  <div>
+    <div class="flex items-center justify-between">
+      <%= link_to 'Street Fighter 6', search_path(q: 'Street Fighter 6'), class: "text-xl font-bold text-purple-800 hover:underline" %>
+    </div>
+    <div id="clips-container" class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
+      <% @Street_fighter_clips.each do |clip| %>
+      <div>
+        <div class="relative">
+          <%= render partial: "search/clip", locals: { clip: clip, clips: @Street_fighter_clips, search_query: @search_query, playlists: @playlists } %>
+        </div>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>
