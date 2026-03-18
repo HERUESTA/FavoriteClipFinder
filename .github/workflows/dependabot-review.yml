@@ -5,13 +5,13 @@
 name: Dependabot Review by Claude
 
 on:
-  pull_request:
+  pull_request_target:
     types: [labeled]
 
 jobs:
   dependabot-review:
     # 「dependabot」ラベルが付与された場合のみ実行
-    if: github.event.label.name == 'dependabot'
+    if: ${{ github.event.label.name == 'dependabot' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -24,6 +24,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Run Claude Code for Dependabot Review
         id: claude
@@ -88,6 +89,4 @@ jobs:
             - gh CLIコマンドを使用してGitHub APIを操作してください
             - PRのdescription更新には `gh pr edit` コマンドを使用してください
             - コメント投稿には `gh pr comment` コマンドを使用してください
-          claude_args: |
-            --max-turns 15
-            --allowedTools "Bash(git diff:*),Bash(git log:*),Bash(cat:*),Bash(grep:*),Bash(gh pr comment:*),Bash(gh pr edit:*),Bash(gh pr view:*),Bash(curl:*),Read,Glob"
+          claude_args: "--max-turns 15 --allowedTools \"Bash(git diff:*),Bash(git log:*),Bash(cat:*),Bash(grep:*),Bash(gh pr comment:*),Bash(gh pr edit:*),Bash(gh pr view:*),Bash(curl:*),Read,Glob\""
