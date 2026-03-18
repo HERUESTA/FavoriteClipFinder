@@ -15,7 +15,8 @@ jobs:
   claude-code-review:
     # Only run for bot PRs (dependabot, renovate)
     if: |
-      github.event.pull_request.user.login == 'dependabot[bot]'
+      github.event.pull_request.user.login == 'dependabot[bot]' ||
+      github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
