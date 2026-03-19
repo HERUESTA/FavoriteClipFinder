@@ -12,7 +12,6 @@ FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 WORKDIR /rails
 
 # Install base packages
-# 試しのテスト
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y curl libjemalloc2 libvips postgresql-client imagemagick && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
