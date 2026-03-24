@@ -12,7 +12,7 @@ on:
 
 jobs:
   post-review-comment:
-    if: github.actor == 'dependabot[bot]' # Dependabotのみ対象
+    if: github.actor == 'dependabot[bot]' || github.event_name == 'workflow_dispatch' # Dependabotのみ対象（手動実行時はスキップしない）
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -34,6 +34,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          gh pr comment ${{ github.event.pull_request.number }} \
+          PR_NUMBER=${{ github.event.pull_request.number || inputs.pr_number }}
+          gh pr comment ${PR_NUMBER} \
             --repo ${{ github.repository }} \
             --body "@claude /review-dependabot-pr"
