@@ -7,8 +7,6 @@ on:
 
 jobs:
   claude-code-review:
-    permissions:
-      contents: write
     # Only run for bot PRs (dependabot, renovate)
     if: |
       github.event.pull_request.user.login == 'dependabot[bot]' ||
