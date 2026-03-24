@@ -4,6 +4,11 @@ name: Dependabot Review Comment
 on:
   pull_request:
     types: [opened, ready_for_review, reopened]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR番号'
+        required: true
 
 jobs:
   post-review-comment:
