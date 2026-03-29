@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 1
 
       - name: Run Claude Code Action
-        uses: anthropics/claude-code-action@6902c227aaa9536481b99d56f3014bbbad6c6da8
+        uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ github.token }}
