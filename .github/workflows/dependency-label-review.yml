@@ -1,0 +1,46 @@
+# dependencies ラベル付与時の依存関係影響分析ワークフロー
+name: Dependency Label Review
+
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  dependency-impact-analysis:
+    # dependencies ラベルが付与された場合のみ実行
+    if: github.event.label.name == 'dependencies'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Read review prompt
+        id: prompt
+        run: |
+          PROMPT=$(cat .github/prompt/dependency-review.md)
+          {
+            echo "content<<PROMPT_EOF"
+            echo "$PROMPT"
+            echo "PROMPT_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Run Claude Code Action
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          direct_prompt: |
+            以下のレビューガイドラインに従って、このPRの依存関係更新の影響を分析してください。
+
+            PRのdescriptionの内容とプロジェクトのコードを確認し、影響範囲を評価してください。
+
+            ## レビューガイドライン
+            ${{ steps.prompt.outputs.content }}
+          allowed_tools: "Task,WebFetch,WebSearch,Bash(gh pr view:*),Bash(gh pr diff:*),Read,Glob,Grep"
