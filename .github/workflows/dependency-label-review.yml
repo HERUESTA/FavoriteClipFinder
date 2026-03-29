@@ -26,14 +26,15 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ github.token }}
-          allowed_tools: "Task,WebFetch,WebSearch,Bash,Read,Glob,Grep,mcp__github_inline_comment__create_inline_comment,mcp__github__create_issue_comment"
+          allowed_tools: "Bash,Read,Glob,Grep,mcp__github__create_issue_comment"
           show_full_output: true
           prompt: |
-            以下の手順でこのPRの依存関係更新の影響を分析し、結果をPRにコメントしてください。
+            このPRの依存関係更新の影響を分析し、結果をPRにコメントしてください。
 
-            1. .github/prompt/dependency-review.md を読み込む
+            ## 手順
+            1. Read ツールで `.github/prompt/dependency-review.md` を読み込む
             2. そのファイルに記載されたレビューガイドラインに従って分析を行う
             3. PRのdescriptionの内容とプロジェクトのコードを確認し、影響範囲を評価する
-            4. 分析結果をレビューガイドラインの「全体コメントテンプレート」に従ってまとめる
-            5. mcp__github__create_issue_comment ツールを使って、分析結果をこのPR #${{ github.event.pull_request.number }} にコメントとして投稿する
+            4. レビューガイドラインの「全体コメントテンプレート」に従って分析結果をまとめる
+            5. 必ず mcp__github__create_issue_comment ツールを使って PR #${{ github.event.pull_request.number }} にコメントを投稿する
 
