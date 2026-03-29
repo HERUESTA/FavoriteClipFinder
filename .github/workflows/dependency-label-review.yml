@@ -26,7 +26,8 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ github.token }}
-          allowed_tools: "Bash,Read,Glob,Grep,WebFetch,WebSearch,mcp__github__create_issue_comment"
+          claude_args: |
+            --allowedTools Bash Read Glob Grep WebFetch WebSearch mcp__github__create_issue_comment
           show_full_output: true
           prompt: |
             このPRの依存関係更新の影響を分析し、結果をPRにコメントしてください。
@@ -34,7 +35,6 @@ jobs:
             ## 重要な制約
             - Task ツール（サブエージェント）は絶対に使用しないこと
             - すべての操作を自分で直接行うこと
-            - `.git/` ディレクトリは読まないこと
 
             ## 手順（すべて自分で直接実行する）
             1. Read ツールで `.github/prompt/dependency-review.md` を読み込む
