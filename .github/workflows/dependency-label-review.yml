@@ -34,7 +34,7 @@ jobs:
             ## 手順
             1. Read ツールで `.github/prompt/dependency-review.md` を読み込む
             2. そのファイルに記載されたレビューガイドラインに従って分析を行う
-            3. PRのdescriptionの内容とプロジェクトのコードを確認し、影響範囲を評価する
-            4. レビューガイドラインの「全体コメントテンプレート」に従って分析結果をまとめる
+            3. Bash で `gh pr view ${{ github.event.pull_request.number }} --json title,body,files` を実行してPR情報を取得する
+            4. Glob/Grep ツールでプロジェクトのコードを確認し、影響範囲を評価する
             5. 必ず mcp__github__create_issue_comment ツールを使って PR #${{ github.event.pull_request.number }} にコメントを投稿する
 
