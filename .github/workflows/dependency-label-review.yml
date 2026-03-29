@@ -27,7 +27,11 @@ jobs:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ github.token }}
           prompt: |
-            まず .github/prompt/dependency-review.md を読み込んでください。
-            そのファイルに記載されたレビューガイドラインに従って、このPRの依存関係更新の影響を分析してください。
-            PRのdescriptionの内容とプロジェクトのコードを確認し、影響範囲を評価してください。
-          claude_args: "--allowedTools Task,WebFetch,WebSearch,Bash(gh pr view:*),Bash(gh pr diff:*),Read,Glob,Grep"
+            以下の手順でこのPRの依存関係更新の影響を分析し、結果をPRにコメントしてください。
+
+            1. .github/prompt/dependency-review.md を読み込む
+            2. そのファイルに記載されたレビューガイドラインに従って分析を行う
+            3. PRのdescriptionの内容とプロジェクトのコードを確認し、影響範囲を評価する
+            4. 分析結果をレビューガイドラインの「全体コメントテンプレート」に従ってまとめる
+            5. `gh pr comment` コマンドを使って、分析結果をこのPRにコメントとして投稿する
+          claude_args: "--allowedTools Task,WebFetch,WebSearch,Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Read,Glob,Grep"
