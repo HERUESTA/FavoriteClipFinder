@@ -26,7 +26,7 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ github.token }}
-          allowed_tools: "Bash,Read,Glob,Grep,mcp__github__create_issue_comment"
+          allowed_tools: "Bash,Read,Glob,Grep,WebFetch,WebSearch,mcp__github__create_issue_comment"
           show_full_output: true
           prompt: |
             このPRの依存関係更新の影響を分析し、結果をPRにコメントしてください。
