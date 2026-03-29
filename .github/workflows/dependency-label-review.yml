@@ -26,6 +26,7 @@ jobs:
         uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ github.token }}
           direct_prompt: |
             まず .github/prompt/dependency-review.md を読み込んでください。
             そのファイルに記載されたレビューガイドラインに従って、このPRの依存関係更新の影響を分析してください。
