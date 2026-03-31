@@ -36,5 +36,5 @@ jobs:
         uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          allowed_bots: dependabot-claude-review
+          allowed_bots: dependabot-claude-review, dependabot[bot]
           allowed_tools: "Task,WebFetch,WebSearch,Bash(gh pr view:*),Bash(gh pr diff:*)"
