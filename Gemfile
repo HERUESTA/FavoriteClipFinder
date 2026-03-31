@@ -44,7 +44,7 @@ gem "counter_culture", "~> 3.2"
 gem "draper"
 
 # Twitch関連
-gem "devise", "~> 4.9"
+gem "devise", "~> 5.0"
 gem "omniauth", "~> 2.1"
 gem "omniauth-oauth2", "~> 1.7"
 gem "omniauth-twitch", "~> 1.2"
