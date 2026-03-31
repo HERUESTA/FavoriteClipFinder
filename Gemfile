@@ -38,7 +38,7 @@ gem "rails-i18n"
 gem "ransack"
 
 # カウンタキャッシュ
-gem "counter_culture", "~> 3.2"
+gem "counter_culture", "~> 3.12"
 
 # decorator
 gem "draper"
