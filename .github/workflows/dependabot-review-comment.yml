@@ -9,6 +9,10 @@ on:
       pr_number:
         description: 'PR番号'
         required: true
+      ref:
+        description: 'review-dependabot-pr.md を読むブランチ（default: main）'
+        required: false
+        default: 'main'
 
 jobs:
   post-review-comment:
@@ -17,6 +21,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+      issues: write
 
     steps:
       # GitHub App トークンの生成
@@ -27,12 +32,31 @@ jobs:
           app-id: ${{ vars.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
 
-      # 2. コメントの投稿
+      # pull_request イベント: コメントを投稿して claude.yml をトリガー
       - name: Post review request comment
+        if: github.event_name == 'pull_request'
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          PR_NUMBER=${{ github.event.pull_request.number || inputs.pr_number }}
-          gh pr comment ${PR_NUMBER} \
+          gh pr comment ${{ github.event.pull_request.number }} \
             --repo ${{ github.repository }} \
             --body "@claude /review-dependabot-pr"
+
+      # workflow_dispatch: 指定ブランチを checkout して Claude を直接実行
+      - name: Checkout specified ref
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+          fetch-depth: 1
+
+      - name: Run Claude with specified branch's review-dependabot-pr.md
+        if: github.event_name == 'workflow_dispatch'
+        uses: anthropics/claude-code-action@bv1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          allowed_tools: "WebFetch,WebSearch,Bash(gh pr view:*),Bash(gh pr diff:*)"
+          prompt: |
+            `.claude/commands/review-dependabot-pr.md` の内容に従い、PR #${{ inputs.pr_number }} のレビューを行い、PR にコメントを投稿してください。
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
