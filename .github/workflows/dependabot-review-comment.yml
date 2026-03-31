@@ -52,7 +52,7 @@ jobs:
 
       - name: Run Claude with specified branch's review-dependabot-pr.md
         if: github.event_name == 'workflow_dispatch'
-        uses: anthropics/claude-code-action@bv1
+        uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           allowed_tools: "WebFetch,WebSearch,Bash(gh pr view:*),Bash(gh pr diff:*)"
