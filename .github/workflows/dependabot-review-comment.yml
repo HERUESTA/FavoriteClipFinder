@@ -56,7 +56,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          allowed_tools: "WebFetch,WebSearch,Bash(gh pr view:*),Bash(gh pr diff:*)"
+          allowed_tools: "WebFetch,WebSearch,Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*)"
           prompt: |
             `.claude/commands/review-dependabot-pr.md` の内容に従い、PR #${{ inputs.pr_number }} のレビューを行い、PR にコメントを投稿してください。
         env:
