@@ -66,5 +66,6 @@ jobs:
           trigger_phrase: "@claude-all-repository"
           github_token: ${{ steps.write-token.outputs.token }}  # 書き込み用トークン
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          show_full_output: "true"
           prompt: |
             重要: このワークスペースには複数のリポジトリがチェックアウトされています。書き込み（ファイルの作成・編集・削除・コミット・プッシュ）はルートディレクトリのファイルのみに限定してください。サブディレクトリとしてチェックアウトされた外部リポジトリは参照専用として扱い、それらへの書き込みは一切行わないでください。
