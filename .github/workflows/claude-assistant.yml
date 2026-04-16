@@ -46,6 +46,5 @@ jobs:
       - uses: anthropics/claude-code-action@39431830520a7ae6c0c572f11a7707e7043325e3 # v1.0.97
         with:
           trigger_phrase: "@claude-all-repository"
-          timeout_minutes: "60"
           github_token: ${{ steps.app-token.outputs.token }}
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
