@@ -38,7 +38,7 @@ jobs:
       - name: Checkout repository OshiPitch
         uses: actions/checkout@v4
         with:
-          path: OshiPitch # repo-b をチェックアウトするパスを指定
+          path: OshiPitch # 異なるリポジトリをチェックアウトするパスを指定
           repository: HERUESTA/OshiPitch
           token: ${{ steps.app-token.outputs.token }}
           ref: main
