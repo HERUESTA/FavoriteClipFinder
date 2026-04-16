@@ -22,36 +22,47 @@ jobs:
       issues: write
       id-token: write
     steps:
-      - name: Generate GitHub App token
-        id: app-token
+      # 書き込み用トークンを生成する
+      - name: Generate write token
+        id: write-token
         uses: actions/create-github-app-token@v2
         with:
           app-id: ${{ vars.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      # 参照用トークンを生成する
+      - name: Generate read-only token
+        id: read-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.GH_APP_ID_READ_ONLY }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY_READ_ONLY }}
           owner: ${{ github.repository_owner }}
           repositories: |
-            FavoriteClipFinder
             OshiPitch
+            upgrade-releases
 
-      - name: Checkout repository FavoriteClipFinder
+      - name: Checkout FavoriteClipFinder
         uses: actions/checkout@v4
-      - name: Checkout repository OshiPitch
+
+      - name: Checkout OshiPitch (read-only)
         uses: actions/checkout@v4
         with:
-          path: OshiPitch # 異なるリポジトリをチェックアウトするパスを指定
+          path: OshiPitch
           repository: HERUESTA/OshiPitch
-          token: ${{ steps.app-token.outputs.token }}
+          token: ${{ steps.read-token.outputs.token }}   # 参照用トークン
           ref: main
-      - name: Checkout repository OshiPitch
+
+      - name: Checkout upgrade-releases (read-only)
         uses: actions/checkout@v4
         with:
-          path: upgrade-releases # 異なるリポジトリをチェックアウトするパスを指定
+          path: upgrade-releases
           repository: HERUESTA/upgrade-releases
-          token: ${{ steps.app-token.outputs.token }}
+          token: ${{ steps.read-token.outputs.token }}   # 参照用トークン
           ref: main
 
       - uses: anthropics/claude-code-action@39431830520a7ae6c0c572f11a7707e7043325e3 # v1.0.97
         with:
           trigger_phrase: "@claude-all-repository"
-          github_token: ${{ steps.app-token.outputs.token }}
+          github_token: ${{ steps.write-token.outputs.token }}  # 書き込み用トークン
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
