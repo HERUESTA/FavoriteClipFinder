@@ -50,7 +50,7 @@ gem "omniauth-oauth2", "~> 1.7"
 gem "omniauth-twitch", "~> 1.2"
 gem "omniauth-rails_csrf_protection"
 gem "rack-cors", require: "rack/cors"
-gem "faraday", "~> 2.0"
+gem "faraday", "~> 2.14"
 
 # 動的OGP用gem
 gem "mini_magick"
