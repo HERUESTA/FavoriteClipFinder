@@ -43,10 +43,10 @@ jobs:
             upgrade-releases
 
       - name: Checkout FavoriteClipFinder
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Checkout OshiPitch (read-only)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: OshiPitch
           repository: HERUESTA/OshiPitch
@@ -54,7 +54,7 @@ jobs:
           ref: main
 
       - name: Checkout upgrade-releases (read-only)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: upgrade-releases
           repository: HERUESTA/upgrade-releases
